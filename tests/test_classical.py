@@ -4,14 +4,28 @@ import unittest
 import numpy as np
 
 from hrv import classical
+from hrv import utils
+
+
+FAKE_RRI = [800, 810, 815, 750]
+
+
+class RRIValidationTestCase(unittest.TestCase):
+    def test_rri_validation(self):
+        response = utils.validate_rri(FAKE_RRI)
+        self.assertIsInstance(response, np.ndarray)
 
 
 class ClassicalIndexesTestCase(unittest.TestCase):
-    def setUp(self):
-        self.fake_rri = [800, 810, 815, 790]
 
     def test_right_function_call(self):
-        response = classical.time_domain(self.fake_rri)
-        expected = np.mean(self.fake_rri)
-        self.assertEqual(response, expected)
-
+        response = classical.time_domain(FAKE_RRI)
+        expected = {'rmssd': 38.07,
+                    'sdnn': 41.93,
+                    'nn50': 1,
+                    'pnn50': 0.33,
+                    'mrri':  793.75,
+                    'mhr': 75.67}
+        np.testing.assert_almost_equal(sorted(response.values()),
+                                       sorted(expected.values()),
+                                       decimal=2)
