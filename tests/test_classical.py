@@ -3,8 +3,8 @@ import unittest
 
 import numpy as np
 
-from hrv import classical
-from hrv import utils
+from hrv.classical import time_domain
+from hrv.utils import validate_rri
 
 
 FAKE_RRI = [800, 810, 815, 750]
@@ -12,14 +12,14 @@ FAKE_RRI = [800, 810, 815, 750]
 
 class RRIValidationTestCase(unittest.TestCase):
     def test_rri_validation(self):
-        response = utils.validate_rri(FAKE_RRI)
+        response = validate_rri(FAKE_RRI)
         self.assertIsInstance(response, np.ndarray)
 
 
 class ClassicalIndexesTestCase(unittest.TestCase):
 
     def test_right_function_call(self):
-        response = classical.time_domain(FAKE_RRI)
+        response = time_domain(FAKE_RRI)
         expected = {'rmssd': 38.07,
                     'sdnn': 41.93,
                     'nn50': 1,
