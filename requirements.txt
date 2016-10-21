@@ -3,4 +3,4 @@ sphinx
 sphinx_rtd_theme
 nose
 coverage
-pypi-publisher
+pypi-publishernumpy==1.11.2
