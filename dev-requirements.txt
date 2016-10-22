@@ -1,0 +1,2 @@
+ipython==5.1.0
+ipython-genutils==0.1.0
