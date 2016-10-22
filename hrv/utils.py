@@ -8,7 +8,7 @@ import numpy as np
 class EmptyFileError(Exception):
     def __init__(self, value):
         self.value = value
- 
+
     def __str__(self):
         return repr(self.value)
 
@@ -24,24 +24,38 @@ def open_rri(pathname_or_fileobj):
 def open_rri_from_path(pathname):
     if pathname.endswith('.txt'):
         with open(pathname, 'r') as fileobj:
-            rri_lines = fileobj.readlines()
-            if len(rri_lines) != 0:
-                rri = [float(rri.strip()) for rri in rri_lines]
-            else:
-                raise EmptyFileError('File without rri data')
-        return rri
+            rri = open_rri_from_fileobj(fileobj)
     elif pathname.endswith('.hrm'):
         with open(pathname, 'r') as fileobj:
-            rri_lines = fileobj.read()
-            begin_of_rri_header = '[HRData]'
-            rri_info_index = rri_lines.find(begin_of_rri_header)
-            rri_string = re.findall(r'\d+', rri_lines[rri_info_index:-1])
-            if len(rri_string) != 0:
-                rri = [float(rri.strip()) for rri in rri_string]
-            else:
+            rri = open_rri_from_fileobj(fileobj)
+    else:
+        raise IOError("File extension not supported")
+    return rri
+
+def open_rri_from_fileobj(fileobj):
+    file_content = fileobj.read()
+    file_type = identify_rri_file_type(file_content)
+    if file_type == 'text':
+        rri = list(map(float,
+                       re.findall(r'\d+', file_content)))
+        if not rri:
+            raise EmptyFileError('File without rri data')
+    else:
+        rri_info_index = file_content.find('[HRData]')
+        if rri_info_index >= 0:
+            rri = list(map(float,
+                      re.findall(r'\d+', file_content[rri_info_index:-1])))
+            if not rri:
                 raise EmptyFileError('File without rri data')
-        return rri
-    raise IOError('File extension not supported')
+    return rri
+# TODO: improve file type identification
+def identify_rri_file_type(file_content):
+    is_hrm_file = file_content.find('[HRData]')
+    if is_hrm_file >= 0:
+        file_type = 'hrm'
+    else:
+        file_type = 'text'
+    return file_type
 
 def is_list_of_numbers(rri):
     if not all(map(lambda value: isinstance(value, Number), rri)):
