@@ -4,16 +4,7 @@ import unittest
 import numpy as np
 
 from hrv.classical import time_domain
-from hrv.utils import validate_rri
-
-
-FAKE_RRI = [800, 810, 815, 750]
-
-
-class RRIValidationTestCase(unittest.TestCase):
-    def test_rri_validation(self):
-        response = validate_rri(FAKE_RRI)
-        self.assertIsInstance(response, np.ndarray)
+from tests.test_utils import FAKE_RRI
 
 
 class ClassicalIndexesTestCase(unittest.TestCase):
