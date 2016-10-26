@@ -14,7 +14,7 @@ class ClassicalIndexesTestCase(unittest.TestCase):
         expected = {'rmssd': 38.07,
                     'sdnn': 41.93,
                     'nn50': 1,
-                    'pnn50': 0.33,
+                    'pnn50': 33.33,
                     'mrri':  793.75,
                     'mhr': 75.67}
         np.testing.assert_almost_equal(sorted(response.values()),
