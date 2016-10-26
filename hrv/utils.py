@@ -94,3 +94,23 @@ def identify_rri_file_type(file_content):
 def is_list_of_numbers(rri):
     if not all(map(lambda value: isinstance(value, Number), rri)):
         raise ValueError('rri must be a list or numpy.ndarray of numbers')
+
+
+def _check_frequency_domain_arguments(**kwargs):
+    rri = kwargs.get('rri')
+    method = kwargs.get('method')
+    segment_size = kwargs.get('segment_size')
+    overlap_size = kwargs.get('overlap_size')
+
+    if not method == 'welch':
+        raise ValueError('Welch method must be chose')
+
+    if not isinstance(segment_size, int) or segment_size < 1:
+        raise ValueError('Segment size must be an positive integer')
+
+    if not isinstance(overlap_size, int) or overlap_size < 1 or \
+       overlap_size >= segment_size:
+        raise ValueError('Overlap size must be an positive integer smaller than segment size')
+
+    if len(rri) < segment_size:
+        raise ValueError('Segment size bigger than RRi series')

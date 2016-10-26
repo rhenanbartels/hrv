@@ -16,3 +16,12 @@ def time_domain(rri):
 
     return dict(rmssd=rmssd, sdnn=sdnn, nn50=nn50, pnn50=pnn50,
                 mrri=mrri, mhr=mhr)
+
+
+def frequency_domain(rri, interp_freq=4,
+                     method='welch', segment_size=256,
+                     overlap_size=128,
+                     window_function='hanning'):
+
+    return dict(total_power=0.0, vlf=0.0, lf=0.0, hf=0.0, lf_hf=0.0,
+                lfnu=0.0, hfnu=0.0)

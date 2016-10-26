@@ -5,7 +5,8 @@ import numpy as np
 
 from hrv.utils import (validate_rri, open_rri, EmptyFileError,
                        identify_rri_file_type, FileNotSupportedError,
-                       open_rri_from_text, open_rri_from_hrm)
+                       open_rri_from_text, open_rri_from_hrm,
+                       _check_frequency_domain_arguments)
 
 FAKE_RRI = [800, 810, 815, 750]
 
@@ -101,3 +102,28 @@ class RRIFileOpeningTestCase(unittest.TestCase):
         rri_file_name = 'tests/test_files/test_file_3.txt'
         file_obj = open(rri_file_name, 'r')
         self.assertRaises(FileNotSupportedError, open_rri, file_obj)
+
+
+class FrequencyDomainArgumentsTestCase(unittest.TestCase):
+
+    def test_method_arguments(self):
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='method')
+
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='welch', segment_size='258')
+
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='welch', segment_size=-1)
+
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='welch', segment_size=256,
+                          overlap_size='128')
+
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='welch', segment_size=256,
+                          overlap_size=-1)
+
+        self.assertRaises(ValueError, _check_frequency_domain_arguments,
+                          rri=FAKE_RRI, method='welch', segment_size=10,
+                          overlap_size=1)
