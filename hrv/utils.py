@@ -26,12 +26,14 @@ def validate_rri(rri):
     is_list_of_numbers(rri)
     return np.array(rri)
 
+
 def open_rri(pathname_or_fileobj):
     if isinstance(pathname_or_fileobj, str):
         rri = open_rri_from_path(pathname_or_fileobj)
     elif isinstance(pathname_or_fileobj, io.TextIOWrapper):
         rri = open_rri_from_fileobj(pathname_or_fileobj)
     return validate_rri(rri)
+
 
 def open_rri_from_path(pathname):
     if pathname.endswith('.txt'):
@@ -43,6 +45,7 @@ def open_rri_from_path(pathname):
     else:
         raise FileNotSupportedError("File extension not supported")
     return rri
+
 
 def open_rri_from_fileobj(fileobj):
     file_content = fileobj.read()
@@ -57,18 +60,21 @@ def open_rri_from_fileobj(fileobj):
             raise EmptyFileError('File without rri data')
     return rri
 
+
 def open_rri_from_text(file_content):
     rri = list(map(float,
                    re.findall(r'\d+', file_content)))
     return rri
+
 
 def open_rri_from_hrm(file_content):
     rri_info_index = file_content.find('[HRData]')
     rri = None
     if rri_info_index >= 0:
         rri = list(map(float,
-                  re.findall(r'\d+', file_content[rri_info_index:-1])))
+                       re.findall(r'\d+', file_content[rri_info_index:-1])))
     return rri
+
 
 def identify_rri_file_type(file_content):
     is_hrm_file = file_content.find('[HRData]')
@@ -84,7 +90,7 @@ def identify_rri_file_type(file_content):
         file_type = 'text'
     return file_type
 
+
 def is_list_of_numbers(rri):
     if not all(map(lambda value: isinstance(value, Number), rri)):
         raise ValueError('rri must be a list or numpy.ndarray of numbers')
-        response = open_rri(rri_file_name)
