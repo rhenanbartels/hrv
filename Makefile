@@ -6,3 +6,6 @@ clean:
 
 tests:clean
 	nosetests
+
+shell:clean
+	ipython
