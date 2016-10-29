@@ -16,14 +16,33 @@ def time_domain(rri):
     mrri = np.mean(rri)
     mhr = np.mean(60 / (rri / 1000.0))
 
-    return dict(rmssd=rmssd, sdnn=sdnn, nn50=nn50, pnn50=pnn50,
-                mrri=mrri, mhr=mhr)
+    return dict(zip(['rmssd', 'sdnn', 'nn50', 'pnn50', 'mrri', 'mhr'],
+                    np.round([rmssd, sdnn, nn50, pnn50, mrri, mhr], 2)))
 
 
-def frequency_domain(rri, interp_freq=4,
-                     method='welch', segment_size=256,
-                     overlap_size=128,
-                     window_function='hanning'):
+@validate_frequency_domain_arguments
+def frequency_domain(rri, method, interp_freq, segment_size, overlap_size):
 
-    return dict(total_power=0.0, vlf=0.0, lf=0.0, hf=0.0, lf_hf=0.0,
-                lfnu=0.0, hfnu=0.0)
+    time_interp, rri_interp = _interpolate_rri(rri, interp_freq)
+    fxx, pxx = welch(x=rri_interp, fs=interp_freq)
+
+    return _bands_energy(fxx, pxx)
+
+
+def _bands_energy(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
+                  hf_band=(0.15, 0.4)):
+    vlf_indexes = np.logical_and(fxx >= vlf_band[0], fxx < vlf_band[1])
+    lf_indexes = np.logical_and(fxx >= lf_band[0], fxx < lf_band[1])
+    hf_indexes = np.logical_and(fxx >= hf_band[0], fxx < hf_band[1])
+
+    vlf = np.trapz(y=pxx[vlf_indexes], x=fxx[vlf_indexes])
+    lf = np.trapz(y=pxx[lf_indexes], x=fxx[lf_indexes])
+    hf = np.trapz(y=pxx[hf_indexes], x=fxx[hf_indexes])
+    total_power = vlf + lf + hf
+    lf_hf = lf / hf
+    lfnu = (lf / (total_power - vlf)) * 100
+    hfnu = (hf / (total_power - vlf)) * 100
+
+    return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
+                      'hfnu'], np.round(
+                          [total_power, vlf, lf, hf, lf_hf, lfnu,hfnu], 2)))
