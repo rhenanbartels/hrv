@@ -1,11 +1,13 @@
 # coding: utf-8
 import numpy as np
+from scipy.signal import welch
 
-from hrv.utils import validate_rri
+from hrv.utils import (validate_rri, _interpolate_rri,
+                       validate_frequency_domain_arguments)
 
 
+@validate_rri
 def time_domain(rri):
-    rri = validate_rri(rri)
     diff_rri = np.diff(rri)
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
     sdnn = np.std(diff_rri, ddof=1)  # make it calculates N-1
