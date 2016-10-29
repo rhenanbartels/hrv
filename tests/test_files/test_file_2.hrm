@@ -1,0 +1,71 @@
+[Params]
+Version=106
+Monitor=13
+SMode=000000000
+Date=20080209
+StartTime=09:28:17.0
+Length=00:11:01.9
+Interval=238
+Upper1=0
+Lower1=0
+Upper2=0
+Lower2=0
+Upper3=0
+Lower3=0
+Timer1=00:00:00.0
+Timer2=00:00:00.0
+Timer3=00:00:00.0
+ActiveLimit=0
+MaxHR=180
+RestHR=70
+StartDelay=0
+VO2max=30
+Weight=76
+
+[Note]
+
+[IntTimes]
+00:11:01.6	89	31	83	211
+0	0	0	0	0	0
+0	0	0	0	0
+0	0	0	0	0	0
+0	0	0	0	0	0
+
+[IntNotes]
+
+[ExtraData]
+
+[Summary-123]
+660	0	660	0	0	0
+180	0	0	70
+0	0	0	0	0	0
+180	0	0	70
+0	0	0	0	0	0
+180	0	0	70
+0	912
+
+[Summary-TH]
+660	0	660	0	0	0
+180	0	0	70
+0	912
+
+[HRZones]
+180
+162
+144
+126
+108
+90
+0
+0
+0
+0
+0
+
+[SwapTimes]
+
+[HRData]
+800
+810
+815
+750
