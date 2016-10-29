@@ -23,52 +23,47 @@ class FileNotSupportedError(Exception):
         return repr(self.value)
 
 
-def validate_rri(rri):
-    is_list_of_numbers(rri)
-    return np.array(rri)
-
-
 def open_rri(pathname_or_fileobj):
     if isinstance(pathname_or_fileobj, str):
-        rri = open_rri_from_path(pathname_or_fileobj)
+        rri = _open_rri_from_path(pathname_or_fileobj)
     elif isinstance(pathname_or_fileobj, io.TextIOWrapper):
-        rri = open_rri_from_fileobj(pathname_or_fileobj)
-    return validate_rri(rri)
+        rri = _open_rri_from_fileobj(pathname_or_fileobj)
+    return _transform_rri(rri)
 
 
-def open_rri_from_path(pathname):
+def _open_rri_from_path(pathname):
     if pathname.endswith('.txt'):
         with open(pathname, 'r') as fileobj:
-            rri = open_rri_from_fileobj(fileobj)
+            rri = _open_rri_from_fileobj(fileobj)
     elif pathname.endswith('.hrm'):
         with open(pathname, 'r') as fileobj:
-            rri = open_rri_from_fileobj(fileobj)
+            rri = _open_rri_from_fileobj(fileobj)
     else:
         raise FileNotSupportedError("File extension not supported")
     return rri
 
 
-def open_rri_from_fileobj(fileobj):
+def _open_rri_from_fileobj(fileobj):
     file_content = fileobj.read()
-    file_type = identify_rri_file_type(file_content)
+    file_type = _identify_rri_file_type(file_content)
     if file_type == 'text':
-        rri = open_rri_from_text(file_content)
+        rri = _open_rri_from_text(file_content)
         if not rri:
             raise EmptyFileError('File without rri data')
     else:
-        rri = open_rri_from_hrm(file_content)
+        rri = _open_rri_from_hrm(file_content)
         if not rri:
             raise EmptyFileError('File without rri data')
     return rri
 
 
-def open_rri_from_text(file_content):
+def _open_rri_from_text(file_content):
     rri = list(map(float,
-                   re.findall(r'\d+', file_content)))
+                   re.findall(r'[1-9]\d+', file_content)))
     return rri
 
 
-def open_rri_from_hrm(file_content):
+def _open_rri_from_hrm(file_content):
     rri_info_index = file_content.find('[HRData]')
     rri = None
     if rri_info_index >= 0:
@@ -77,7 +72,7 @@ def open_rri_from_hrm(file_content):
     return rri
 
 
-def identify_rri_file_type(file_content):
+def _identify_rri_file_type(file_content):
     is_hrm_file = file_content.find('[HRData]')
     if is_hrm_file >= 0:
         file_type = 'hrm'
