@@ -10,7 +10,7 @@ from hrv.utils import (validate_rri, _interpolate_rri,
 def time_domain(rri):
     diff_rri = np.diff(rri)
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
-    sdnn = np.std(diff_rri, ddof=1)  # make it calculates N-1
+    sdnn = np.std(rri, ddof=1)  # make it calculates N-1
     nn50 = sum(abs(diff_rri) > 50)
     pnn50 = (nn50 / len(diff_rri)) * 100
     mrri = np.mean(rri)
