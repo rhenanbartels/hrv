@@ -44,5 +44,5 @@ def _bands_energy(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
     hfnu = (hf / (total_power - vlf)) * 100
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
-                      'hfnu'], np.round(
-                          [total_power, vlf, lf, hf, lf_hf, lfnu,hfnu], 2)))
+                    'hfnu'], np.round(
+                          [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu], 2)))
