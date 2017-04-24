@@ -89,18 +89,15 @@ def _identify_rri_file_type(file_content):
 
 def validate_rri(func):
     def _validate(rri, *args, **kwargs):
-        _validate_are_numbers(rri)
-        _validate_are_nonzero(rri)
+        _validate_positive_numbers(rri)
         rri = _transform_rri(rri)
         return func(rri, *args, **kwargs)
 
-    def _validate_are_numbers(rri):
-        if not all(map(lambda value: isinstance(value, Number), rri)):
-            raise ValueError('rri must be a list or numpy.ndarray of numbers')
-
-    def _validate_are_nonzero(rri):
-        if not all(map(lambda value: value > 0, rri)):
-            raise ValueError('rri must be a list or numpy.ndarray of numbers')
+    def _validate_positive_numbers(rri):
+        if not all(map(lambda value: isinstance(value, Number) and value > 0,
+                       rri)):
+            raise ValueError('rri must be a list or numpy.ndarray of positive'
+                             ' and non-zero numbers')
 
     return _validate
 
