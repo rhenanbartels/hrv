@@ -3,7 +3,7 @@ import unittest.mock
 
 import numpy as np
 
-from hrv.classical import time_domain, frequency_domain
+from hrv.classical import time_domain, frequency_domain, _auc
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -56,3 +56,18 @@ class FrequencyDomainTestCase(unittest.TestCase):
                                        decimal=2)
         self.assertEqual(response.keys(),
                          expected.keys())
+
+    def test_area_under_the_curve(self):
+        fxx = np.arange(0, 1, 1 / 1000.0)
+        pxx = np.ones(len(fxx))
+
+        results = _auc(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
+                       hf_band=(0.15, 0.4))
+
+        np.testing.assert_almost_equal(results['vlf'], 0.04, decimal=2)
+        np.testing.assert_almost_equal(results['lf'], 0.11, decimal=2)
+        np.testing.assert_almost_equal(results['hf'], 0.25, decimal=2)
+        np.testing.assert_almost_equal(results['total_power'], 0.4, decimal=2)
+        np.testing.assert_almost_equal(results['lf_hf'], 0.44, decimal=1)
+        np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
+        np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)

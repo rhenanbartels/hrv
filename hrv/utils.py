@@ -139,11 +139,13 @@ def _transform_rri_to_miliseconds(rri):
 def _interpolate_rri(rri, fs=4, interp_method='cubic'):
     if interp_method == 'cubic':
         return _interp_cubic_spline(rri, fs)
+    elif interp_method == 'linear':
+        return _interp_linear(rri, fs)
 
 
 def _interp_cubic_spline(rri, fs):
     time_rri = _create_time_info(rri)
-    time_rri_interp = np.arange(0, time_rri[-1], 1 / float(fs))
+    time_rri_interp = _create_interp_time(rri, fs)
     tck = interpolate.splrep(time_rri, rri, s=0)
     rri_interp = interpolate.splev(time_rri_interp, tck, der=0)
     return time_rri_interp, rri_interp
@@ -151,7 +153,7 @@ def _interp_cubic_spline(rri, fs):
 
 def _interp_linear(rri, fs):
     time_rri = _create_time_info(rri)
-    time_rri_interp = np.arange(0, time_rri[-1], 1 / float(fs))
+    time_rri_interp = _create_interp_time(rri, fs)
     rri_interp = np.interp(time_rri_interp, time_rri, rri)
     return time_rri_interp, rri_interp
 

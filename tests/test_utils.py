@@ -171,3 +171,23 @@ class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
         frequency_domain(self.real_rri, interp_method=None)
 
         _welch.assert_called_once_with(x=self.real_rri, fs=4.0)
+
+    @unittest.mock.patch('hrv.utils.interpolate.splev')
+    @unittest.mock.patch('hrv.utils.interpolate.splrep')
+    @unittest.mock.patch('hrv.utils._create_interp_time')
+    def test_uses_cubic_interpolation_method(self, _interp_time, _splrep,
+                                             _splev):
+        fake_values = np.arange(10)
+        _interp_time.return_value = fake_values
+        _splrep.return_value = fake_values
+        _splev.return_value = fake_values
+
+        frequency_domain(self.real_rri, interp_method='cubic')
+
+        _splev.assert_called_once_with(fake_values, fake_values, der=0)
+
+    @unittest.mock.patch('hrv.utils.np.interp')
+    def test_uses_linear_interpolate_method(self, _interp):
+        _interp.return_value = np.arange(10)
+
+        frequency_domain(self.real_rri, interp_method='linear')
