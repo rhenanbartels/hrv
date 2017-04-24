@@ -92,7 +92,7 @@ def validate_rri(func):
         _validate_are_numbers(rri)
         _validate_are_nonzero(rri)
         rri = _transform_rri(rri)
-        return func(rri)
+        return func(rri, *args, **kwargs)
 
     def _validate_are_numbers(rri):
         if not all(map(lambda value: isinstance(value, Number), rri)):

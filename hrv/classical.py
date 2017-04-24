@@ -21,6 +21,7 @@ def time_domain(rri):
 
 
 @validate_frequency_domain_arguments
+@validate_rri
 def frequency_domain(rri, fs, method, interp_method, vlf_band=(0, 0.04),
                      lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
     if interp_method is not None:

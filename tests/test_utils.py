@@ -164,13 +164,15 @@ class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
         self.assertTrue(len(response_rri_interp) > len(self.real_rri))
 
     @unittest.mock.patch('hrv.classical.welch')
-    def test_none_interpolation_method(self, _welch):
+    @unittest.mock.patch('hrv.utils._transform_rri')
+    def test_none_interpolation_method(self, _rri, _welch):
         random_values = np.random.randn(10)
         _welch.return_value = (random_values, random_values)
+        _rri.return_value = self.real_rri
 
         frequency_domain(self.real_rri, interp_method=None)
 
-        _welch.assert_called_once_with(x=self.real_rri, fs=4.0)
+        _welch.assert_called_once_with(fs=4.0, x=self.real_rri)
 
     @unittest.mock.patch('hrv.utils.interpolate.splev')
     @unittest.mock.patch('hrv.utils.interpolate.splrep')
