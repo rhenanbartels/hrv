@@ -3,8 +3,7 @@ import unittest.mock
 
 import numpy as np
 
-from hrv.classical import time_domain, frequency_domain
-from hrv.utils import _interpolate_rri
+from hrv.classical import time_domain, frequency_domain, _auc
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -42,10 +41,9 @@ class FrequencyDomainTestCase(unittest.TestCase):
         self.real_rri = open_rri('tests/test_files/real_rri.txt')
 
     def test_correct_response(self):
-        response = frequency_domain(self.real_rri, interp_freq=4,
-                                    method='welch', segment_size=256,
-                                    overlap_size=128,
-                                    window_function='hanning')
+        response = frequency_domain(self.real_rri, fs=4, method='welch',
+                                    nperseg=256, noverlap=128,
+                                    window='hanning')
         expected = {'total_power':  3602.90,
                     'vlf': 844.5,
                     'lf': 1343.51,
@@ -59,7 +57,17 @@ class FrequencyDomainTestCase(unittest.TestCase):
         self.assertEqual(response.keys(),
                          expected.keys())
 
-    def frequency_analysis_with_welch(self):
-        interp_freq = 4
-        time_interp, rri_interp = interpolate_rri(self.real_rri, interp_freq)
-        frequency_domain(self.real_rri)
+    def test_area_under_the_curve(self):
+        fxx = np.arange(0, 1, 1 / 1000.0)
+        pxx = np.ones(len(fxx))
+
+        results = _auc(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
+                       hf_band=(0.15, 0.4))
+
+        np.testing.assert_almost_equal(results['vlf'], 0.04, decimal=2)
+        np.testing.assert_almost_equal(results['lf'], 0.11, decimal=2)
+        np.testing.assert_almost_equal(results['hf'], 0.25, decimal=2)
+        np.testing.assert_almost_equal(results['total_power'], 0.4, decimal=2)
+        np.testing.assert_almost_equal(results['lf_hf'], 0.44, decimal=1)
+        np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
+        np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)

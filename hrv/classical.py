@@ -17,20 +17,22 @@ def time_domain(rri):
     mhr = np.mean(60 / (rri / 1000.0))
 
     return dict(zip(['rmssd', 'sdnn', 'nn50', 'pnn50', 'mrri', 'mhr'],
-                    np.round([rmssd, sdnn, nn50, pnn50, mrri, mhr], 2)))
+                    [rmssd, sdnn, nn50, pnn50, mrri, mhr]))
 
 
 @validate_frequency_domain_arguments
-def frequency_domain(rri, method, interp_freq, segment_size, overlap_size):
+@validate_rri
+def frequency_domain(rri, fs, method, interp_method, vlf_band=(0, 0.04),
+                     lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
+    if interp_method is not None:
+        time_interp, rri = _interpolate_rri(rri, fs, interp_method)
+    if method == 'welch':
+        fxx, pxx = welch(x=rri, fs=fs, **kwargs)
 
-    time_interp, rri_interp = _interpolate_rri(rri, interp_freq)
-    fxx, pxx = welch(x=rri_interp, fs=interp_freq)
-
-    return _bands_energy(fxx, pxx)
+    return _auc(fxx, pxx, vlf_band, lf_band, hf_band)
 
 
-def _bands_energy(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
-                  hf_band=(0.15, 0.4)):
+def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
     vlf_indexes = np.logical_and(fxx >= vlf_band[0], fxx < vlf_band[1])
     lf_indexes = np.logical_and(fxx >= lf_band[0], fxx < lf_band[1])
     hf_indexes = np.logical_and(fxx >= hf_band[0], fxx < hf_band[1])
@@ -44,5 +46,4 @@ def _bands_energy(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
     hfnu = (hf / (total_power - vlf)) * 100
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
-                    'hfnu'], np.round(
-                          [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu], 2)))
+                    'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
