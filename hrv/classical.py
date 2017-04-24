@@ -17,7 +17,7 @@ def time_domain(rri):
     mhr = np.mean(60 / (rri / 1000.0))
 
     return dict(zip(['rmssd', 'sdnn', 'nn50', 'pnn50', 'mrri', 'mhr'],
-                    np.round([rmssd, sdnn, nn50, pnn50, mrri, mhr], 2)))
+                    [rmssd, sdnn, nn50, pnn50, mrri, mhr]))
 
 
 @validate_frequency_domain_arguments
@@ -46,5 +46,4 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
     hfnu = (hf / (total_power - vlf)) * 100
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
-                    'hfnu'], np.round(
-                          [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu], 2)))
+                    'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
