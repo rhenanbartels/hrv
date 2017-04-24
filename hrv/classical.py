@@ -21,10 +21,11 @@ def time_domain(rri):
 
 
 @validate_frequency_domain_arguments
-def frequency_domain(rri, method, interp_freq, segment_size, overlap_size):
-
-    time_interp, rri_interp = _interpolate_rri(rri, interp_freq)
-    fxx, pxx = welch(x=rri_interp, fs=interp_freq)
+def frequency_domain(rri, fs, method, interp_method, **kwargs):
+    if interp_method is not None:
+        time_interp, rri = _interpolate_rri(rri, fs, interp_method)
+    if method == 'welch':
+        fxx, pxx = welch(x=rri, fs=fs, **kwargs)
 
     return _bands_energy(fxx, pxx)
 

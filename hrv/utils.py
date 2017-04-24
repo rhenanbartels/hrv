@@ -104,49 +104,30 @@ def validate_rri(func):
 
     return _validate
 
+
 def _transform_rri(rri):
     rri = _transform_rri_to_miliseconds(rri)
     return np.array(rri)
 
-def validate_frequency_domain_arguments(func):
-    def _check_frequency_domain_arguments(rri, method='welch', interp_freq=4,
-                                          segment_size=256, overlap_size=128,
-                                          window_function='hann'):
-        _validate_available_methods(method)
-        _validate_is_positive_integer(segment_size)
-        _validate_is_positive_integer(overlap_size, 'Overlap size')
-        _validate_is_overlap_smaller(segment_size, overlap_size)
-        _validate_rri_bigger_than_segment_size(segment_size, rri)
-        _validate_window_function(window_function)
 
-        return func(rri, method, interp_freq, segment_size, overlap_size)
+def validate_frequency_domain_arguments(func):
+    def _check_frequency_domain_arguments(rri, fs=4.0, method='welch',
+                                          interp_method='cubic', **kwargs):
+        _validate_available_methods(method)
+        return func(rri, fs, method, interp_method, **kwargs)
 
     def _validate_available_methods(method):
-        if not method == 'welch':
-            raise ValueError('Welch method must be chose')
-
-    def _validate_is_positive_integer(segment_size, which='Segment'):
-        if not isinstance(segment_size, int) or segment_size < 1:
-            raise ValueError(
-                '{0} size must be an positive integer'.format(which))
-
-    def _validate_is_overlap_smaller(segment_size, overlap_size):
-        if not isinstance(segment_size, int) or segment_size < 1:
-            raise ValueError('Segment size must be bigger than overlap size')
-
-    def _validate_rri_bigger_than_segment_size(segment_size, rri):
-        if len(rri) < segment_size:
-            raise ValueError('Segment size bigger than RRi series')
-
-    def _validate_window_function(window_function):
-        pass
+        available_methods = ('welch',)
+        if method not in available_methods:
+            raise ValueError('Method not supported! Choose among: {}'.format(
+                ', '.join(available_methods)))
 
     return _check_frequency_domain_arguments
 
 
 def _create_time_info(rri):
-    rri_time = np.cumsum(rri) / 1000.0 # make it seconds
-    return rri_time - rri_time[0] # force it to start at zero
+    rri_time = np.cumsum(rri) / 1000.0  # make it seconds
+    return rri_time - rri_time[0]   # force it to start at zero
 
 
 def _transform_rri_to_miliseconds(rri):
@@ -155,10 +136,26 @@ def _transform_rri_to_miliseconds(rri):
     return rri
 
 
-@validate_rri
-def _interpolate_rri(rri, interp_freq=4):
+def _interpolate_rri(rri, fs=4, interp_method='cubic'):
+    if interp_method == 'cubic':
+        return _interp_cubic_spline(rri, fs)
+
+
+def _interp_cubic_spline(rri, fs):
     time_rri = _create_time_info(rri)
-    time_rri_interp = np.arange(0, time_rri[-1], 1 / interp_freq)
+    time_rri_interp = np.arange(0, time_rri[-1], 1 / float(fs))
     tck = interpolate.splrep(time_rri, rri, s=0)
     rri_interp = interpolate.splev(time_rri_interp, tck, der=0)
     return time_rri_interp, rri_interp
+
+
+def _interp_linear(rri, fs):
+    time_rri = _create_time_info(rri)
+    time_rri_interp = np.arange(0, time_rri[-1], 1 / float(fs))
+    rri_interp = np.interp(time_rri_interp, time_rri, rri)
+    return time_rri_interp, rri_interp
+
+
+def _create_interp_time(rri, fs):
+    time_rri = _create_time_info(rri)
+    return np.arange(0, time_rri[-1], 1 / float(fs))
