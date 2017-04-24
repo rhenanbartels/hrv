@@ -21,17 +21,17 @@ def time_domain(rri):
 
 
 @validate_frequency_domain_arguments
-def frequency_domain(rri, fs, method, interp_method, **kwargs):
+def frequency_domain(rri, fs, method, interp_method, vlf_band=(0, 0.04),
+                     lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
     if interp_method is not None:
         time_interp, rri = _interpolate_rri(rri, fs, interp_method)
     if method == 'welch':
         fxx, pxx = welch(x=rri, fs=fs, **kwargs)
 
-    return _bands_energy(fxx, pxx)
+    return _auc(fxx, pxx, vlf_band, lf_band, hf_band)
 
 
-def _bands_energy(fxx, pxx, vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
-                  hf_band=(0.15, 0.4)):
+def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
     vlf_indexes = np.logical_and(fxx >= vlf_band[0], fxx < vlf_band[1])
     lf_indexes = np.logical_and(fxx >= lf_band[0], fxx < lf_band[1])
     hf_indexes = np.logical_and(fxx >= hf_band[0], fxx < hf_band[1])
