@@ -3,7 +3,7 @@ import unittest.mock
 
 import numpy as np
 
-from hrv.classical import time_domain, frequency_domain, _auc
+from hrv.classical import time_domain, frequency_domain, _auc, _poincare
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -71,3 +71,16 @@ class FrequencyDomainTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(results['lf_hf'], 0.44, decimal=1)
         np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
         np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)
+
+
+class NonLinearTestCase(unittest.TestCase):
+    def test_correct_response_from_poincare(self):
+        fake_rri = [10, 11, 25, 27]
+
+        expected_sd1 = 5.11
+        expected_sd2 = 11.64
+
+        sd1, sd2 = _poincare(fake_rri)
+
+        np.testing.assert_almost_equal(sd1, expected_sd1, decimal=1)
+        np.testing.assert_almost_equal(sd2, expected_sd2, decimal=1)
