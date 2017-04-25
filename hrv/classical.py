@@ -47,3 +47,11 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
                     'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
+
+
+def _poincare(rri):
+    diff_rri = np.diff(rri)
+    sd1 = np.sqrt(np.std(diff_rri, ddof=1) ** 2 * 0.5)
+    sd2 = np.sqrt(2 * np.std(rri, ddof=1) ** 2 - 0.5 * np.std(diff_rri,
+                                                              ddof=1) ** 2)
+    return sd1, sd2
