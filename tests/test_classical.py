@@ -3,7 +3,8 @@ import unittest.mock
 
 import numpy as np
 
-from hrv.classical import time_domain, frequency_domain, _auc, _poincare
+from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
+                           _nn50)
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -34,6 +35,13 @@ class TimeDomainIndexesTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(sorted(response.values()),
                                        sorted(expected.values()),
                                        decimal=2)
+
+    def test_nn50(self):
+        nn50 = _nn50(FAKE_RRI)
+
+        expected = 1
+
+        self.assertEqual(nn50, expected)
 
 
 class FrequencyDomainTestCase(unittest.TestCase):
