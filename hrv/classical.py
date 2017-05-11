@@ -12,7 +12,7 @@ def time_domain(rri):
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
     sdnn = np.std(rri, ddof=1)  # make it calculates N-1
     nn50 = _nn50(rri)
-    pnn50 = (nn50 / len(diff_rri)) * 100
+    pnn50 = _pnn50(rri)
     mrri = np.mean(rri)
     mhr = np.mean(60 / (rri / 1000.0))
 
@@ -22,6 +22,10 @@ def time_domain(rri):
 
 def _nn50(rri):
     return sum(abs(np.diff(rri)) > 50)
+
+
+def _pnn50(rri):
+    return _nn50(rri) / len(rri) * 100
 
 
 @validate_frequency_domain_arguments
