@@ -2,6 +2,7 @@
 import unittest.mock
 
 import numpy as np
+from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
@@ -110,6 +111,17 @@ class FrequencyDomainTestCase(unittest.TestCase):
 
         self.assertIsInstance(fxx, np.ndarray)
         self.assertIsInstance(pxx, np.ndarray)
+
+    def test_scale_by_freq_set_to_false(self):
+        """
+        To certify that scale_by_freq is set to False this test will check
+        the average value of the estimated psd of the marple_data.
+        It must be approximately equal to 0.40.
+        """
+        fxx, pxx = _calc_pburg_psd(marple_data, fs=1.0)
+
+        np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
+
 
 
 class NonLinearTestCase(unittest.TestCase):
