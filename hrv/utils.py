@@ -114,7 +114,7 @@ def validate_frequency_domain_arguments(func):
         return func(rri, fs, method, interp_method, **kwargs)
 
     def _validate_available_methods(method):
-        available_methods = ('welch',)
+        available_methods = ('welch', 'ar')
         if method not in available_methods:
             raise ValueError('Method not supported! Choose among: {}'.format(
                 ', '.join(available_methods)))
