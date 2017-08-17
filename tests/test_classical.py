@@ -4,7 +4,7 @@ import unittest.mock
 import numpy as np
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
-                           _nn50, _pnn50)
+                           _nn50, _pnn50, _calc_pburg_psd)
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -86,6 +86,12 @@ class FrequencyDomainTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(results['lf_hf'], 0.44, decimal=1)
         np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
         np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)
+
+    @unittest.mock.patch('hrv.classical.pburg')
+    def test_pburg_method_being_called(self, _pburg):
+        _calc_pburg_psd(rri=[1, 2, 3], fs=4.0)
+        _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, fs=4.0,
+                                       order=16)
 
 
 class NonLinearTestCase(unittest.TestCase):

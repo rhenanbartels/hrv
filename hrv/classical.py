@@ -1,6 +1,8 @@
 # coding: utf-8
 import numpy as np
+
 from scipy.signal import welch
+from spectrum import pburg
 
 from hrv.utils import (validate_rri, _interpolate_rri,
                        validate_frequency_domain_arguments)
@@ -55,6 +57,11 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
                     'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
+
+
+def _calc_pburg_psd(rri, fs, order=16, nfft=None):
+    burg = pburg(data=rri, order=order, NFFT=nfft, fs=fs)
+    burg()
 
 
 @validate_rri
