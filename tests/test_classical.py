@@ -90,7 +90,7 @@ class FrequencyDomainTestCase(unittest.TestCase):
     @unittest.mock.patch('hrv.classical.pburg')
     def test_pburg_method_being_called(self, _pburg):
         _calc_pburg_psd(rri=[1, 2, 3], fs=4.0)
-        _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, fs=4.0,
+        _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, sampling=4.0,
                                        order=16)
 
     @unittest.mock.patch('hrv.classical._interpolate_rri')

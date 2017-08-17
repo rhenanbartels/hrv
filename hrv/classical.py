@@ -63,7 +63,7 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
 
 
 def _calc_pburg_psd(rri, fs, order=16, nfft=None):
-    burg = pburg(data=rri, order=order, NFFT=nfft, fs=fs)
+    burg = pburg(data=rri, order=order, NFFT=nfft, sampling=fs)
     burg()
     return burg.frequencies(), burg.psd
 
