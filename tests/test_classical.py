@@ -104,6 +104,13 @@ class FrequencyDomainTestCase(unittest.TestCase):
 
         _pburg_psd.assert_called_once_with(rri=fake_rri, fs=4, order=16)
 
+    def test_calc_pburg_psd_returns_numpy_arrays(self):
+        fake_rri = list(range(20))
+        fxx, pxx = _calc_pburg_psd(fake_rri, fs=4.0)
+
+        self.assertIsInstance(fxx, np.ndarray)
+        self.assertIsInstance(pxx, np.ndarray)
+
 
 class NonLinearTestCase(unittest.TestCase):
     def test_correct_response_from_poincare(self):
