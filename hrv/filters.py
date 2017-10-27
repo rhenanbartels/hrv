@@ -2,18 +2,18 @@ import numpy as np
 
 
 def moving_average(rri, order=3):
-    weights = [1 / order] * order
-    n_remove = int(order - 1)
-    n_keep = int(order / 2)
-    filt_raw = np.convolve(weights, rri)[n_remove:-n_remove]
-    return np.concatenate((rri[:n_keep], filt_raw, rri[-n_keep:]))
+    return _moving_function(rri, order, np.mean)
 
 
 def moving_median(rri, order=3):
+    return _moving_function(rri, order, np.median)
+
+
+def _moving_function(rri, order, func):
     offset = int(order / 2)
 
-    filt_rri = rri.copy()
+    filt_rri = np.array(rri.copy(), dtype=np.float64)
     for i in range(offset, len(rri) - offset, 1):
-        filt_rri[i] = np.median(rri[i-offset:i+offset+1])
+        filt_rri[i] = func(rri[i-offset:i+offset+1])
 
     return filt_rri
