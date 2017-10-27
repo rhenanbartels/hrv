@@ -29,3 +29,11 @@ class Filter(TestCase):
 
         expected = [810, 830.0, 830.0, 804, 804]
         np.testing.assert_almost_equal(rri_filt, expected, decimal=2)
+
+    def test_moving_median_order_5(self):
+        fake_rri = np.array([810, 830, 860, 790, 804, 801, 800])
+
+        rri_filt = moving_median(fake_rri, order=5)
+
+        expected = [810, 830, 810.0, 804.0, 801.0, 801, 800]
+        np.testing.assert_almost_equal(rri_filt, expected, decimal=2)
