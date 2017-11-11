@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from hrv.filters import moving_average, moving_median
+from hrv.filters import moving_average, moving_median, quotient
 
 
 class Filter(TestCase):
@@ -36,4 +36,12 @@ class Filter(TestCase):
         rri_filt = moving_median(fake_rri, order=5)
 
         expected = [810, 830, 810.0, 804.0, 801.0, 801, 800]
+        np.testing.assert_almost_equal(rri_filt, expected, decimal=2)
+
+    def test_quotient_filter(self):
+        fake_rri = [810, 580, 805, 790]
+
+        rri_filt = quotient(fake_rri)
+
+        expected = [805, 790]
         np.testing.assert_almost_equal(rri_filt, expected, decimal=2)
