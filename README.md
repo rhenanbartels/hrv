@@ -1,7 +1,7 @@
 Heart Rate Variability Analysis Package
 ===============================
 
-version number: 0.1.2
+version number: 0.1.5
 author: Rhenan Bartels
 
 Overview
