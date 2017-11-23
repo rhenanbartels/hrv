@@ -1,6 +1,8 @@
 # coding: utf-8
 import numpy as np
+
 from scipy.signal import welch
+from spectrum import pburg
 
 from hrv.utils import (validate_rri, _interpolate_rri,
                        validate_frequency_domain_arguments)
@@ -30,12 +32,15 @@ def _pnn50(rri):
 
 @validate_frequency_domain_arguments
 @validate_rri
-def frequency_domain(rri, fs, method, interp_method, vlf_band=(0, 0.04),
+def frequency_domain(rri, fs, method, interp_method=None, vlf_band=(0, 0.04),
                      lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
     if interp_method is not None:
         time_interp, rri = _interpolate_rri(rri, fs, interp_method)
+
     if method == 'welch':
         fxx, pxx = welch(x=rri, fs=fs, **kwargs)
+    elif method == 'ar':
+        fxx, pxx = _calc_pburg_psd(rri=rri,  fs=fs, **kwargs)
 
     return _auc(fxx, pxx, vlf_band, lf_band, hf_band)
 
@@ -55,6 +60,13 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
 
     return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
                     'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
+
+
+def _calc_pburg_psd(rri, fs, order=16, nfft=None):
+    burg = pburg(data=rri, order=order, NFFT=nfft, sampling=fs)
+    burg.scale_by_freq = False
+    burg()
+    return np.array(burg.frequencies()), burg.psd
 
 
 @validate_rri

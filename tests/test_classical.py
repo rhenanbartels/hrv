@@ -2,9 +2,10 @@
 import unittest.mock
 
 import numpy as np
+from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
-                           _nn50, _pnn50)
+                           _nn50, _pnn50, _calc_pburg_psd)
 from tests.test_utils import FAKE_RRI, open_rri
 
 
@@ -86,6 +87,41 @@ class FrequencyDomainTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(results['lf_hf'], 0.44, decimal=1)
         np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
         np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)
+
+    @unittest.mock.patch('hrv.classical.pburg')
+    def test_pburg_method_being_called(self, _pburg):
+        _calc_pburg_psd(rri=[1, 2, 3], fs=4.0)
+        _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, sampling=4.0,
+                                       order=16)
+
+    @unittest.mock.patch('hrv.classical._interpolate_rri')
+    @unittest.mock.patch('hrv.classical._calc_pburg_psd')
+    def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr):
+        fake_rri = [1, 2, 3, 4]
+        _irr.return_value = (1, fake_rri)
+        _pburg_psd.return_value = (np.array([1, 2]), np.array([3, 4]))
+        frequency_domain(fake_rri, fs=4, method='ar', interp_method='cubic',
+                         order=16)
+
+        _pburg_psd.assert_called_once_with(rri=fake_rri, fs=4, order=16)
+
+    def test_calc_pburg_psd_returns_numpy_arrays(self):
+        fake_rri = list(range(20))
+        fxx, pxx = _calc_pburg_psd(fake_rri, fs=4.0)
+
+        self.assertIsInstance(fxx, np.ndarray)
+        self.assertIsInstance(pxx, np.ndarray)
+
+    def test_scale_by_freq_set_to_false(self):
+        """
+        To certify that scale_by_freq is set to False this test will check
+        the average value of the estimated psd of the marple_data.
+        It must be approximately equal to 0.40.
+        """
+        fxx, pxx = _calc_pburg_psd(marple_data, fs=1.0)
+
+        np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
+
 
 
 class NonLinearTestCase(unittest.TestCase):
