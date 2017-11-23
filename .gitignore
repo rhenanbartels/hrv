@@ -39,3 +39,5 @@ docs/_build
 
 # Cookiecutter
 output/
+
+.DS_Store
