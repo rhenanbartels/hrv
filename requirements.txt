@@ -1,9 +1,0 @@
-# Dev/Deployment
-#sphinx
-#sphinx_rtd_theme
-nose
-coverage
-#pypi-publisher
-numpy >= 1.11.2
-scipy >= 0.18.1
-spectrum==0.6.6
