@@ -163,9 +163,10 @@ class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
         self.assertEqual(len(response_time_interp), len(response_rri_interp))
         self.assertTrue(len(response_rri_interp) > len(self.real_rri))
 
+    @unittest.mock.patch('hrv.classical._auc')
     @unittest.mock.patch('hrv.classical.welch')
     @unittest.mock.patch('hrv.utils._transform_rri')
-    def test_none_interpolation_method(self, _rri, _welch):
+    def test_none_interpolation_method(self, _rri, _welch, _auc):
         random_values = np.random.randn(10)
         _welch.return_value = (random_values, random_values)
         _rri.return_value = self.real_rri
@@ -174,22 +175,29 @@ class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
 
         _welch.assert_called_once_with(fs=4.0, x=self.real_rri)
 
+    # TODO: Refactor tests with mock
+    @unittest.mock.patch('hrv.classical.welch')
+    @unittest.mock.patch('hrv.classical._auc')
     @unittest.mock.patch('hrv.utils.interpolate.splev')
     @unittest.mock.patch('hrv.utils.interpolate.splrep')
     @unittest.mock.patch('hrv.utils._create_interp_time')
     def test_uses_cubic_interpolation_method(self, _interp_time, _splrep,
-                                             _splev):
+                                             _splev, _auc, _welch):
         fake_values = np.arange(10)
         _interp_time.return_value = fake_values
         _splrep.return_value = fake_values
         _splev.return_value = fake_values
+        _welch.return_value = [1, 2]
 
         frequency_domain(self.real_rri, interp_method='cubic')
 
         _splev.assert_called_once_with(fake_values, fake_values, der=0)
 
+    @unittest.mock.patch('hrv.classical.welch')
+    @unittest.mock.patch('hrv.classical._auc')
     @unittest.mock.patch('hrv.utils.np.interp')
-    def test_uses_linear_interpolate_method(self, _interp):
+    def test_uses_linear_interpolate_method(self, _interp, _auc, _welch):
         _interp.return_value = np.arange(10)
+        _welch.return_value = [1, 2]
 
         frequency_domain(self.real_rri, interp_method='linear')

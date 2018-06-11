@@ -94,9 +94,11 @@ class FrequencyDomainTestCase(unittest.TestCase):
         _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, sampling=4.0,
                                        order=16)
 
+    @unittest.mock.patch('hrv.classical._auc')
     @unittest.mock.patch('hrv.classical._interpolate_rri')
     @unittest.mock.patch('hrv.classical._calc_pburg_psd')
-    def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr):
+    def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr,
+                                                   _auc):
         fake_rri = [1, 2, 3, 4]
         _irr.return_value = (1, fake_rri)
         _pburg_psd.return_value = (np.array([1, 2]), np.array([3, 4]))
@@ -121,7 +123,6 @@ class FrequencyDomainTestCase(unittest.TestCase):
         fxx, pxx = _calc_pburg_psd(marple_data, fs=1.0)
 
         np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
-
 
 
 class NonLinearTestCase(unittest.TestCase):
