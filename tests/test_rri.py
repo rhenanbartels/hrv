@@ -1,6 +1,7 @@
 import numpy as np
+import pytest
 
-from hrv.rri import RRi, _validate_rri, _create_time_array
+from hrv.rri import RRi, _validate_rri, _create_time_array, _validate_time
 from tests.test_utils import FAKE_RRI
 
 
@@ -47,3 +48,11 @@ def test_rri_time_passed_as_argument():
 
     assert isinstance(rri.time, np.ndarray)
     np.testing.assert_array_equal(rri.time, np.array([1, 2, 3, 4]))
+
+
+def test_raises_exception_if_rri_and_time_havent_same_length():
+    with pytest.raises(ValueError) as e:
+        _validate_time(FAKE_RRI, [1, 2, 3])
+
+    assert e.value.args[0] == (
+            'rri and time series must have the same length')

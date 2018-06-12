@@ -24,5 +24,10 @@ def _validate_rri(rri):
     return rri
 
 
+def _validate_time(rri, time):
+    if len(rri) != len(time):
+        raise ValueError('rri and time series must have the same length')
+
+
 def _create_time_array(rri):
     return np.cumsum(rri) / 1000.0
