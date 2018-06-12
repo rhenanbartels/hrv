@@ -54,5 +54,14 @@ def test_raises_exception_if_rri_and_time_havent_same_length():
     with pytest.raises(ValueError) as e:
         _validate_time(FAKE_RRI, [1, 2, 3])
 
+    with pytest.raises(ValueError):
+        RRi(FAKE_RRI, [1, 2, 3])
+
     assert e.value.args[0] == (
             'rri and time series must have the same length')
+
+
+def test_rri_and_time_have_same_length_in_class_construction():
+    rri = RRi(FAKE_RRI, [1, 2, 3, 4])
+
+    np.testing.assert_array_equal(rri.time, np.array([1, 2, 3, 4]))

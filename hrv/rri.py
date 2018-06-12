@@ -7,7 +7,7 @@ class RRi:
         if time is None:
             self.time = _create_time_array(self.rri)
         else:
-            self.time = np.array(time)
+            self.time = _validate_time(self.rri, time)
 
     @property
     def values(self):
@@ -27,6 +27,8 @@ def _validate_rri(rri):
 def _validate_time(rri, time):
     if len(rri) != len(time):
         raise ValueError('rri and time series must have the same length')
+
+    return np.array(time)
 
 
 def _create_time_array(rri):
