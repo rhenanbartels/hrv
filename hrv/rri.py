@@ -4,7 +4,10 @@ import numpy as np
 class RRi:
     def __init__(self, rri, time=None):
         self.rri = _validate_rri(rri)
-        self.time = _create_time_array(self.rri)
+        if time is None:
+            self.time = _create_time_array(self.rri)
+        else:
+            self.time = np.array(time)
 
     @property
     def values(self):

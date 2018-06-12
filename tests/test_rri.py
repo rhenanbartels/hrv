@@ -42,8 +42,8 @@ def test_rri_time_auto_creation():
 
 
 def test_rri_time_passed_as_argument():
-    rri_time = np.cumsum(FAKE_RRI) / 1000.0
+    rri_time = [1, 2, 3, 4]
     rri = RRi(FAKE_RRI, rri_time)
 
     assert isinstance(rri.time, np.ndarray)
-    np.testing.assert_array_equal(rri.time, np.cumsum(FAKE_RRI) / 1000.0)
+    np.testing.assert_array_equal(rri.time, np.array([1, 2, 3, 4]))
