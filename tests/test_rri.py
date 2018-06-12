@@ -87,3 +87,13 @@ def test_time_series_have_no_negative_values():
         _validate_time(FAKE_RRI, [-1, 1, 2, 3])
 
     assert e.value.args[0] == ('time series cannot have negative values')
+
+
+def test_rri_series_have_no_negative_values():
+    with pytest.raises(ValueError) as e:
+        _validate_rri([0.0, 1.0, 2.0, 3.0])
+
+    with pytest.raises(ValueError):
+        _validate_rri([1.0, 2.0, -3.0, 4.0])
+
+    assert e.value.args[0] == ('rri series can only have positive values')

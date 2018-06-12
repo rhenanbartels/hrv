@@ -17,6 +17,9 @@ class RRi:
 def _validate_rri(rri):
     rri = np.array(rri)
 
+    if any(rri <= 0):
+        raise ValueError('rri series can only have positive values')
+
     # Use RRi series median value to check if it is in seconds or miliseconds
     if np.median(rri) < 10:
         rri *= 1000.0
