@@ -80,3 +80,10 @@ def test_time_is_monotonically_increasing():
         _validate_time(FAKE_RRI, [0, 1, 4, 3])
 
     assert e.value.args[0] == ('time series must be monotonically increasing')
+
+
+def test_time_series_have_no_negative_values():
+    with pytest.raises(ValueError) as e:
+        _validate_time(FAKE_RRI, [-1, 1, 2, 3])
+
+    assert e.value.args[0] == ('time series cannot have negative values')
