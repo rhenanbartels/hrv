@@ -73,3 +73,10 @@ def test_time_has_no_zero_value_besides_in_first_position():
 
     assert e.value.args[0] == (
             'time series cannot have 0 values after first position')
+
+
+def test_time_is_monotonically_increasing():
+    with pytest.raises(ValueError) as e:
+        _validate_time(FAKE_RRI, [0, 1, 4, 3])
+
+    assert e.value.args[0] == ('time series must be monotonically increasing')

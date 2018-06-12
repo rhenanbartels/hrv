@@ -34,6 +34,9 @@ def _validate_time(rri, time):
                 'time series cannot have 0 values after first position'
         )
 
+    if not all(np.diff(time) > 0):
+        raise ValueError('time series must be monotonically increasing')
+
     return time
 
 
