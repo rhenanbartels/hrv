@@ -25,10 +25,16 @@ def _validate_rri(rri):
 
 
 def _validate_time(rri, time):
+    time = np.array(time)
     if len(rri) != len(time):
         raise ValueError('rri and time series must have the same length')
 
-    return np.array(time)
+    if any(time[1:] == 0):
+        raise ValueError(
+                'time series cannot have 0 values after first position'
+        )
+
+    return time
 
 
 def _create_time_array(rri):

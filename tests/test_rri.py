@@ -65,3 +65,11 @@ def test_rri_and_time_have_same_length_in_class_construction():
     rri = RRi(FAKE_RRI, [1, 2, 3, 4])
 
     np.testing.assert_array_equal(rri.time, np.array([1, 2, 3, 4]))
+
+
+def test_time_has_no_zero_value_besides_in_first_position():
+    with pytest.raises(ValueError) as e:
+        _validate_time(FAKE_RRI, [1, 2, 0, 3])
+
+    assert e.value.args[0] == (
+            'time series cannot have 0 values after first position')
