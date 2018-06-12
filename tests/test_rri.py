@@ -89,3 +89,17 @@ class TestRRiClassArguments:
             _validate_rri([1.0, 2.0, -3.0, 4.0])
 
         assert e.value.args[0] == ('rri series can only have positive values')
+
+
+class TestRRiClassMethods:
+    def test_rri_statistical_values(self):
+        rri = RRi(FAKE_RRI)
+
+        assert rri.mean() == np.mean(FAKE_RRI)
+        assert rri.var() == np.var(FAKE_RRI)
+        assert rri.std() == np.std(FAKE_RRI)
+        assert rri.median() == np.median(FAKE_RRI)
+        assert rri.max() == np.max(FAKE_RRI)
+        assert rri.min() == np.min(FAKE_RRI)
+        assert rri.amplitude() == np.max(FAKE_RRI) - np.min(FAKE_RRI)
+        assert rri.rms() == np.sqrt(np.mean(np.square(FAKE_RRI)))

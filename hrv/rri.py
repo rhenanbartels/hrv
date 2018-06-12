@@ -13,6 +13,30 @@ class RRi:
     def values(self):
         return self.rri
 
+    def mean(self):
+        return np.mean(self.rri)
+
+    def var(self):
+        return np.var(self.rri)
+
+    def std(self):
+        return np.std(self.rri)
+
+    def median(self):
+        return np.median(self.rri)
+
+    def max(self):
+        return np.max(self.rri)
+
+    def min(self):
+        return np.min(self.rri)
+
+    def amplitude(self):
+        return self.max() - self.min()
+
+    def rms(self):
+        return np.sqrt(np.mean(self.rri ** 2))
+
 
 def _validate_rri(rri):
     rri = np.array(rri)
