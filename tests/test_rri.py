@@ -119,3 +119,8 @@ class TestRRiClassMethods:
                 np.max(FAKE_RRI) - np.min(FAKE_RRI),
                 3
         )
+        np.testing.assert_almost_equal(
+                rri.rms(),
+                np.sqrt(np.mean(np.square(FAKE_RRI))),
+                3
+        )
