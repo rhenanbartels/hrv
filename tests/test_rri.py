@@ -93,6 +93,15 @@ class TestRRiClassArguments:
 
         assert e.value.args[0] == ('rri series can only have positive values')
 
+    def test_rri_class_encapsulation(self):
+        rri = RRi(FAKE_RRI)
+
+        with pytest.raises(AttributeError):
+            rri.rri = [1, 2, 3, 4]
+
+        with pytest.raises(AttributeError):
+            rri.time = [1, 2, 3, 4]
+
 
 class TestRRiClassMethods:
     def test_rri_statistical_values(self):

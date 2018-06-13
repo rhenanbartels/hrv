@@ -3,15 +3,23 @@ import numpy as np
 
 class RRi:
     def __init__(self, rri, time=None):
-        self.rri = _validate_rri(rri)
+        self.__rri = _validate_rri(rri)
         if time is None:
-            self.time = _create_time_array(self.rri)
+            self.__time = _create_time_array(self.rri)
         else:
-            self.time = _validate_time(self.rri, time)
+            self.__time = _validate_time(self.rri, time)
 
     @property
     def values(self):
         return self.rri
+
+    @property
+    def rri(self):
+        return self.__rri
+
+    @property
+    def time(self):
+        return self.__time
 
     def mean(self):
         return np.mean(self.rri)
