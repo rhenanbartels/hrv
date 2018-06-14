@@ -38,7 +38,7 @@ class TestRRiClassArguments:
 
         np.testing.assert_array_equal(
                 rri.time,
-                np.cumsum(FAKE_RRI, dtype=np.float32) / 1000.0
+                np.cumsum(FAKE_RRI, dtype=np.float64) / 1000.0
         )
 
     def test_rri_time_passed_as_argument(self):
@@ -107,20 +107,17 @@ class TestRRiClassMethods:
     def test_rri_statistical_values(self):
         rri = RRi(FAKE_RRI)
 
-        # Use assert_almost_equal to keep using float32 instead of float64
-        np.testing.assert_almost_equal(rri.mean(),  np.mean(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(rri.var(),  np.var(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(rri.std(),  np.std(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(rri.median(),  np.median(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(rri.max(),  np.max(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(rri.min(),  np.min(FAKE_RRI), 3)
-        np.testing.assert_almost_equal(
+        np.testing.assert_array_equal(rri.mean(),  np.mean(FAKE_RRI))
+        np.testing.assert_array_equal(rri.var(),  np.var(FAKE_RRI))
+        np.testing.assert_array_equal(rri.std(),  np.std(FAKE_RRI))
+        np.testing.assert_array_equal(rri.median(),  np.median(FAKE_RRI))
+        np.testing.assert_array_equal(rri.max(),  np.max(FAKE_RRI))
+        np.testing.assert_array_equal(rri.min(),  np.min(FAKE_RRI))
+        np.testing.assert_array_equal(
                 rri.amplitude(),
                 np.max(FAKE_RRI) - np.min(FAKE_RRI),
-                3
         )
-        np.testing.assert_almost_equal(
+        np.testing.assert_array_equal(
                 rri.rms(),
                 np.sqrt(np.mean(np.square(FAKE_RRI))),
-                3
         )

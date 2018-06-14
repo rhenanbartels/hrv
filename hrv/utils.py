@@ -6,70 +6,42 @@ import re
 import numpy as np
 from scipy import interpolate
 
-
-class EmptyFileError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
+from hrv.exceptions import FileNotSupportedError, EmptyFileError
+from hrv.rri import RRi
 
 
-class FileNotSupportedError(Exception):
-    def __init__(self, value):
-        self.value = value
+def read_from_text(pathname):
+    with open(pathname, 'r') as fileobj:
+        file_content = fileobj.read()
+        if not file_content:
+            raise EmptyFileError('empty file!')
 
-    def __str__(self):
-        return repr(self.value)
+        values = list(map(float, re.findall(r'[1-9]\d+', file_content)))
 
-
-def open_rri(pathname_or_fileobj):
-    if isinstance(pathname_or_fileobj, str):
-        rri = _open_rri_from_path(pathname_or_fileobj)
-    elif isinstance(pathname_or_fileobj, io.TextIOWrapper):
-        rri = _open_rri_from_fileobj(pathname_or_fileobj)
-    return _transform_rri(rri)
+    return RRi(values)
 
 
-def _open_rri_from_path(pathname):
-    if pathname.endswith('.txt'):
-        with open(pathname, 'r') as fileobj:
-            rri = _open_rri_from_fileobj(fileobj)
-    elif pathname.endswith('.hrm'):
-        with open(pathname, 'r') as fileobj:
-            rri = _open_rri_from_fileobj(fileobj)
-    else:
-        raise FileNotSupportedError("File extension not supported")
-    return rri
+def read_from_hrm(pathname):
+    with open(pathname, 'r') as fileobj:
+        file_content = fileobj.read()
+        rri_info_index = file_content.find('[HRData]')
+        rri = None
+        if rri_info_index < 0:
+            raise EmptyFileError('empty file!')
+        else:
+            rri = np.array(
+                    list(
+                        map(
+                            float,
+                            re.findall(r'\d+', file_content[rri_info_index:-1])
+                        )
+                    ),
+                    dtype=np.float32
+            )
+            if len(rri) == 0:
+                raise EmptyFileError('empty file!')
 
-
-def _open_rri_from_fileobj(fileobj):
-    file_content = fileobj.read()
-    file_type = _identify_rri_file_type(file_content)
-    if file_type == 'text':
-        rri = _open_rri_from_text(file_content)
-        if not rri:
-            raise EmptyFileError('File without rri data')
-    else:
-        rri = _open_rri_from_hrm(file_content)
-        if not rri:
-            raise EmptyFileError('File without rri data')
-    return rri
-
-
-def _open_rri_from_text(file_content):
-    rri = list(map(float,
-                   re.findall(r'[1-9]\d+', file_content)))
-    return rri
-
-
-def _open_rri_from_hrm(file_content):
-    rri_info_index = file_content.find('[HRData]')
-    rri = None
-    if rri_info_index >= 0:
-        rri = list(map(float,
-                       re.findall(r'\d+', file_content[rri_info_index:-1])))
-    return rri
+    return RRi(rri)
 
 
 def _identify_rri_file_type(file_content):

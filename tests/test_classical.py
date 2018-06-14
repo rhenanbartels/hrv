@@ -6,7 +6,8 @@ from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
-from tests.test_utils import FAKE_RRI, open_rri
+from hrv.utils import read_from_text
+from tests.test_utils import FAKE_RRI
 
 
 class TimeDomainIndexesTestCase(unittest.TestCase):
@@ -54,7 +55,7 @@ class TimeDomainIndexesTestCase(unittest.TestCase):
 
 class FrequencyDomainTestCase(unittest.TestCase):
     def setUp(self):
-        self.real_rri = open_rri('tests/test_files/real_rri.txt')
+        self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
     def test_correct_response(self):
         response = frequency_domain(self.real_rri, fs=4, method='welch',
