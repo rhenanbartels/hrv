@@ -9,6 +9,12 @@ class RRi:
         else:
             self.__time = _validate_time(self.rri, time)
 
+    def __len__(self):
+        return len(self.__rri)
+
+    def __getitem__(self, position):
+        return self.__rri[position]
+
     @property
     def values(self):
         return self.rri
