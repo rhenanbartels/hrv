@@ -6,16 +6,17 @@ from unittest import mock
 import numpy as np
 
 from hrv.classical import frequency_domain, time_domain
-from hrv.utils import (validate_rri, open_rri, EmptyFileError,
-                       _identify_rri_file_type, FileNotSupportedError,
-                       _open_rri_from_text, _open_rri_from_hrm,
+from hrv.rri import RRi
+from hrv.utils import (validate_rri, read_from_text, EmptyFileError,
                        _create_time_info,
                        _transform_rri_to_miliseconds,
                        _interp_cubic_spline,
                        _interp_linear,
-                       _create_interp_time)
+                       _create_interp_time,
+                       read_from_hrm)
 
 FAKE_RRI = [800, 810, 815, 750]
+# TODO: recreate tests from files with errors
 
 
 class RRIValidationTestCase(unittest.TestCase):
@@ -47,79 +48,26 @@ class RRIFileOpeningTestCase(unittest.TestCase):
 
     def test_open_rri_text_file(self):
         rri_file_name = 'tests/test_files/test_file_1.txt'
-        expected = FAKE_RRI
-        response = open_rri(rri_file_name)
-        np.testing.assert_equal(response, expected)
 
-    def test_open_rri_with_not_supported_extension(self):
-        rri_file_name = 'tests/tests_files/test_file_1.bin'
-        self.assertRaises(FileNotSupportedError, open_rri, rri_file_name)
+        response = read_from_text(rri_file_name)
+        expected = np.array(FAKE_RRI)
+
+        self.assertTrue(isinstance(response, RRi))
+        np.testing.assert_equal(response.values, expected)
 
     def test_open_empty_text_file(self):
         rri_file_name = 'tests/test_files/empty.txt'
-        self.assertRaises(EmptyFileError, open_rri, rri_file_name)
+        self.assertRaises(EmptyFileError, read_from_text, rri_file_name)
 
     def test_open_hrm_file(self):
         rri_file_name = 'tests/test_files/test_file_2.hrm'
-        response = open_rri(rri_file_name)
+        response = read_from_hrm(rri_file_name)
         expected = FAKE_RRI
         np.testing.assert_equal(response, expected)
 
-    def test_text_open_funtion(self):
-        rri_file_name = 'tests/test_files/test_file_1.txt'
-        file_content = open(rri_file_name).read()
-        expected = FAKE_RRI
-        response = _open_rri_from_text(file_content)
-        np.testing.assert_equal(response, expected)
-
-    def test_hrm_open_funtion(self):
-        rri_file_name = 'tests/test_files/test_file_2.hrm'
-        file_content = open(rri_file_name).read()
-        expected = FAKE_RRI
-        response = _open_rri_from_hrm(file_content)
-        np.testing.assert_equal(response, expected)
-
-    def test_open_hrm_file_with_mistake(self):
+    def test_open_empty_hrm_file(self):
         rri_file_name = 'tests/test_files/test_file_mistake_2.hrm'
-        self.assertRaises(EmptyFileError, open_rri, rri_file_name)
-
-    def test_identify_file_type(self):
-        rri_file_name = 'tests/test_files/test_file_1.txt'
-        file_obj = open(rri_file_name, 'r')
-        expected = 'text'
-        response = _identify_rri_file_type(file_obj.read())
-        self.assertEqual(response, expected)
-
-    def test_text_file_not_supported(self):
-        rri_file_name = 'tests/test_files/test_file_2.txt'
-        file_obj = open(rri_file_name, 'r')
-        self.assertRaises(FileNotSupportedError, _identify_rri_file_type,
-                          file_obj.read())
-
-    def test_text_file_not_supported_with_words(self):
-        rri_file_name = 'tests/test_files/test_file_3.txt'
-        file_obj = open(rri_file_name, 'r')
-        self.assertRaises(FileNotSupportedError, _identify_rri_file_type,
-                          file_obj.read())
-
-    def test_open_rri_from_text_fileobj(self):
-        rri_file_name = 'tests/test_files/test_file_1.txt'
-        file_obj = open(rri_file_name, 'r')
-        expected = FAKE_RRI
-        response = open_rri(file_obj)
-        np.testing.assert_equal(response, expected)
-
-    def test_open_rri_from_hrm_fileobj(self):
-        rri_file_name = 'tests/test_files/test_file_2.hrm'
-        file_obj = open(rri_file_name, 'r')
-        expected = FAKE_RRI
-        response = open_rri(file_obj)
-        np.testing.assert_equal(response, expected)
-
-    def test_open_rri_from_notsupported_fileobj(self):
-        rri_file_name = 'tests/test_files/test_file_3.txt'
-        file_obj = open(rri_file_name, 'r')
-        self.assertRaises(FileNotSupportedError, open_rri, file_obj)
+        self.assertRaises(EmptyFileError, read_from_hrm, rri_file_name)
 
 
 class FrequencyDomainArgumentsTestCase(unittest.TestCase):
@@ -131,7 +79,7 @@ class FrequencyDomainArgumentsTestCase(unittest.TestCase):
 
 class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
     def setUp(self):
-        self.real_rri = open_rri('tests/test_files/real_rri.txt')
+        self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
     def test_create_time_information(self):
         expected = np.cumsum(FAKE_RRI) / 1000.0
