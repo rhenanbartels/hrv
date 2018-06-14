@@ -61,9 +61,12 @@ class RRIFileOpeningTestCase(unittest.TestCase):
 
     def test_open_hrm_file(self):
         rri_file_name = 'tests/test_files/test_file_2.hrm'
+
         response = read_from_hrm(rri_file_name)
-        expected = FAKE_RRI
-        np.testing.assert_equal(response, expected)
+        expected = np.array(FAKE_RRI)
+
+        self.assertTrue(isinstance(response, RRi))
+        np.testing.assert_equal(response.values, expected)
 
     def test_open_empty_hrm_file(self):
         rri_file_name = 'tests/test_files/test_file_mistake_2.hrm'

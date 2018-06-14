@@ -10,7 +10,6 @@ from hrv.exceptions import FileNotSupportedError, EmptyFileError
 from hrv.rri import RRi
 
 
-# TODO: return RRi class
 def read_from_text(pathname):
     with open(pathname, 'r') as fileobj:
         file_content = fileobj.read()
@@ -42,7 +41,7 @@ def read_from_hrm(pathname):
             if len(rri) == 0:
                 raise EmptyFileError('empty file!')
 
-    return rri
+    return RRi(rri)
 
 
 def _identify_rri_file_type(file_content):
