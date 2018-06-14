@@ -53,7 +53,7 @@ class RRi:
 
 
 def _validate_rri(rri):
-    rri = np.array(rri, dtype=np.float32)
+    rri = np.array(rri, dtype=np.float64)
 
     if any(rri <= 0):
         raise ValueError('rri series can only have positive values')
@@ -66,7 +66,7 @@ def _validate_rri(rri):
 
 
 def _validate_time(rri, time):
-    time = np.array(time, dtype=np.float32)
+    time = np.array(time, dtype=np.float64)
     if len(rri) != len(time):
         raise ValueError('rri and time series must have the same length')
 
