@@ -102,6 +102,19 @@ class TestRRiClassArguments:
         with pytest.raises(AttributeError):
             rri.time = [1, 2, 3, 4]
 
+    def test_class_repr_short_array(self):
+        rri = RRi([1, 2, 3, 4])
+
+        assert rri.__repr__() == 'RRi array([1000., 2000., 3000., 4000.])'
+
+    def test_class_repr_long_array(self):
+        rri = RRi(range(1, 100000))
+
+        assert rri.__repr__() == (
+                'RRi array([1.0000e+00, 2.0000e+00, 3.0000e+00, ..., '
+                '9.9997e+04, 9.9998e+04,\n       9.9999e+04])'
+        )
+
 
 class TestRRiClassMethods:
     def test_rri_statistical_values(self):

@@ -51,6 +51,9 @@ class RRi:
     def rms(self):
         return np.sqrt(np.mean(self.rri ** 2))
 
+    def __repr__(self):
+        return 'RRi %s' % np.array_repr(self.__rri)
+
 
 def _validate_rri(rri):
     rri = np.array(rri, dtype=np.float64)
