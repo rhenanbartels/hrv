@@ -54,6 +54,42 @@ class RRi:
     def __repr__(self):
         return 'RRi %s' % np.array_repr(self.__rri)
 
+    def __mul__(self, val):
+        return RRi(self.rri * val, self.time)
+
+    def __add__(self, val):
+        return RRi(self.rri + val, self.time)
+
+    def __sub__(self, val):
+        return RRi(self.rri - val, self.time)
+
+    def __truediv__(self, val):
+        return RRi(self.rri / val, self.time)
+
+    def __pow__(self, val):
+        return RRi(self.rri ** val, self.time)
+
+    def __abs__(self):
+        return RRi(np.abs(self.rri), self.time)
+
+    def __eq__(self, val):
+        return self.rri == val
+
+    def __ne__(self, val):
+        return self.rri != val
+
+    def __gt__(self, val):
+        return self.rri > val
+
+    def __ge__(self, val):
+        return self.rri >= val
+
+    def __lt__(self, val):
+        return self.rri < val
+
+    def __le__(self, val):
+        return self.rri <= val
+
 
 def _validate_rri(rri):
     rri = np.array(rri, dtype=np.float64)

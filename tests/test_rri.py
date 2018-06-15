@@ -115,6 +115,95 @@ class TestRRiClassArguments:
                 '9.9997e+04, 9.9998e+04,\n       9.9999e+04])'
         )
 
+    def test__mul__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri * 10
+
+        assert isinstance(result, RRi)
+        np.testing.assert_equal(result, rri.values * 10)
+
+    def test__add__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri + 10
+
+        assert isinstance(result, RRi)
+        np.testing.assert_equal(result, rri.values + 10)
+
+    def test__sub__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri - 10
+
+        assert isinstance(result, RRi)
+        np.testing.assert_equal(result, rri.values - 10)
+
+    def test__truediv__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri / 10
+
+        assert isinstance(result, RRi)
+        np.testing.assert_equal(result, rri.values / 10)
+
+    def test__abs__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = abs(rri)
+
+        assert isinstance(result, RRi)
+        np.testing.assert_equal(result, abs(rri.values))
+
+    def test__eq__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri == 810
+
+        np.testing.assert_equal(result, rri.values == 810)
+
+    def test__ne__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri != 810
+
+        np.testing.assert_equal(result, rri.values != 810)
+
+    def test__gt__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri > 810
+
+        np.testing.assert_equal(result, rri.values > 810)
+
+    def test__ge__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri >= 810
+
+        np.testing.assert_equal(result, rri.values >= 810)
+
+    def test__lt__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri < 810
+
+        np.testing.assert_equal(result, rri.values < 810)
+
+    def test__le__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri <= 810
+
+        np.testing.assert_equal(result, rri.values <= 810)
+
+    def test__pow__method(self):
+        rri = RRi(FAKE_RRI)
+
+        result = rri ** 2
+
+        np.testing.assert_equal(result, rri.values ** 2)
+
 
 class TestRRiClassMethods:
     def test_rri_statistical_values(self):
