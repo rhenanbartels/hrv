@@ -64,7 +64,7 @@ Moving Average
 
 ```python
 from hrv.filters import moving_average
-filt_rri = moving_median(rri, order=3)
+filt_rri = moving_average(rri, order=3)
 ```
 
 <img src="docs/figures/mov_avg.png" alt="Moving Average Image"  width=600px;>
@@ -72,7 +72,7 @@ filt_rri = moving_median(rri, order=3)
 Moving Median
 
 ```python
-from hrv.filters import moving_average
+from hrv.filters import moving_median
 filt_rri = moving_median(rri, order=3)
 ```
 
