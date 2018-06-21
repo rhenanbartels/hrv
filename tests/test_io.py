@@ -52,3 +52,13 @@ class OpenRRiFromCsv(unittest.TestCase):
 
         self.assertTrue(isinstance(rri, RRi))
         np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
+
+    def test_open_rri_multiple_columns(self):
+        rri = read_from_csv(
+            'tests/test_files/rri_multiple_columns.csv',
+            rri_col_index=1,
+            row_offset=1
+        )
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
