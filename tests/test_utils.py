@@ -73,13 +73,17 @@ class InterpolationTestCase(unittest.TestCase):
         np.testing.assert_array_almost_equal(rrix, expected)
 
     def test_interpolate_rri_spline_linear(self):
-        expected_diff = 0.25
-        response_time_interp, response_rri_interp = _interp_linear(
-            self.real_rri, fs=4)
-        self.assertTrue(all(map(lambda x: x == expected_diff,
-                        np.diff(response_time_interp))))
-        self.assertEqual(len(response_time_interp), len(response_rri_interp))
-        self.assertTrue(len(response_rri_interp) > len(self.real_rri))
+        rri = [800, 810, 790, 815]
+        time = [0, 1, 2, 3]
+        fs = 4.0
+
+        rrix = _interp_linear(rri, time, fs)
+        expected = [
+            800., 802.5, 805., 807.5, 810., 805., 800., 795.,  790., 796.25,
+            802.5, 808.75, 815.
+        ]
+
+        np.testing.assert_array_almost_equal(rrix, expected)
 
     @mock.patch('hrv.classical._auc')
     @mock.patch('hrv.classical.welch')

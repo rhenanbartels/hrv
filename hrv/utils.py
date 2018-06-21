@@ -118,11 +118,10 @@ def _interp_cubic_spline(rri, time, fs):
     return rri_interp
 
 
-def _interp_linear(rri, fs):
-    time_rri = _create_time_info(rri)
-    time_rri_interp = _create_interp_time(rri, fs)
-    rri_interp = np.interp(time_rri_interp, time_rri, rri)
-    return time_rri_interp, rri_interp
+def _interp_linear(rri, time, fs):
+    time_rri_interp = _create_interp_time(time, fs)
+    rri_interp = np.interp(time_rri_interp, time, rri)
+    return rri_interp
 
 
 def _create_interp_time(time, fs):
