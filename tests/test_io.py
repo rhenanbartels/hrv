@@ -43,3 +43,12 @@ class OpenRRiFromCsv(unittest.TestCase):
 
         self.assertTrue(isinstance(rri, RRi))
         np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
+
+    def test_open_rri_single_column_with_header(self):
+        rri = read_from_csv(
+            'tests/test_files/rri_header.csv',
+            row_offset=1
+        )
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
