@@ -41,8 +41,8 @@ class TestRRiClassArguments:
         expected -= expected[0]
 
         np.testing.assert_array_equal(
-                rri.time,
-               expected 
+            rri.time,
+            expected
         )
 
     def test_rri_time_passed_as_argument(self):

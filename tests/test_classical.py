@@ -8,8 +8,8 @@ from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
+from hrv.io import read_from_text
 from hrv.rri import RRi
-from hrv.utils import read_from_text
 from tests.test_utils import FAKE_RRI
 
 

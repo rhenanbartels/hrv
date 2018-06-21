@@ -3,44 +3,13 @@ import unittest
 
 import numpy as np
 
-from hrv.rri import RRi
-from hrv.utils import (read_from_text, EmptyFileError,
-                       _interp_cubic_spline,
+from hrv.io import read_from_text
+from hrv.utils import (_interp_cubic_spline,
                        _interp_linear,
-                       _create_interp_time,
-                       read_from_hrm)
+                       _create_interp_time)
 
 FAKE_RRI = [800, 810, 815, 750]
 # TODO: recreate tests from files with errors
-
-
-class RRIFileOpeningTestCase(unittest.TestCase):
-
-    def test_open_rri_text_file(self):
-        rri_file_name = 'tests/test_files/test_file_1.txt'
-
-        response = read_from_text(rri_file_name)
-        expected = np.array(FAKE_RRI)
-
-        self.assertTrue(isinstance(response, RRi))
-        np.testing.assert_equal(response.values, expected)
-
-    def test_open_empty_text_file(self):
-        rri_file_name = 'tests/test_files/empty.txt'
-        self.assertRaises(EmptyFileError, read_from_text, rri_file_name)
-
-    def test_open_hrm_file(self):
-        rri_file_name = 'tests/test_files/test_file_2.hrm'
-
-        response = read_from_hrm(rri_file_name)
-        expected = np.array(FAKE_RRI)
-
-        self.assertTrue(isinstance(response, RRi))
-        np.testing.assert_equal(response.values, expected)
-
-    def test_open_empty_hrm_file(self):
-        rri_file_name = 'tests/test_files/test_file_mistake_2.hrm'
-        self.assertRaises(EmptyFileError, read_from_hrm, rri_file_name)
 
 
 class InterpolationTestCase(unittest.TestCase):

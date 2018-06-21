@@ -5,8 +5,7 @@ from scipy.signal import welch
 from spectrum import pburg
 
 from hrv.rri import RRi
-from hrv.utils import (validate_rri, _interpolate_rri,
-                       validate_frequency_domain_arguments)
+from hrv.utils import (validate_rri, _interpolate_rri)
 
 
 @validate_rri
