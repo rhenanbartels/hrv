@@ -1,11 +1,8 @@
 # conding: utf-8
 import unittest
 
-from unittest import mock
-
 import numpy as np
 
-from hrv.classical import frequency_domain
 from hrv.rri import RRi
 from hrv.utils import (read_from_text, EmptyFileError,
                        _interp_cubic_spline,
@@ -84,24 +81,3 @@ class InterpolationTestCase(unittest.TestCase):
         ]
 
         np.testing.assert_array_almost_equal(rrix, expected)
-
-    @mock.patch('hrv.classical._auc')
-    @mock.patch('hrv.classical.welch')
-    @mock.patch('hrv.utils._transform_rri')
-    def test_none_interpolation_method(self, _rri, _welch, _auc):
-        random_values = np.random.randn(10)
-        _welch.return_value = (random_values, random_values)
-        _rri.return_value = self.real_rri
-
-        frequency_domain(self.real_rri, interp_method=None)
-
-        _welch.assert_called_once_with(fs=4.0, x=self.real_rri)
-
-    @mock.patch('hrv.classical.welch')
-    @mock.patch('hrv.classical._auc')
-    @mock.patch('hrv.utils.np.interp')
-    def test_uses_linear_interpolate_method(self, _interp, _auc, _welch):
-        _interp.return_value = np.arange(10)
-        _welch.return_value = [1, 2]
-
-        frequency_domain(self.real_rri, interp_method='linear')
