@@ -1,3 +1,4 @@
+import csv
 import re
 
 import numpy as np
@@ -38,3 +39,9 @@ def read_from_hrm(pathname):
                 raise EmptyFileError('empty file!')
 
     return RRi(rri)
+
+
+def read_from_csv(pathname):
+    with open(pathname, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        return RRi([float(r[0].strip()) for r in reader])

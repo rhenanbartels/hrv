@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from hrv.exceptions import EmptyFileError
-from hrv.io import read_from_text, read_from_hrm
+from hrv.io import read_from_text, read_from_hrm, read_from_csv
 from hrv.rri import RRi
 from tests.test_utils import FAKE_RRI
 
@@ -35,3 +35,11 @@ class RRIFileOpeningTestCase(unittest.TestCase):
     def test_open_empty_hrm_file(self):
         rri_file_name = 'tests/test_files/test_file_mistake_2.hrm'
         self.assertRaises(EmptyFileError, read_from_hrm, rri_file_name)
+
+
+class OpenRRiFromCsv(unittest.TestCase):
+    def test_open_rri_single_column(self):
+        rri = read_from_csv('tests/test_files/rri_1.csv')
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
