@@ -1,64 +1,28 @@
 # coding: utf-8
-import io
 from numbers import Number
-import re
 
 import numpy as np
 from scipy import interpolate
 
-from hrv.exceptions import FileNotSupportedError, EmptyFileError
-from hrv.rri import RRi
+# TODO: Remove unused functions
 
 
-def read_from_text(pathname):
-    with open(pathname, 'r') as fileobj:
-        file_content = fileobj.read()
-        if not file_content:
-            raise EmptyFileError('empty file!')
-
-        values = list(map(float, re.findall(r'[1-9]\d+', file_content)))
-
-    return RRi(values)
-
-
-def read_from_hrm(pathname):
-    with open(pathname, 'r') as fileobj:
-        file_content = fileobj.read()
-        rri_info_index = file_content.find('[HRData]')
-        rri = None
-        if rri_info_index < 0:
-            raise EmptyFileError('empty file!')
-        else:
-            rri = np.array(
-                    list(
-                        map(
-                            float,
-                            re.findall(r'\d+', file_content[rri_info_index:-1])
-                        )
-                    ),
-                    dtype=np.float32
-            )
-            if len(rri) == 0:
-                raise EmptyFileError('empty file!')
-
-    return RRi(rri)
+# def _identify_rri_file_type(file_content):
+#     is_hrm_file = file_content.find('[HRData]')
+#     if is_hrm_file >= 0:
+#         file_type = 'hrm'
+#     else:
+#         rri_lines = file_content.split('\n')
+#         for line in rri_lines:
+#             current_line_number = re.findall(r'\d+', line)
+#             if current_line_number:
+#                 if not current_line_number[0] == line.strip():
+#                     raise FileNotSupportedError('Text file not supported')
+#         file_type = 'text'
+#     return file_type
 
 
-def _identify_rri_file_type(file_content):
-    is_hrm_file = file_content.find('[HRData]')
-    if is_hrm_file >= 0:
-        file_type = 'hrm'
-    else:
-        rri_lines = file_content.split('\n')
-        for line in rri_lines:
-            current_line_number = re.findall(r'\d+', line)
-            if current_line_number:
-                if not current_line_number[0] == line.strip():
-                    raise FileNotSupportedError('Text file not supported')
-        file_type = 'text'
-    return file_type
-
-
+# TODO: Refactor validation decorator
 def validate_rri(func):
     def _validate(rri, *args, **kwargs):
         _validate_positive_numbers(rri)
@@ -79,6 +43,7 @@ def _transform_rri(rri):
     return np.array(rri)
 
 
+# TODO: Refactor validation decorator
 def validate_frequency_domain_arguments(func):
     def _check_frequency_domain_arguments(rri, fs=4.0, method='welch',
                                           interp_method='cubic', **kwargs):
@@ -105,28 +70,26 @@ def _transform_rri_to_miliseconds(rri):
     return rri
 
 
-def _interpolate_rri(rri, fs=4, interp_method='cubic'):
+def _interpolate_rri(rri, time, fs=4, interp_method='cubic'):
     if interp_method == 'cubic':
-        return _interp_cubic_spline(rri, fs)
+        return _interp_cubic_spline(rri, time, fs)
     elif interp_method == 'linear':
-        return _interp_linear(rri, fs)
+        return _interp_linear(rri, time, fs)
 
 
-def _interp_cubic_spline(rri, fs):
-    time_rri = _create_time_info(rri)
-    time_rri_interp = _create_interp_time(rri, fs)
-    tck = interpolate.splrep(time_rri, rri, s=0)
+def _interp_cubic_spline(rri, time, fs):
+    time_rri_interp = _create_interp_time(time, fs)
+    tck = interpolate.splrep(time, rri, s=0)
     rri_interp = interpolate.splev(time_rri_interp, tck, der=0)
-    return time_rri_interp, rri_interp
+    return rri_interp
 
 
-def _interp_linear(rri, fs):
-    time_rri = _create_time_info(rri)
-    time_rri_interp = _create_interp_time(rri, fs)
-    rri_interp = np.interp(time_rri_interp, time_rri, rri)
-    return time_rri_interp, rri_interp
+def _interp_linear(rri, time, fs):
+    time_rri_interp = _create_interp_time(time, fs)
+    rri_interp = np.interp(time_rri_interp, time, rri)
+    return rri_interp
 
 
-def _create_interp_time(rri, fs):
-    time_rri = _create_time_info(rri)
-    return np.arange(0, time_rri[-1], 1 / float(fs))
+def _create_interp_time(time, fs):
+    time_resolution = 1 / float(fs)
+    return np.arange(0, time[-1] + time_resolution, time_resolution)

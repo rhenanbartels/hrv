@@ -124,4 +124,5 @@ def _validate_time(rri, time):
 
 
 def _create_time_array(rri):
-    return np.cumsum(rri) / 1000.0
+    time = np.cumsum(rri) / 1000.0
+    return time - time[0]
