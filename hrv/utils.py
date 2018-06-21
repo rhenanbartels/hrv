@@ -1,5 +1,4 @@
 # coding: utf-8
-import io
 from numbers import Number
 import re
 
@@ -127,6 +126,6 @@ def _interp_linear(rri, fs):
     return time_rri_interp, rri_interp
 
 
-def _create_interp_time(rri, fs):
-    time_rri = _create_time_info(rri)
-    return np.arange(0, time_rri[-1], 1 / float(fs))
+def _create_interp_time(time, fs):
+    time_resolution = 1 / float(fs)
+    return np.arange(0, time[-1] + time_resolution, time_resolution)

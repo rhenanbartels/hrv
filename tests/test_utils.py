@@ -8,7 +8,6 @@ import numpy as np
 from hrv.classical import frequency_domain
 from hrv.rri import RRi
 from hrv.utils import (read_from_text, EmptyFileError,
-                       _create_time_info,
                        _interp_cubic_spline,
                        _interp_linear,
                        _create_interp_time,
@@ -51,17 +50,11 @@ class InterpolationTestCase(unittest.TestCase):
     def setUp(self):
         self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
-    def test_create_time_information(self):
-        expected = np.cumsum(FAKE_RRI) / 1000.0
-        expected -= expected[0]
-        response = _create_time_info(FAKE_RRI)
-        np.testing.assert_equal(response, expected)
-
     def test_create_interp_time(self):
-        fake_rri = [0, 1000]
+        time = [0, 1]
 
-        expected = np.arange(0, 1, 0.25)
-        interp_time = _create_interp_time(fake_rri, 4.0)
+        expected = np.array([0, 0.25, 0.5, 0.75, 1.0])
+        interp_time = _create_interp_time(time, 4.0)
 
         np.testing.assert_equal(interp_time, expected)
 
