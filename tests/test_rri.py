@@ -31,14 +31,18 @@ class TestRRiClassArguments:
         rri_time = _create_time_array(FAKE_RRI)
 
         assert isinstance(rri_time, np.ndarray)
-        np.testing.assert_array_equal(rri_time, np.cumsum(FAKE_RRI) / 1000)
+        expected = np.cumsum(FAKE_RRI) / 1000
+        expected -= expected[0]
+        np.testing.assert_array_equal(rri_time, expected)
 
     def test_rri_time_auto_creation(self):
         rri = RRi(FAKE_RRI)
+        expected = np.cumsum(FAKE_RRI) / 1000
+        expected -= expected[0]
 
         np.testing.assert_array_equal(
                 rri.time,
-                np.cumsum(FAKE_RRI, dtype=np.float64) / 1000.0
+               expected 
         )
 
     def test_rri_time_passed_as_argument(self):
