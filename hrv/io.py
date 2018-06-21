@@ -42,9 +42,18 @@ def read_from_hrm(pathname):
 
 
 def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
-                  row_offset=0):
+                  row_offset=0, sep=None):
+
     with open(pathname, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+        if sep is None:
+            try:
+                sep = csv.Sniffer().sniff(csvfile.read(1024)).delimiter
+            except csv.Error:
+                sep = ','
+
+            csvfile.seek(0)
+
+        reader = csv.reader(csvfile, delimiter=sep)
 
         for offset in range(row_offset):
             next(reader)

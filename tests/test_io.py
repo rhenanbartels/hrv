@@ -74,3 +74,12 @@ class OpenRRiFromCsv(unittest.TestCase):
         self.assertTrue(isinstance(rri, RRi))
         np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
         np.testing.assert_equal(rri.time, np.array([1.0, 2.0, 3.0, 4.0]))
+
+    def test_open_rri_separated_with_semicolon(self):
+        rri = read_from_csv(
+            'tests/test_files/rri_semicolon.csv',
+            row_offset=1,
+        )
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, [790, 815, 800, 795])
