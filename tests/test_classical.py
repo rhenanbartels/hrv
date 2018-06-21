@@ -57,7 +57,7 @@ class FrequencyDomainTestCase(unittest.TestCase):
     def setUp(self):
         self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
-    def test_correct_response(self):
+    def test_frequency_domain_with_welch_method(self):
         time = np.cumsum(self.real_rri) / 1000.0
         time -= time[0]
         response = frequency_domain(self.real_rri, time=time, fs=4,
@@ -103,7 +103,7 @@ class FrequencyDomainTestCase(unittest.TestCase):
     def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr,
                                                    _auc):
         fake_rri = [1, 2, 3, 4]
-        _irr.return_value = (1, fake_rri)
+        _irr.return_value = fake_rri
         _pburg_psd.return_value = (np.array([1, 2]), np.array([3, 4]))
         frequency_domain(fake_rri, fs=4, method='ar', interp_method='cubic',
                          order=16)

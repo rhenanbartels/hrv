@@ -30,6 +30,7 @@ def _pnn50(rri):
     return _nn50(rri) / len(rri) * 100
 
 
+# TODO: create nperseg, noverlap and detrend arguments
 def frequency_domain(rri, time=None, fs=4.0, method='welch',
                      interp_method='cubic', vlf_band=(0, 0.04),
                      lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
