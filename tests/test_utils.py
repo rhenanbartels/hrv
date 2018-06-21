@@ -59,13 +59,18 @@ class InterpolationTestCase(unittest.TestCase):
         np.testing.assert_equal(interp_time, expected)
 
     def test_interpolate_rri_spline_cubic(self):
-        expected_diff = 0.25
-        response_time_interp, response_rri_interp = _interp_cubic_spline(
-            self.real_rri, fs=4)
-        self.assertTrue(all(map(lambda x: x == expected_diff,
-                        np.diff(response_time_interp))))
-        self.assertEqual(len(response_time_interp), len(response_rri_interp))
-        self.assertTrue(len(response_rri_interp) > len(self.real_rri))
+        rri = [800, 810, 790, 815]
+        time = [0, 1, 2, 3]
+        fs = 4.0
+
+        rrix = _interp_cubic_spline(rri, time, fs)
+        expected = [
+            800., 809.4140625, 813.4375, 813.2421875, 810.,
+            804.8828125, 799.0625, 793.7109375, 790., 789.1015625,
+            792.1875, 800.4296875, 815.
+        ]
+
+        np.testing.assert_array_almost_equal(rrix, expected)
 
     def test_interpolate_rri_spline_linear(self):
         expected_diff = 0.25

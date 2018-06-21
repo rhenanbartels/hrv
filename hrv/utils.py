@@ -111,12 +111,11 @@ def _interpolate_rri(rri, fs=4, interp_method='cubic'):
         return _interp_linear(rri, fs)
 
 
-def _interp_cubic_spline(rri, fs):
-    time_rri = _create_time_info(rri)
-    time_rri_interp = _create_interp_time(rri, fs)
-    tck = interpolate.splrep(time_rri, rri, s=0)
+def _interp_cubic_spline(rri, time, fs):
+    time_rri_interp = _create_interp_time(time, fs)
+    tck = interpolate.splrep(time, rri, s=0)
     rri_interp = interpolate.splev(time_rri_interp, tck, der=0)
-    return time_rri_interp, rri_interp
+    return rri_interp
 
 
 def _interp_linear(rri, fs):
