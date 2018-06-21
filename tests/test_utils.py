@@ -5,11 +5,10 @@ from unittest import mock
 
 import numpy as np
 
-from hrv.classical import frequency_domain, time_domain
+from hrv.classical import frequency_domain
 from hrv.rri import RRi
-from hrv.utils import (validate_rri, read_from_text, EmptyFileError,
+from hrv.utils import (read_from_text, EmptyFileError,
                        _create_time_info,
-                       _transform_rri_to_miliseconds,
                        _interp_cubic_spline,
                        _interp_linear,
                        _create_interp_time,
@@ -17,31 +16,6 @@ from hrv.utils import (validate_rri, read_from_text, EmptyFileError,
 
 FAKE_RRI = [800, 810, 815, 750]
 # TODO: recreate tests from files with errors
-
-
-class RRIValidationTestCase(unittest.TestCase):
-    def test_simple_rri_validation(self):
-        @validate_rri
-        def validate(rri):
-            return rri
-        response = validate(FAKE_RRI)
-        self.assertIsInstance(response, np.ndarray)
-
-    def test_rri_is_different_than_numbers(self):
-        string_rri = '100, 300, 400, 500'
-        self.assertRaises(ValueError, time_domain, string_rri)
-
-    def test_rri_is_list_numbers(self):
-        rri_with_text = FAKE_RRI + ['text']
-        self.assertRaises(ValueError, time_domain, rri_with_text)
-
-    def test_transform_rri_to_miliseconds(self):
-        expected = FAKE_RRI
-        response = _transform_rri_to_miliseconds(np.array(FAKE_RRI) / 1000.0)
-        np.testing.assert_equal(response, expected)
-
-    def test_rri_all_zeros(self):
-        self.assertRaises(ValueError, time_domain, [0, 0, 0, 0, 0])
 
 
 class RRIFileOpeningTestCase(unittest.TestCase):
@@ -73,14 +47,7 @@ class RRIFileOpeningTestCase(unittest.TestCase):
         self.assertRaises(EmptyFileError, read_from_hrm, rri_file_name)
 
 
-class FrequencyDomainArgumentsTestCase(unittest.TestCase):
-    # @unittest.skip('need further implementation')
-    def test_method_arguments(self):
-        self.assertRaises(ValueError, frequency_domain,
-                          rri=FAKE_RRI, method='other')
-
-
-class FrequencyDomainAuxiliaryFunctionsTestCase(unittest.TestCase):
+class InterpolationTestCase(unittest.TestCase):
     def setUp(self):
         self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
