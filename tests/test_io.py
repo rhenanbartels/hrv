@@ -62,3 +62,15 @@ class OpenRRiFromCsv(unittest.TestCase):
 
         self.assertTrue(isinstance(rri, RRi))
         np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
+
+    def test_open_rri_with_time(self):
+        rri = read_from_csv(
+            'tests/test_files/rri_multiple_columns.csv',
+            rri_col_index=1,
+            time_col_index=0,
+            row_offset=1
+        )
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
+        np.testing.assert_equal(rri.time, np.array([1.0, 2.0, 3.0, 4.0]))

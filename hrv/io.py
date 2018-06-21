@@ -41,11 +41,21 @@ def read_from_hrm(pathname):
     return RRi(rri)
 
 
-def read_from_csv(pathname, rri_col_index=0, row_offset=0):
+def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
+                  row_offset=0):
     with open(pathname, newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
 
         for offset in range(row_offset):
             next(reader)
 
-        return RRi([float(r[rri_col_index].strip()) for r in reader])
+        if time_col_index is None:
+            return RRi([float(r[rri_col_index].strip()) for r in reader])
+
+        rri = []
+        time = []
+        for row in reader:
+            rri.append(float(row[rri_col_index].strip()))
+            time.append(float(row[time_col_index].strip()))
+
+        return RRi(rri, time)
