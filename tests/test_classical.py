@@ -58,16 +58,18 @@ class FrequencyDomainTestCase(unittest.TestCase):
         self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
     def test_correct_response(self):
-        response = frequency_domain(self.real_rri, fs=4, method='welch',
-                                    nperseg=256, noverlap=128,
+        time = np.cumsum(self.real_rri) / 1000.0
+        time -= time[0]
+        response = frequency_domain(self.real_rri, time=time, fs=4,
+                                    method='welch', nperseg=256, noverlap=128,
                                     window='hanning')
-        expected = {'total_power':  3602.90,
+        expected = {'total_power':  3602.89,
                     'vlf': 844.5,
-                    'lf': 1343.51,
+                    'lf': 1343.50,
                     'hf': 1414.88,
                     'lf_hf': 0.94,
-                    'lfnu': 48.71,
-                    'hfnu': 51.28}
+                    'lfnu': 48.70,
+                    'hfnu': 51.29}
         np.testing.assert_almost_equal(sorted(response.values()),
                                        sorted(expected.values()),
                                        decimal=2)

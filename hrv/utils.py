@@ -104,11 +104,11 @@ def _transform_rri_to_miliseconds(rri):
     return rri
 
 
-def _interpolate_rri(rri, fs=4, interp_method='cubic'):
+def _interpolate_rri(rri, time, fs=4, interp_method='cubic'):
     if interp_method == 'cubic':
-        return _interp_cubic_spline(rri, fs)
+        return _interp_cubic_spline(rri, time, fs)
     elif interp_method == 'linear':
-        return _interp_linear(rri, fs)
+        return _interp_linear(rri, time, fs)
 
 
 def _interp_cubic_spline(rri, time, fs):

@@ -30,12 +30,12 @@ def _pnn50(rri):
     return _nn50(rri) / len(rri) * 100
 
 
-@validate_frequency_domain_arguments
-@validate_rri
-def frequency_domain(rri, fs, method, interp_method=None, vlf_band=(0, 0.04),
+def frequency_domain(rri, time=None, fs=4.0, method='welch',
+                     interp_method='cubic', vlf_band=(0, 0.04),
                      lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
+
     if interp_method is not None:
-        time_interp, rri = _interpolate_rri(rri, fs, interp_method)
+        rri = _interpolate_rri(rri, time, fs, interp_method)
 
     if method == 'welch':
         fxx, pxx = welch(x=rri, fs=fs, **kwargs)
