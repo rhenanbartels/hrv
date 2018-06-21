@@ -1,11 +1,14 @@
 # coding: utf-8
-import unittest.mock
+import unittest
+
+from unittest import mock
 
 import numpy as np
 from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
+from hrv.rri import RRi
 from hrv.utils import read_from_text
 from tests.test_utils import FAKE_RRI
 
@@ -91,15 +94,15 @@ class FrequencyDomainTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
         np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)
 
-    @unittest.mock.patch('hrv.classical.pburg')
+    @mock.patch('hrv.classical.pburg')
     def test_pburg_method_being_called(self, _pburg):
         _calc_pburg_psd(rri=[1, 2, 3], fs=4.0)
         _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, sampling=4.0,
                                        order=16)
 
-    @unittest.mock.patch('hrv.classical._auc')
-    @unittest.mock.patch('hrv.classical._interpolate_rri')
-    @unittest.mock.patch('hrv.classical._calc_pburg_psd')
+    @mock.patch('hrv.classical._auc')
+    @mock.patch('hrv.classical._interpolate_rri')
+    @mock.patch('hrv.classical._calc_pburg_psd')
     def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr,
                                                    _auc):
         fake_rri = [1, 2, 3, 4]
@@ -126,6 +129,19 @@ class FrequencyDomainTestCase(unittest.TestCase):
         fxx, pxx = _calc_pburg_psd(marple_data, fs=1.0)
 
         np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
+
+    @mock.patch('hrv.classical._interpolate_rri')
+    def test_using_rri_class(self, _interp):
+        """
+            Test if no time is passed as argument the frequency domain function
+            uses time array from RRi class
+        """
+        _interp.return_value = [800, 810, 790, 815]
+        rri = RRi([800, 810, 790, 815])
+
+        frequency_domain(rri)
+
+        _interp.assert_called_once_with(rri, rri.time, 4.0, 'cubic')
 
 
 class NonLinearTestCase(unittest.TestCase):

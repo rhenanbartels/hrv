@@ -4,6 +4,7 @@ import numpy as np
 from scipy.signal import welch
 from spectrum import pburg
 
+from hrv.rri import RRi
 from hrv.utils import (validate_rri, _interpolate_rri,
                        validate_frequency_domain_arguments)
 
@@ -34,6 +35,9 @@ def _pnn50(rri):
 def frequency_domain(rri, time=None, fs=4.0, method='welch',
                      interp_method='cubic', vlf_band=(0, 0.04),
                      lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
+
+    if isinstance(rri, RRi) and time is None:
+        time = rri.time
 
     if interp_method is not None:
         rri = _interpolate_rri(rri, time, fs, interp_method)
