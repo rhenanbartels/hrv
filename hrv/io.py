@@ -1,3 +1,4 @@
+import csv
 import re
 
 import numpy as np
@@ -32,9 +33,38 @@ def read_from_hrm(pathname):
                             re.findall(r'\d+', file_content[rri_info_index:-1])
                         )
                     ),
-                    dtype=np.float32
+                    dtype=np.float64
             )
             if len(rri) == 0:
                 raise EmptyFileError('empty file!')
 
     return RRi(rri)
+
+
+def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
+                  row_offset=0, time_parser=int, sep=None):
+
+    with open(pathname, newline='') as csvfile:
+        if sep is None:
+            try:
+                sep = csv.Sniffer().sniff(csvfile.read(1024)).delimiter
+            except csv.Error:
+                sep = ','
+
+            csvfile.seek(0)
+
+        reader = csv.reader(csvfile, delimiter=sep)
+
+        for offset in range(row_offset):
+            next(reader)
+
+        if time_col_index is None:
+            return RRi([float(r[rri_col_index].strip()) for r in reader])
+
+        rri = []
+        time = []
+        for row in reader:
+            rri.append(float(row[rri_col_index].strip()))
+            time.append(time_parser(row[time_col_index].strip()))
+
+        return RRi(rri, time)
