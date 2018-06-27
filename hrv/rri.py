@@ -17,7 +17,7 @@ class RRi:
 
     @property
     def values(self):
-        return self.rri
+        return self.__rri
 
     @property
     def rri(self):
@@ -52,7 +52,7 @@ class RRi:
         return np.sqrt(np.mean(self.rri ** 2))
 
     def __repr__(self):
-        return 'RRi %s' % np.array_repr(self.__rri)
+        return 'RRi %s' % np.array_repr(self.rri)
 
     def __mul__(self, val):
         return RRi(self.rri * val, self.time)

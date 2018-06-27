@@ -33,7 +33,7 @@ def read_from_hrm(pathname):
                             re.findall(r'\d+', file_content[rri_info_index:-1])
                         )
                     ),
-                    dtype=np.float32
+                    dtype=np.float64
             )
             if len(rri) == 0:
                 raise EmptyFileError('empty file!')
