@@ -96,3 +96,20 @@ class OpenRRiFromCsv(unittest.TestCase):
         self.assertTrue(isinstance(rri, RRi))
         np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
         np.testing.assert_equal(rri.time, np.array([1.0, 2.0, 3.0, 4.0]))
+
+    def test_parse_datetime_column_in_csv(self):
+
+        def _time_parser(dt):
+            return int(dt.split(':')[-1])
+
+        rri = read_from_csv(
+            'tests/test_files/rri_multiple_columns_datetime.csv',
+            rri_col_index=1,
+            time_col_index=0,
+            row_offset=1,
+            time_parser=_time_parser
+        )
+
+        self.assertTrue(isinstance(rri, RRi))
+        np.testing.assert_equal(rri.values, np.array([790, 815, 800, 795]))
+        np.testing.assert_equal(rri.time, np.array([56, 57, 58, 59]))
