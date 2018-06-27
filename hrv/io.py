@@ -42,7 +42,7 @@ def read_from_hrm(pathname):
 
 
 def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
-                  row_offset=0, sep=None):
+                  row_offset=0, time_parser=int, sep=None):
 
     with open(pathname, newline='') as csvfile:
         if sep is None:
@@ -65,6 +65,6 @@ def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
         time = []
         for row in reader:
             rri.append(float(row[rri_col_index].strip()))
-            time.append(float(row[time_col_index].strip()))
+            time.append(time_parser(row[time_col_index].strip()))
 
         return RRi(rri, time)
