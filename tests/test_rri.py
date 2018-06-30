@@ -1,7 +1,14 @@
+from collections import MutableMapping
+
 import numpy as np
 import pytest
 
-from hrv.rri import RRi, _validate_rri, _create_time_array, _validate_time
+from hrv.rri import (RRi,
+                    _validate_rri,
+                    _create_time_array,
+                    _validate_time,
+                    _prepare_table,
+                    RRiDescription)
 from tests.test_utils import FAKE_RRI
 
 
@@ -227,3 +234,64 @@ class TestRRiClassMethods:
                 rri.rms(),
                 np.sqrt(np.mean(np.square(FAKE_RRI))),
         )
+
+    def test_prepare_rri_description_table(self):
+        rri = RRi(FAKE_RRI)
+
+        descr_table = _prepare_table(rri)
+        expected = [
+                ['', 'rri', 'hr'],
+                ['min', 750.0, 73.61963190184049],
+                ['max', 815.0, 80.0],
+                ['amplitude', 65.0, 6.380368098159508],
+                ['mean', 793.75, 75.67342649397864],
+                ['median', 805.0, 74.53703703703704],
+                ['var', 667.1875, 6.487185483887203],
+                ['std', 25.829972899714782, 2.546995383562209],
+        ]
+
+        for row in descr_table:
+            assert row in expected
+
+    def test_rri_describe(self):
+        rri = RRi(FAKE_RRI)
+        rri_descr = rri.describe()
+
+        assert isinstance(rri_descr, MutableMapping)
+        expected = [
+                ['', 'rri', 'hr'],
+                ['min', 750.0, 73.61963190184049],
+                ['max', 815.0, 80.0],
+                ['amplitude', 65.0, 6.380368098159508],
+                ['mean', 793.75, 75.67342649397864],
+                ['median', 805.0, 74.53703703703704],
+                ['var', 667.1875, 6.487185483887203],
+                ['std', 25.829972899714782, 2.546995383562209],
+        ]
+        expected__repr__ = (
+                '----------------------------------------\n',
+                '                   rri          hr\n',
+                '----------------------------------------\n',
+                'min             750.00       73.62\n',
+                'max             815.00       80.00\n',
+                'mean            793.75       75.67\n',
+                'var             667.19        6.49\n',
+                'std              25.83        2.55\n',
+                'median          805.00       74.54\n',
+                'amplitude        65.00        6.38\n'
+        )
+
+        for field in expected[1:]:
+            assert rri_descr[field[0]]['rri'] == field[1]
+            assert rri_descr[field[0]]['hr'] == field[2]
+
+        rri_descr_rep = rri_descr.__repr__()
+        for table_row in expected__repr__:
+            assert table_row in rri_descr_rep
+
+    def test_rri_to_hear_rate(self):
+        rri = RRi(FAKE_RRI)
+        heart_rate = rri.to_hr()
+        expected = np.array([75., 74.07407407, 73.6196319, 80.])
+
+        np.testing.assert_array_almost_equal(heart_rate, expected)

@@ -1,3 +1,5 @@
+from collections import MutableMapping, defaultdict
+
 import numpy as np
 
 
@@ -26,6 +28,18 @@ class RRi:
     @property
     def time(self):
         return self.__time
+
+    def describe(self):
+        table = _prepare_table(RRi(self.rri))
+        rri_descr = RRiDescription(table)
+        for row in table[1:]:
+            rri_descr[row[0]]['rri'] = row[1]
+            rri_descr[row[0]]['hr'] = row[2]
+
+        return rri_descr
+
+    def to_hr(self):
+        return 60 / (self.rri / 1000.0)
 
     def mean(self):
         return np.mean(self.rri)
@@ -90,6 +104,66 @@ class RRi:
     def __le__(self, val):
         return self.rri <= val
 
+
+class RRiDescription(MutableMapping):
+    def __init__(self, table, *args, **kwargs):
+        self.store = defaultdict(dict)
+        self.update(dict(*args, **kwargs))
+        self.table = table
+
+    def keys(self):
+        return self.store.keys()
+
+    def __getitem__(self, key):
+        return self.store[key]
+
+    def __setitem__(self, key, value):
+        self.store[key] = value
+
+    def __delitem__(self, key):
+        del self.store[key]
+
+    def __iter__(self):
+        return iter(self.store)
+
+    def __len__(self):
+        return len(self.store)
+
+    def __repr__(self):
+        descr = ""
+        dash = '-' * 40 + "\n"
+        for i in range(len(self.table)):
+            if i == 0:
+                descr += dash
+                descr += '{:<10s}{:>12s}{:>12s}\n'.format(
+                    self.table[i][0], self.table[i][1], self.table[i][2]
+                )
+                descr += dash
+            else:
+                descr += '{:<10s}{:>12.2f}{:>12.2f}\n'.format(
+                    self.table[i][0], self.table[i][1], self.table[i][2]
+                )
+
+        return descr
+
+def _prepare_table(rri):
+    def _amplitude(values):
+        return values.max() - values.min()
+
+    header = ['', 'rri', 'hr']
+    fields = ['min', 'max', 'mean', 'var', 'std']
+    hr = rri.to_hr()
+
+    table = []
+    for field in fields:
+        rri_var = rri.__getattribute__(field)()
+        hr_var = hr.__getattribute__(field)()
+        table.append([field, rri_var, hr_var])
+
+    table.append(['median', rri.median(), np.median(hr)])
+    table.append(['amplitude', rri.amplitude(), _amplitude(hr)])
+
+    return [header] + table
 
 def _validate_rri(rri):
     rri = np.array(rri, dtype=np.float64)
