@@ -41,6 +41,10 @@ class RRi:
     def to_hr(self):
         return 60 / (self.rri / 1000.0)
 
+    def time_range(self, start, end):
+        interval = np.logical_and(self.time >= start, self.time <= end)
+        return RRi(self.rri[interval], time=self.time[interval])
+
     def mean(self):
         return np.mean(self.rri)
 

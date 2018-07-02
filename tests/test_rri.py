@@ -289,9 +289,19 @@ class TestRRiClassMethods:
         for table_row in expected__repr__:
             assert table_row in rri_descr_rep
 
-    def test_rri_to_hear_rate(self):
+    def test_rri_to_heart_rate(self):
         rri = RRi(FAKE_RRI)
         heart_rate = rri.to_hr()
         expected = np.array([75., 74.07407407, 73.6196319, 80.])
 
         np.testing.assert_array_almost_equal(heart_rate, expected)
+
+    def test_get_rri_time_interval(self):
+        rri = RRi(FAKE_RRI + [817, 785, 910], time=[2, 4, 6, 8, 10, 12, 14])
+
+        rri_interval = rri.time_range(start=10, end=14)
+        expected = RRi([817, 785, 910], time=[10, 12, 14])
+
+        assert isinstance(rri_interval, RRi)
+        np.testing.assert_array_equal(rri_interval.values, expected.values)
+        np.testing.assert_array_equal(rri_interval.time, expected.time)
