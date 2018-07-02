@@ -45,6 +45,12 @@ class RRi:
         interval = np.logical_and(self.time >= start, self.time <= end)
         return RRi(self.rri[interval], time=self.time[interval])
 
+    def reset_time(self, inplace=False):
+        if inplace:
+            self.__time -= self.time[0]
+        else:
+            return RRi(self.rri, time=self.time-self.time[0])
+
     def mean(self):
         return np.mean(self.rri)
 

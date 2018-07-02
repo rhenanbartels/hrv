@@ -305,3 +305,23 @@ class TestRRiClassMethods:
         assert isinstance(rri_interval, RRi)
         np.testing.assert_array_equal(rri_interval.values, expected.values)
         np.testing.assert_array_equal(rri_interval.time, expected.time)
+
+    def test_reset_time_offset(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        rri_reset = rri.reset_time()
+        expected = RRi(FAKE_RRI, time=[0, 1, 2, 3])
+
+        assert isinstance(rri_reset, RRi)
+        np.testing.assert_array_equal(rri_reset.values, expected.values)
+        np.testing.assert_array_equal(rri_reset.time, expected.time)
+
+    def test_reset_time_offset_inplace(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        rri.reset_time(inplace=True)
+        expected = RRi(FAKE_RRI, time=[0, 1, 2, 3])
+
+        assert isinstance(rri, RRi)
+        np.testing.assert_array_equal(rri.values, expected.values)
+        np.testing.assert_array_equal(rri.time, expected.time)
