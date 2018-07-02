@@ -1,5 +1,6 @@
 from collections import MutableMapping, defaultdict
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -50,6 +51,23 @@ class RRi:
             self.__time -= self.time[0]
         else:
             return RRi(self.rri, time=self.time-self.time[0])
+
+    def plot(self, *args, **kwargs):
+        fig, ax = plt.subplots(1, 1)
+        ax.plot(self.time, self.rri, *args, **kwargs)
+        ax.set(xlabel='Time (s)', ylabel='RRi (ms)')
+        plt.show()
+
+    def hist(self, hr=False, *args, **kwargs):
+        fig, ax = plt.subplots(1, 1)
+        if hr:
+            ax.hist(self.to_hr(), *args, **kwargs)
+            ax.set(xlabel='HR (bpm)', ylabel='Frequency')
+        else:
+            ax.hist(self.rri, *args, **kwargs)
+            ax.set(xlabel='RRi (ms)', ylabel='Frequency')
+
+        plt.show()
 
     def mean(self):
         return np.mean(self.rri)
