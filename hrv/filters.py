@@ -1,5 +1,7 @@
 import numpy as np
 
+from hrv.rri import RRi
+
 
 def quotient(rri):
     rri = np.array(rri)
@@ -10,7 +12,7 @@ def quotient(rri):
             (rri[1:L]/rri[:L-1] < 0.8) | (rri[1:L]/rri[:L-1] > 1.2)
     )
 
-    return np.delete(rri, indices)
+    return RRi(np.delete(rri, indices))
 
 
 def moving_average(rri, order=3):
@@ -28,4 +30,4 @@ def _moving_function(rri, order, func):
     for i in range(offset, len(rri) - offset, 1):
         filt_rri[i] = func(rri[i-offset:i+offset+1])
 
-    return filt_rri
+    return RRi(filt_rri)
