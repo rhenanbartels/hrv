@@ -1,12 +1,16 @@
 # coding: utf-8
-import unittest.mock
+import unittest
+
+from unittest import mock
 
 import numpy as np
 from spectrum import marple_data
 
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
-from tests.test_utils import FAKE_RRI, open_rri
+from hrv.io import read_from_text
+from hrv.rri import RRi
+from tests.test_utils import FAKE_RRI
 
 
 class TimeDomainIndexesTestCase(unittest.TestCase):
@@ -54,19 +58,21 @@ class TimeDomainIndexesTestCase(unittest.TestCase):
 
 class FrequencyDomainTestCase(unittest.TestCase):
     def setUp(self):
-        self.real_rri = open_rri('tests/test_files/real_rri.txt')
+        self.real_rri = read_from_text('tests/test_files/real_rri.txt')
 
-    def test_correct_response(self):
-        response = frequency_domain(self.real_rri, fs=4, method='welch',
-                                    nperseg=256, noverlap=128,
+    def test_frequency_domain_with_welch_method(self):
+        time = np.cumsum(self.real_rri) / 1000.0
+        time -= time[0]
+        response = frequency_domain(self.real_rri, time=time, fs=4,
+                                    method='welch', nperseg=256, noverlap=128,
                                     window='hanning')
-        expected = {'total_power':  3602.90,
+        expected = {'total_power':  3602.89,
                     'vlf': 844.5,
-                    'lf': 1343.51,
+                    'lf': 1343.50,
                     'hf': 1414.88,
                     'lf_hf': 0.94,
-                    'lfnu': 48.71,
-                    'hfnu': 51.28}
+                    'lfnu': 48.70,
+                    'hfnu': 51.29}
         np.testing.assert_almost_equal(sorted(response.values()),
                                        sorted(expected.values()),
                                        decimal=2)
@@ -88,17 +94,19 @@ class FrequencyDomainTestCase(unittest.TestCase):
         np.testing.assert_almost_equal(results['lfnu'], 30.5, decimal=0)
         np.testing.assert_almost_equal(results['hfnu'], 69.5, decimal=0)
 
-    @unittest.mock.patch('hrv.classical.pburg')
+    @mock.patch('hrv.classical.pburg')
     def test_pburg_method_being_called(self, _pburg):
         _calc_pburg_psd(rri=[1, 2, 3], fs=4.0)
         _pburg.assert_called_once_with(data=[1, 2, 3], NFFT=None, sampling=4.0,
                                        order=16)
 
-    @unittest.mock.patch('hrv.classical._interpolate_rri')
-    @unittest.mock.patch('hrv.classical._calc_pburg_psd')
-    def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr):
+    @mock.patch('hrv.classical._auc')
+    @mock.patch('hrv.classical._interpolate_rri')
+    @mock.patch('hrv.classical._calc_pburg_psd')
+    def test_frequency_domain_function_using_pburg(self, _pburg_psd, _irr,
+                                                   _auc):
         fake_rri = [1, 2, 3, 4]
-        _irr.return_value = (1, fake_rri)
+        _irr.return_value = fake_rri
         _pburg_psd.return_value = (np.array([1, 2]), np.array([3, 4]))
         frequency_domain(fake_rri, fs=4, method='ar', interp_method='cubic',
                          order=16)
@@ -122,6 +130,18 @@ class FrequencyDomainTestCase(unittest.TestCase):
 
         np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
 
+    @mock.patch('hrv.classical._interpolate_rri')
+    def test_using_rri_class(self, _interp):
+        """
+            Test if no time is passed as argument the frequency domain function
+            uses time array from RRi class
+        """
+        _interp.return_value = [800, 810, 790, 815]
+        rri = RRi([800, 810, 790, 815])
+
+        frequency_domain(rri)
+
+        _interp.assert_called_once_with(rri, rri.time, 4.0, 'cubic')
 
 
 class NonLinearTestCase(unittest.TestCase):
