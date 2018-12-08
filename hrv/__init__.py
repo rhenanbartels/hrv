@@ -20,4 +20,4 @@
 import hrv.classical as classical
 import hrv.utils as utils
 
-__version__ = '0.1.5'
+__version__ = '0.2.0'
