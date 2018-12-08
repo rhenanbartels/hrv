@@ -10,6 +10,7 @@ from hrv.utils import (validate_rri, _interpolate_rri)
 
 @validate_rri
 def time_domain(rri):
+    # TODO: let user choose interval for pnn50 and nn50.
     diff_rri = np.diff(rri)
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
     sdnn = np.std(rri, ddof=1)  # make it calculates N-1
