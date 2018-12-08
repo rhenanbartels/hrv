@@ -174,6 +174,7 @@ class RRiDescription(MutableMapping):
 
         return descr
 
+
 def _prepare_table(rri):
     def _amplitude(values):
         return values.max() - values.min()
@@ -192,6 +193,7 @@ def _prepare_table(rri):
     table.append(['amplitude', rri.amplitude(), _amplitude(hr)])
 
     return [header] + table
+
 
 def _validate_rri(rri):
     rri = np.array(rri, dtype=np.float64)
