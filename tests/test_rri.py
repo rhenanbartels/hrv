@@ -1,14 +1,16 @@
 from collections import MutableMapping
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
 from hrv.rri import (RRi,
-                    _validate_rri,
-                    _create_time_array,
-                    _validate_time,
-                    _prepare_table,
-                    RRiDescription)
+                     _validate_rri,
+                     _create_time_array,
+                     _validate_time,
+                     _prepare_table,
+                     RRiDescription)
 from tests.test_utils import FAKE_RRI
 
 
@@ -325,3 +327,19 @@ class TestRRiClassMethods:
         assert isinstance(rri, RRi)
         np.testing.assert_array_equal(rri.values, expected.values)
         np.testing.assert_array_equal(rri.time, expected.time)
+
+
+class TestRRiPlotMethods:
+    def test_return_figure_objects(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        fig, ax = rri.plot()
+
+        assert isinstance(fig, matplotlib.figure.Figure)
+        assert isinstance(ax, matplotlib.figure.Axes)
+
+    def test_use_already_created_axes_object(self):
+        fig, ax = plt.subplots(1, 1)
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        rri.plot(ax=ax)

@@ -52,11 +52,16 @@ class RRi:
         else:
             return RRi(self.rri, time=self.time-self.time[0])
 
-    def plot(self, *args, **kwargs):
-        fig, ax = plt.subplots(1, 1)
+    def plot(self, ax=None, *args, **kwargs):
+        fig = None
+        if ax is None:
+            fig, ax = plt.subplots(1, 1)
+
         ax.plot(self.time, self.rri, *args, **kwargs)
         ax.set(xlabel='Time (s)', ylabel='RRi (ms)')
-        plt.show()
+        plt.show(block=False)
+
+        return fig, ax
 
     def hist(self, hr=False, *args, **kwargs):
         fig, ax = plt.subplots(1, 1)
@@ -67,7 +72,7 @@ class RRi:
             ax.hist(self.rri, *args, **kwargs)
             ax.set(xlabel='RRi (ms)', ylabel='Frequency')
 
-        plt.show()
+        plt.show(block=False)
 
     def mean(self):
         return np.mean(self.rri)
