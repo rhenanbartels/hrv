@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# TODO: create InterpolatedRRi and DetrendedRRi classes
 class RRi:
     def __init__(self, rri, time=None):
         self.__rri = _validate_rri(rri)
@@ -16,6 +17,8 @@ class RRi:
         return len(self.__rri)
 
     def __getitem__(self, position):
+        # TODO: return an RRi instance
+        # return RRi(self.__rri[position], self.time[position])
         return self.__rri[position]
 
     @property
@@ -73,6 +76,8 @@ class RRi:
             ax.set(xlabel='RRi (ms)', ylabel='Frequency')
 
         plt.show(block=False)
+
+    # TODO: Create methods for time domain to be calculted in the instance
 
     def mean(self):
         return np.mean(self.rri)
@@ -201,6 +206,7 @@ def _prepare_table(rri):
 
 
 def _validate_rri(rri):
+    # TODO: let the RRi be in seconds if the user wants to
     rri = np.array(rri, dtype=np.float64)
 
     if any(rri <= 0):

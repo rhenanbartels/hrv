@@ -9,8 +9,7 @@ from hrv.rri import (RRi,
                      _validate_rri,
                      _create_time_array,
                      _validate_time,
-                     _prepare_table,
-                     RRiDescription)
+                     _prepare_table)
 from tests.test_utils import FAKE_RRI
 
 
@@ -114,6 +113,15 @@ class TestRRiClassArguments:
 
         with pytest.raises(AttributeError):
             rri.time = [1, 2, 3, 4]
+
+    def test__getitem__method(self):
+        rri = RRi(FAKE_RRI)
+
+        rri_slice = rri[:2]
+        expected = [800, 810]
+
+        assert isinstance(rri_slice, RRi)
+        np.testing.assert_equal(rri_slice, expected)
 
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
