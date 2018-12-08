@@ -1,13 +1,13 @@
-Heart Rate Variability Analysis Package
+Pythonic Package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.1.5
+version number: 0.2.0
 author: Rhenan Bartels
 
 Overview
 --------
 
-A python package for heart rate variability analysis
+The **hrv** is a simple Python module that brings the most widely used techinques to work with RRi series without losing the **Power** of a native Python object.
 
 Installation / Usage
 --------------------
@@ -22,25 +22,79 @@ Or clone the repo:
     $ git clone https://github.com/rhenanbartels/hrv.git
     $ python setup.py install
     
-Contributing
-------------
-
-TBD
 
 BASIC USAGE
 -------
+### Crate a RRi instance
+Once you create RRi object you will have the power of a native Python itarable object. This means, that you can loop thought it using a **for loop**, get a just a part of the series using native **slicing** and much more. Let us try it:
+
+```python
+from hrv.rri import RRi
+
+rri_list = [800, 810, 815, 750, 753, 905]
+rri = RRi(rri_list)
+
+print(rri)
+RRi array([800., 810., 815., 750., 753., 905.])
+```
+##### Slicing
+```python
+print(rri[0])
+800.0
+
+print(type(rri[0]))
+numpy.float64
+
+print(rri[::1])
+array([800., 815., 753.]) # Future versions will return a RRi object
+```
+##### Loop
+
+```python
+for rri_value in rri:
+    print(rri_value)
+    
+800.0
+810.0
+815.0
+750.0
+753.0
+905.0
+```
+##### Note:
+When time information is not provided, time array will be created using the cumulative sum of successive RRi. After cumulative sum, the time array is subtracted from the value at `t[0]` to make it start from `0s`
+
+##### RRi object and time information
+```python
+from hrv.rri import RRi
+
+rri_list = [800, 810, 815, 750, 753, 905]
+rri = RRi(rri_list)
+
+print(rri.time)
+array([0.   , 0.81 , 1.625, 2.375, 3.128, 4.033]) # Cumsum of rri values minus t[0]
+
+rri = RRi(rri_list, time=[0, 1, 2, 3, 4, 5])
+print(rri.time)
+[0. 1. 2. 3. 4. 5.]
+```
+##### Note:
+Some validation is made in the time list/array provided to the RRi class, for instance: 
+ - RRi and time list/array must have the same length;
+ - Time list/array can not have negative values;
+ - Time list/array must be monotonic increasing.
 
 ### Read RRi file
 
-#### From .txt file.
+#### From .txt file
 
-Text files contains a single column with all RRi values.
+Text files contains a single column with all RRi values. 
 
 ```python
-from hrv.utils import open_rri
-rri = open_rri('path/to/file.txt')
-rri
-array([ 792.,  791.,  817., ...,  884.,  851.,  854.])
+from hrv.io import read_from_text
+rri = read_from_text('path/to/file.txt')
+print(rri)
+RRi array([800., 810., 815., 750.])
 ```
 
 #### From .hrm file
@@ -50,13 +104,68 @@ The .hrm files contain the RRi acquired with Polar <sup>&reg;</sup>
 A complete guide for .hrm files can be found [here](https://www.polar.com/files/Polar_HRM_file%20format.pdf).
 
 ```python
-from hrv.utils import open_rri
-rri = open_rri('path/to/file.hrm')
-rri
-array([ 1092.,  879.,  746., ...,  931.,  968.,  958.])
+from hrv.io import read_from_hrm
+rri = read_from_hrm('path/to/file.hrm')
+print(rri)
+RRi array([800., 810., 815., 750.])
 ```
 
 <img src="docs/figures/rri_fig.png" alt="RRi Image"  width=600px;>
+
+#### From .csv file
+```python
+from hrv.io import read_from_csv
+rri = read_from_csv('path/to/file.csv')
+print(rri)
+RRi array([800., 810., 815., 750.])
+```
+##### Note:
+When using **read_from_csv** you can also provide a column containing time information. Let's check it.
+
+### RRi statistics
+The RRi object implements some basic statistics information about its values.
+
+```python
+from hrv.rri import RRi
+
+rri = RRi([800, 810, 815, 750, 753, 905])
+
+# mean
+rri.mean()
+805.5
+
+# median
+rri.median()
+805.0
+```
+You can all have a complete overview of its statistical charactheristic
+```python
+desc = rri.describe()
+desc
+----------------------------------------
+                   rri          hr
+----------------------------------------
+min             750.00       66.30
+max             905.00       80.00
+mean            805.50       74.78
+var            2646.25       20.85
+std              51.44        4.57
+median          805.00       74.54
+amplitude       155.00       13.70
+
+print(desc['std'])
+{'rri': 51.44171459039833, 'hr': 4.5662272355549725}
+```
+
+### Plot RRi
+The RRi class brings a very easy way to visualize your series
+```python
+from hrv.io import read_from_text
+
+rri = read_from_text('path/to/file.txt')
+fig, ax = rri.plot(color='k')
+
+```
 
 ### Filters
 
