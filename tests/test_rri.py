@@ -1,14 +1,16 @@
 from collections import MutableMapping
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
 from hrv.rri import (RRi,
-                    _validate_rri,
-                    _create_time_array,
-                    _validate_time,
-                    _prepare_table,
-                    RRiDescription)
+                     _validate_rri,
+                     _create_time_array,
+                     _validate_time,
+                     _prepare_table,
+                     RRiDescription)
 from tests.test_utils import FAKE_RRI
 
 
