@@ -1,3 +1,5 @@
+import sys
+
 from collections import MutableMapping, defaultdict
 
 import matplotlib.pyplot as plt
@@ -42,6 +44,35 @@ class RRi:
             rri_descr[row[0]]['hr'] = row[2]
 
         return rri_descr
+
+    def info(self):
+        def _mem_usage(nbytes):
+            mem_val = nbytes / 1024
+            if mem_val < 1000:
+                mem_str = '{:.2f}Kb'.format(mem_val)
+            else:
+                mem_str = '{:.2f}Mb'.format(mem_val / 1024)
+
+            return mem_str
+
+        n_points = self.__rri.size
+        duration = self.__time[-1]
+        # Hard coded interp and detrended. Future versions will have proper
+        # attributes
+        interp = False
+        detrended = False
+        mem_usage = _mem_usage(self.__rri.nbytes)
+
+        msg_template = 'N Points: {n_points}\nDuration: {duration:.2f}s\n'\
+                       'Interpolated: {interp}\nDetrended: {detrended}\n'\
+                       'Memory Usage: {mem_usage}'
+        sys.stdout.write(msg_template.format(
+            n_points=n_points,
+            duration=duration,
+            interp=interp,
+            detrended=detrended,
+            mem_usage=mem_usage
+        ))
 
     def to_hr(self):
         return 60 / (self.rri / 1000.0)
