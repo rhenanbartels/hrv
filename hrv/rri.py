@@ -11,7 +11,7 @@ class RRi:
         if time is None:
             self.__time = _create_time_array(self.rri)
         else:
-            self.__time = _validate_time(self.rri, time)
+            self.__time = _validate_time(self.__rri, time)
 
     def __len__(self):
         return len(self.__rri)
