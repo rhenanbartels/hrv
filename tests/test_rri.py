@@ -118,10 +118,22 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         rri_slice = rri[:2]
-        expected = [800, 810]
+        expected = RRi([800, 810])
 
         assert isinstance(rri_slice, RRi)
-        np.testing.assert_equal(rri_slice, expected)
+        np.testing.assert_equal(rri_slice.values, expected.values)
+        np.testing.assert_equal(rri_slice.time, expected.time)
+
+    def test__getitem_method_integer_position(self):
+        # To not break the numpy API (i.e np.sum(rri)) when index is an
+        # integer RRi __getitem__ method returns a numpy.float64
+        rri = RRi(FAKE_RRI)
+
+        rri_pos_index = rri[0]
+        expected = 800
+
+        assert isinstance(rri_pos_index, np.float64)
+        np.testing.assert_equal(rri_pos_index, expected)
 
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
@@ -140,41 +152,47 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         result = rri * 10
+        expected = [8000, 8100, 8150, 7500]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values * 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__add__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri + 10
+        expected = [810, 820, 825, 760]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values + 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__sub__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri - 10
+        expected = [790, 800, 805, 740]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values - 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__truediv__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri / 10
+        expected = np.array(FAKE_RRI) / 10
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values / 10)
+        np.testing.assert_equal(result.values, expected)
 
+    # TODO: make RRi class accept negative values and fix this test
     def test__abs__method(self):
         rri = RRi(FAKE_RRI)
 
         result = abs(rri)
+        expected = np.array(FAKE_RRI)
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, abs(rri.values))
+        np.testing.assert_equal(result.values, expected)
 
     def test__eq__method(self):
         rri = RRi(FAKE_RRI)
@@ -222,8 +240,24 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         result = rri ** 2
+        expected = [640000., 656100., 664225., 562500.]
 
-        np.testing.assert_equal(result, rri.values ** 2)
+        np.testing.assert_equal(result.values, expected)
+
+    def test_operations_with_other_rri_instance(self):
+        rri = RRi(FAKE_RRI)
+        another_rri = RRi([750, 765, 755, 742])
+
+        mul_result = rri * another_rri
+        div_result = rri / another_rri
+        add_result = rri + another_rri
+        sub_result = rri - another_rri
+        pow_result = rri ** another_rri
+
+        results = (mul_result, div_result, add_result, sub_result, pow_result)
+
+        for result in results:
+            assert isinstance(result, RRi)
 
 
 class TestRRiClassMethods:
@@ -335,6 +369,54 @@ class TestRRiClassMethods:
         assert isinstance(rri, RRi)
         np.testing.assert_array_equal(rri.values, expected.values)
         np.testing.assert_array_equal(rri.time, expected.time)
+
+    def test_calculate_mean_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.mean(rri)
+        expected = 793.75
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_median_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.median(rri)
+        expected = 805.0
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_variance_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.var(rri)
+        expected = 667.1875
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_standard_deviation_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.std(rri)
+        expected = 25.82
+
+        np.testing.assert_almost_equal(avg, expected, decimal=2)
+
+    def test_calculate_max_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.max(rri)
+        expected = 815.0
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_min_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.min(rri)
+        expected = 750.0
+
+        np.testing.assert_almost_equal(avg, expected)
 
 
 class TestRRiPlotMethods:

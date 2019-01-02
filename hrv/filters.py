@@ -11,6 +11,7 @@ def quotient(rri):
 
     if isinstance(rri, RRi):
         rri_time = rri.time
+        rri = rri.values
     else:
         rri = np.array(rri)
         rri_time = _create_time_info(rri)
