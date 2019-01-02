@@ -11,15 +11,16 @@ class RRi:
         if time is None:
             self.__time = _create_time_array(self.rri)
         else:
-            self.__time = _validate_time(self.rri, time)
+            self.__time = _validate_time(self.__rri, time)
 
     def __len__(self):
         return len(self.__rri)
 
     def __getitem__(self, position):
-        # TODO: return an RRi instance
-        # return RRi(self.__rri[position], self.time[position])
-        return self.__rri[position]
+        if isinstance(position, slice):
+            return RRi(self.__rri[position], self.time[position])
+        else:
+            return self.__rri[position]
 
     @property
     def values(self):
@@ -79,23 +80,23 @@ class RRi:
 
     # TODO: Create methods for time domain to be calculted in the instance
 
-    def mean(self):
-        return np.mean(self.rri)
+    def mean(self, *args, **kwargs):
+        return np.mean(self.rri, *args, **kwargs)
 
-    def var(self):
-        return np.var(self.rri)
+    def var(self, *args, **kwargs):
+        return np.var(self.rri, *args, **kwargs)
 
-    def std(self):
-        return np.std(self.rri)
+    def std(self, *args, **kwargs):
+        return np.std(self.rri, *args, **kwargs)
 
-    def median(self):
-        return np.median(self.rri)
+    def median(self, *args, **kwargs):
+        return np.median(self.rri, *args, **kwargs)
 
-    def max(self):
-        return np.max(self.rri)
+    def max(self, *args, **kwargs):
+        return np.max(self.rri, *args, **kwargs)
 
-    def min(self):
-        return np.min(self.rri)
+    def min(self, *args, **kwargs):
+        return np.min(self.rri, *args, **kwargs)
 
     def amplitude(self):
         return self.max() - self.min()
