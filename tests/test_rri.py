@@ -244,6 +244,21 @@ class TestRRiClassArguments:
 
         np.testing.assert_equal(result.values, expected)
 
+    def test_operations_with_other_rri_instance(self):
+        rri = RRi(FAKE_RRI)
+        another_rri = RRi([750, 765, 755, 742])
+
+        mul_result = rri * another_rri
+        div_result = rri / another_rri
+        add_result = rri + another_rri
+        sub_result = rri - another_rri
+        pow_result = rri ** another_rri
+
+        results = (mul_result, div_result, add_result, sub_result, pow_result)
+
+        for result in results:
+            assert isinstance(result, RRi)
+
 
 class TestRRiClassMethods:
     def test_rri_statistical_values(self):
