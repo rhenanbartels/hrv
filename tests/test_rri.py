@@ -370,6 +370,54 @@ class TestRRiClassMethods:
         np.testing.assert_array_equal(rri.values, expected.values)
         np.testing.assert_array_equal(rri.time, expected.time)
 
+    def test_calculate_mean_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.mean(rri)
+        expected = 793.75
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_median_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.median(rri)
+        expected = 805.0
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_variance_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.var(rri)
+        expected = 667.1875
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_standard_deviation_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.std(rri)
+        expected = 25.82
+
+        np.testing.assert_almost_equal(avg, expected, decimal=2)
+
+    def test_calculate_max_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.max(rri)
+        expected = 815.0
+
+        np.testing.assert_almost_equal(avg, expected)
+
+    def test_calculate_min_with_numpy_function(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        avg = np.min(rri)
+        expected = 750.0
+
+        np.testing.assert_almost_equal(avg, expected)
+
 
 class TestRRiPlotMethods:
     def test_return_figure_objects(self):

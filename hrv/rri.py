@@ -80,23 +80,23 @@ class RRi:
 
     # TODO: Create methods for time domain to be calculted in the instance
 
-    def mean(self):
-        return np.mean(self.rri)
+    def mean(self, *args, **kwargs):
+        return np.mean(self.rri, *args, **kwargs)
 
-    def var(self):
-        return np.var(self.rri)
+    def var(self, *args, **kwargs):
+        return np.var(self.rri, *args, **kwargs)
 
-    def std(self):
-        return np.std(self.rri)
+    def std(self, *args, **kwargs):
+        return np.std(self.rri, *args, **kwargs)
 
-    def median(self):
-        return np.median(self.rri)
+    def median(self, *args, **kwargs):
+        return np.median(self.rri, *args, **kwargs)
 
-    def max(self):
-        return np.max(self.rri)
+    def max(self, *args, **kwargs):
+        return np.max(self.rri, *args, **kwargs)
 
-    def min(self):
-        return np.min(self.rri)
+    def min(self, *args, **kwargs):
+        return np.min(self.rri, *args, **kwargs)
 
     def amplitude(self):
         return self.max() - self.min()
