@@ -118,10 +118,11 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         rri_slice = rri[:2]
-        expected = [800, 810]
+        expected = RRi([800, 810])
 
         assert isinstance(rri_slice, RRi)
-        np.testing.assert_equal(rri_slice, expected)
+        np.testing.assert_equal(rri_slice.values, expected.values)
+        np.testing.assert_equal(rri_slice.time, expected.time)
 
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
@@ -140,41 +141,47 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         result = rri * 10
+        expected = [8000, 8100, 8150, 7500]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values * 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__add__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri + 10
+        expected = [810, 820, 825, 760]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values + 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__sub__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri - 10
+        expected = [790, 800, 805, 740]
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values - 10)
+        np.testing.assert_equal(result.values, expected)
 
     def test__truediv__method(self):
         rri = RRi(FAKE_RRI)
 
         result = rri / 10
+        expected = np.array(FAKE_RRI) / 10
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, rri.values / 10)
+        np.testing.assert_equal(result.values, expected)
 
+    # TODO: make RRi class accept negative values and fix this test
     def test__abs__method(self):
         rri = RRi(FAKE_RRI)
 
         result = abs(rri)
+        expected = np.array(FAKE_RRI)
 
         assert isinstance(result, RRi)
-        np.testing.assert_equal(result, abs(rri.values))
+        np.testing.assert_equal(result.values, expected)
 
     def test__eq__method(self):
         rri = RRi(FAKE_RRI)
@@ -222,8 +229,9 @@ class TestRRiClassArguments:
         rri = RRi(FAKE_RRI)
 
         result = rri ** 2
+        expected = [640000., 656100., 664225., 562500.]
 
-        np.testing.assert_equal(result, rri.values ** 2)
+        np.testing.assert_equal(result.values, expected)
 
 
 class TestRRiClassMethods:
