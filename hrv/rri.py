@@ -17,9 +17,7 @@ class RRi:
         return len(self.__rri)
 
     def __getitem__(self, position):
-        # TODO: return an RRi instance
-        # return RRi(self.__rri[position], self.time[position])
-        return self.__rri[position]
+        return RRi(self.__rri[position], self.time[position])
 
     @property
     def values(self):
