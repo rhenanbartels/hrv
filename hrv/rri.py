@@ -19,7 +19,7 @@ class RRi:
         return len(self.__rri)
 
     def __getitem__(self, position):
-        if isinstance(position, slice):
+        if isinstance(position, (slice, np.ndarray)):
             return RRi(self.__rri[position], self.time[position])
         else:
             return self.__rri[position]

@@ -136,6 +136,16 @@ class TestRRiClassArguments:
         assert isinstance(rri_pos_index, np.float64)
         np.testing.assert_equal(rri_pos_index, expected)
 
+    def test__getitem__method_with_numpy_array(self):
+        rri = RRi(FAKE_RRI)
+        indexes = np.array([False, True, True, False])
+
+        rri_slice = rri[indexes]
+        expected = [810, 815]
+
+        assert isinstance(rri_slice, RRi)
+        np.testing.assert_equal(rri_slice.values, expected)
+
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
 
