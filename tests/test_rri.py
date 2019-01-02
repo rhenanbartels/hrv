@@ -124,6 +124,17 @@ class TestRRiClassArguments:
         np.testing.assert_equal(rri_slice.values, expected.values)
         np.testing.assert_equal(rri_slice.time, expected.time)
 
+    def test__getitem_method_integer_position(self):
+        # To not break the numpy API (i.e np.sum(rri)) when index is an
+        # integer RRi __getitem__ method returns a numpy.float64
+        rri = RRi(FAKE_RRI)
+
+        rri_pos_index = rri[0]
+        expected = 800
+
+        assert isinstance(rri_pos_index, np.float64)
+        np.testing.assert_equal(rri_pos_index, expected)
+
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
 

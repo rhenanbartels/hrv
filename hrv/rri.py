@@ -17,7 +17,10 @@ class RRi:
         return len(self.__rri)
 
     def __getitem__(self, position):
-        return RRi(self.__rri[position], self.time[position])
+        if isinstance(position, slice):
+            return RRi(self.__rri[position], self.time[position])
+        else:
+            return self.__rri[position]
 
     @property
     def values(self):
