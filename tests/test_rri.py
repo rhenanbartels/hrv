@@ -1,4 +1,5 @@
 from collections import MutableMapping
+from unittest import mock
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -134,6 +135,16 @@ class TestRRiClassArguments:
 
         assert isinstance(rri_pos_index, np.float64)
         np.testing.assert_equal(rri_pos_index, expected)
+
+    def test__getitem__method_with_numpy_array(self):
+        rri = RRi(FAKE_RRI)
+        indexes = np.array([False, True, True, False])
+
+        rri_slice = rri[indexes]
+        expected = [810, 815]
+
+        assert isinstance(rri_slice, RRi)
+        np.testing.assert_equal(rri_slice.values, expected)
 
     def test_class_repr_short_array(self):
         rri = RRi([1, 2, 3, 4])
@@ -332,6 +343,16 @@ class TestRRiClassMethods:
         rri_descr_rep = rri_descr.__repr__()
         for table_row in expected__repr__:
             assert table_row in rri_descr_rep
+
+    @mock.patch('hrv.rri.sys.stdout')
+    def test_rri_info(self, _stdout):
+        rri = RRi(FAKE_RRI)
+
+        rri.info()
+        msg = 'N Points: 4\nDuration: 2.38s\nInterpolated: False\n'\
+              'Detrended: False\nMemory Usage: 0.03Kb'
+
+        _stdout.write.assert_called_once_with(msg)
 
     def test_rri_to_heart_rate(self):
         rri = RRi(FAKE_RRI)
