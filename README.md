@@ -48,8 +48,8 @@ print(rri[0])
 print(type(rri[0]))
 numpy.float64
 
-print(rri[::1])
-array([800., 815., 753.]) # Future versions will return a RRi object
+print(rri[::2])
+RRi array([800., 815., 753.])
 ```
 #### Logical Indexing
 
@@ -57,10 +57,10 @@ array([800., 815., 753.]) # Future versions will return a RRi object
 from hrv.rri import RRi
 
 rri = RRi([800, 810, 815, 750, 753, 905])
-rri_ge = rri[rri >= 800)
+rri_ge = rri[rri >= 800]
 
 rri_ge
-array([800., 810., 815., 905.])
+RRi array([800., 810., 815., 905.])
 
 ```
 
@@ -111,8 +111,27 @@ RRi array([800., 810., 815., 750., 753., 905.])
 rri * 10
 RRi array([8000., 8100., 8150., 7500., 7530., 9050.])
 
-rri  + 200
+rri + 200
 RRi array([1000., 1010., 1015.,  950.,  953., 1105.])
+```
+
+### Works with Numpy functions
+```python
+import numpy as np
+
+rri = RRi([800, 810, 815, 750, 753, 905])
+
+sum_rri = np.sum(rri)
+print(sum_rri)
+4833.0
+
+mean_rri = np.mean(rri)
+print(mean_rri)
+805.5
+
+std_rri = np.std(rri)
+print(std_rri)
+51.44171459039833
 ```
 
 ## Read RRi files
@@ -241,6 +260,19 @@ amplitude       155.00       13.70
 ```python
 print(desc['std'])
 {'rri': 51.44171459039833, 'hr': 4.5662272355549725}
+```
+
+## RRi Basic Information
+
+```python
+rri = RRi([800, 810, 815, 750, 753, 905])
+rri.info()
+
+N Points: 6
+Duration: 4.03s
+Interpolated: False
+Detrended: False
+Memory Usage: 0.05Kb
 ```
 
 ## RRi Visualization
