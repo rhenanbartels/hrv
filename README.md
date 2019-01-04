@@ -1,7 +1,7 @@
 Pythonic package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.2.2
+version number: 0.2.3
 author: Rhenan Bartels
 
 Overview
@@ -26,7 +26,7 @@ Or clone the repo:
 
 BASIC USAGE
 -------
-## Create a RRi instance
+## Create an RRi instance
 Once you create an RRi object you will have the power of a native Python iterable object.
 This means, that you can loop through it using a **for loop**, get a just a part of the series using native
 **slicing** and much more. Let us try it:

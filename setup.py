@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -22,6 +22,7 @@ setup(
     version=__version__,
     description='A python package for heart rate variability analysis',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/rhenanbartels/hrv',
     download_url='https://github.com/rhenanbartels/hrv/tarball/' + __version__,
     license='BSD',
