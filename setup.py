@@ -22,6 +22,7 @@ setup(
     version=__version__,
     description='A python package for heart rate variability analysis',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/rhenanbartels/hrv',
     download_url='https://github.com/rhenanbartels/hrv/tarball/' + __version__,
     license='BSD',
