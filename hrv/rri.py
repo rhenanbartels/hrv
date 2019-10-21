@@ -109,6 +109,8 @@ class RRi:
 
         plt.show(block=False)
 
+        return fig, ax
+
     # TODO: Create methods for time domain to be calculted in the instance
 
     def mean(self, *args, **kwargs):

@@ -444,7 +444,8 @@ class TestRRiPlotMethods:
     def test_return_figure_objects(self):
         rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
-        fig, ax = rri.plot()
+        with mock.patch('hrv.rri.plt.show'):
+            fig, ax = rri.plot()
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
@@ -453,4 +454,14 @@ class TestRRiPlotMethods:
         fig, ax = plt.subplots(1, 1)
         rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
-        rri.plot(ax=ax)
+        with mock.patch('hrv.rri.plt.show'):
+            rri.plot(ax=ax)
+
+    def test_return_fig_and_axes_hist_method(self):
+        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+
+        with mock.patch('hrv.rri.plt.show'):
+            fig, ax = rri.hist()
+
+        assert isinstance(fig, matplotlib.figure.Figure)
+        assert isinstance(ax, matplotlib.figure.Axes)
