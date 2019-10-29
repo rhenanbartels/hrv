@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -32,7 +32,7 @@ setup(
       'Programming Language :: Python :: 3',
     ],
     keywords='',
-    packages=find_packages(exclude=['docs', 'tests*']),
+    packages=find_packages(exclude=['docs', 'tests*', 'paper']),
     include_package_data=True,
     author='Rhenan Bartels',
     install_requires=install_requires,
