@@ -19,6 +19,7 @@ class TimeDomainIndexesTestCase(unittest.TestCase):
         response = time_domain(FAKE_RRI)
         expected = {'rmssd': 38.07,
                     'sdnn': 29.82,
+                    'sdsd': 41.93,
                     'nn50': 1,
                     'pnn50': 25,
                     'mrri':  793.75,
@@ -33,6 +34,7 @@ class TimeDomainIndexesTestCase(unittest.TestCase):
         response = time_domain(np.array(FAKE_RRI) / 1000)
         expected = {'rmssd': 38.07,
                     'sdnn': 29.82,
+                    'sdsd': 41.93,
                     'nn50': 1,
                     'pnn50': 25,
                     'mrri':  793.75,
