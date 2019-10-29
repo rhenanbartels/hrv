@@ -1,7 +1,7 @@
 Pythonic package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.2.3
+version number: 0.2.4
 author: Rhenan Bartels
 
 Overview
@@ -380,7 +380,8 @@ print(results)
  'nn50': 337,
  'pnn50': 33.971774193548384,
  'rmssd': 72.849900286450023,
- 'sdnn': 96.990569261440797}
+ 'sdnn': 96.990569261440797,
+ 'sdsd': 46.233829821038042}
 ```
 
 ## Frequency Domain Analysis
