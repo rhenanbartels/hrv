@@ -2,7 +2,6 @@ from collections import MutableMapping
 from unittest import mock
 
 import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
@@ -441,29 +440,27 @@ class TestRRiClassMethods:
 
 
 class TestRRiPlotMethods:
-    def test_return_figure_objects(self):
-        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+    def setup_class(self):
+        self.rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
+    def test_return_figure_objects(self):
         with mock.patch('hrv.rri.plt.show'):
-            fig, ax = rri.plot()
+            fig, ax = self.rri.plot()
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
 
     def test_use_already_created_axes_object(self):
         ax_mock = mock.MagicMock()
-        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
         with mock.patch('hrv.rri.plt.show'):
-            rri.plot(ax=ax_mock)
+            self.rri.plot(ax=ax_mock)
 
-        ax_mock.plot.assert_called_once_with(rri.time, rri.values)
+        ax_mock.plot.assert_called_once_with(self.rri.time, self.rri.values)
 
     def test_return_fig_and_ax_objects_with_hist(self):
-        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
-
         with mock.patch('hrv.rri.plt.show'):
-            fig, ax = rri.hist()
+            fig, ax = self.rri.hist()
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
