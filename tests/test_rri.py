@@ -464,3 +464,18 @@ class TestRRiPlotMethods:
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
+
+    @mock.patch('hrv.rri.plt.subplots')
+    def test_poincare_plot(self, _subplots):
+        ax_mock = mock.MagicMock()
+        _subplots.return_value = (None, ax_mock)
+
+        with mock.patch('hrv.rri.plt.show'):
+            self.rri.poincare_plot()
+
+        # For some reason the regular assert_called_once_with is
+        # not working when the rri series is sliced.
+        actual_call = ax_mock.plot.call_args_list[0][0]
+        np.testing.assert_almost_equal(actual_call[0], self.rri[:-1])
+        np.testing.assert_almost_equal(actual_call[1], self.rri[1:])
+        assert actual_call[2] == '.k'

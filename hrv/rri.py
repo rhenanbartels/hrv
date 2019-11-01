@@ -111,6 +111,12 @@ class RRi:
 
         return fig, ax
 
+    def poincare_plot(self):
+        fig, ax = plt.subplots(1, 1)
+        ax.plot(self.rri[:-1], self.rri[1:], '.k')
+
+        plt.show()
+
     # TODO: Create methods for time domain to be calculted in the instance
 
     def mean(self, *args, **kwargs):
