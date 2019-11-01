@@ -115,7 +115,13 @@ class RRi:
         fig, ax = plt.subplots(1, 1)
         ax.plot(self.rri[:-1], self.rri[1:], '.k')
 
-        plt.show()
+        ax.set(
+            xlabel='$RRi_n$ (ms)',
+            ylabel='$RRi_{n+1}$ (ms)',
+            title='Poincaré Plot'
+        )
+
+        plt.show(block=False)
 
     # TODO: Create methods for time domain to be calculted in the instance
 

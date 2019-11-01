@@ -479,3 +479,10 @@ class TestRRiPlotMethods:
         np.testing.assert_almost_equal(actual_call[0], self.rri[:-1])
         np.testing.assert_almost_equal(actual_call[1], self.rri[1:])
         assert actual_call[2] == '.k'
+
+        # Labels
+        ax_mock.set.assert_called_once_with(
+            xlabel='$RRi_n$ (ms)',
+            ylabel='$RRi_{n+1}$ (ms)',
+            title='Poincaré Plot'
+        )
