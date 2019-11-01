@@ -451,11 +451,13 @@ class TestRRiPlotMethods:
         assert isinstance(ax, matplotlib.figure.Axes)
 
     def test_use_already_created_axes_object(self):
-        fig, ax = plt.subplots(1, 1)
+        ax_mock = mock.MagicMock()
         rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
         with mock.patch('hrv.rri.plt.show'):
-            rri.plot(ax=ax)
+            rri.plot(ax=ax_mock)
+
+        ax_mock.plot.assert_called_once_with(rri.time, rri.values)
 
     def test_return_fig_and_ax_objects_with_hist(self):
         rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
