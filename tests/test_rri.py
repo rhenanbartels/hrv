@@ -469,10 +469,12 @@ class TestRRiPlotMethods:
     @mock.patch('hrv.rri.plt.subplots')
     def test_poincare_plot(self, _subplots, _ellipsedraw):
         ax_mock = mock.MagicMock()
-        _subplots.return_value = (None, ax_mock)
+        fig_mock = mock.MagicMock()
+        _subplots.return_value = (fig_mock, ax_mock)
+        _ellipsedraw.return_value = ax_mock
 
         with mock.patch('hrv.rri.plt.show'):
-            self.rri.poincare_plot()
+            returned_fig, returned_ax = self.rri.poincare_plot()
 
         # For some reason the regular assert_called_once_with is
         # not working when the rri series is sliced.
@@ -506,3 +508,6 @@ class TestRRiPlotMethods:
             color='r',
             linewidth=3
         )
+
+        assert returned_fig == fig_mock
+        assert returned_ax == ax_mock
