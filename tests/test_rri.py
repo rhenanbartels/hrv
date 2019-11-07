@@ -465,8 +465,9 @@ class TestRRiPlotMethods:
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
 
+    @mock.patch('hrv.rri._ellipsedraw')
     @mock.patch('hrv.rri.plt.subplots')
-    def test_poincare_plot(self, _subplots):
+    def test_poincare_plot(self, _subplots, _ellipsedraw):
         ax_mock = mock.MagicMock()
         _subplots.return_value = (None, ax_mock)
 
@@ -485,4 +486,23 @@ class TestRRiPlotMethods:
             xlabel='$RRi_n$ (ms)',
             ylabel='$RRi_{n+1}$ (ms)',
             title='Poincaré Plot'
+        )
+        plot_calls = [
+            mock.call([799.25, 815.75], [746.75, 818.25], 'k--'),
+            mock.call(
+                [799.25, 815.75],
+                [817.4166666666667, 800.9166666666667],
+                'k--'
+            )
+        ]
+        ax_mock.plot.assert_has_calls(plot_calls)
+        _ellipsedraw.assert_called_once_with(
+            ax_mock,
+            30.000000000000004,
+            29.650744791095324,
+            808.3333333333334,
+            808.3333333333333,
+            0.7853981633974483,
+            color='r',
+            linewidth=3
         )

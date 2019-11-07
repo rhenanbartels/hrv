@@ -5,6 +5,8 @@ from collections import MutableMapping, defaultdict
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .utils import _ellipsedraw
+
 
 # TODO: create InterpolatedRRi and DetrendedRRi classes
 class RRi:
@@ -113,7 +115,8 @@ class RRi:
 
     def poincare_plot(self):
         fig, ax = plt.subplots(1, 1)
-        ax.plot(self.rri[:-1], self.rri[1:], '.k')
+        rri_n, rri_n_1 = self.rri[:-1], self.rri[1:]
+        ax.plot(rri_n, rri_n_1, '.k')
 
         ax.set(
             xlabel='$RRi_n$ (ms)',
@@ -122,6 +125,40 @@ class RRi:
         )
 
         plt.show(block=False)
+
+        # The ellipse drawning is a translation from the Matlab code
+        # available at: https://github.com/jramshur/HRVAS
+
+        dx = abs(max(rri_n) - min(rri_n)) * 0.05
+        dy = abs(max(rri_n_1) - min(rri_n_1)) * 0.05
+        xlim = [min(rri_n) - dx, max(rri_n) + dx]
+        ylim = [min(rri_n_1) - dy, max(rri_n_1) + dy]
+
+        from hrv.classical import non_linear
+        nl = non_linear(self.rri)
+        a = rri_n / np.cos(np.pi/4.0)
+        ca = np.mean(a)
+
+        cx, cy, _ = ca * np.cos(np.pi/4.0), ca * np.sin(np.pi/4.0), 0
+
+        width = nl['sd2']  # to seconds
+        height = nl['sd1']  # to seconds
+
+        # plot fx(x) = x
+        ax.plot([xlim[0], xlim[1]], [ylim[0], ylim[1]], 'k--')
+        fx = lambda val: -val + 2 * cx
+
+        ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
+        ax = _ellipsedraw(
+            ax,
+            width,
+            height,
+            cx,
+            cy,
+            np.pi/4.0,
+            color='r',
+            linewidth=3
+        )
 
     # TODO: Create methods for time domain to be calculted in the instance
 
