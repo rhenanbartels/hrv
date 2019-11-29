@@ -145,10 +145,14 @@ class RRi:
         height = nl['sd1']  # to seconds
 
         # plot fx(x) = x
-        ax.plot([xlim[0], xlim[1]], [ylim[0], ylim[1]], 'k--')
+        sd2_l = ax.plot(
+            [xlim[0], xlim[1]],
+            [ylim[0], ylim[1]],
+            '--', color=[0.5, 0.5, 0.5]
+        )
         fx = lambda val: -val + 2 * cx
 
-        ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
+        sd1_l =  ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
         ax = _ellipsedraw(
             ax,
             width,
@@ -158,6 +162,10 @@ class RRi:
             np.pi/4.0,
             color='r',
             linewidth=3
+        )
+        ax.legend(
+            (sd1_l[0], sd2_l[0]),
+            ('SD1: %.2fms' % height, 'SD2: %.2fms' % width),
         )
 
         return fig, ax

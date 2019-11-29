@@ -469,6 +469,7 @@ class TestRRiPlotMethods:
     @mock.patch('hrv.rri.plt.subplots')
     def test_poincare_plot(self, _subplots, _ellipsedraw):
         ax_mock = mock.MagicMock()
+        ax_mock.plot.side_effect = [None, ('sd1_l',), ('sd2_l',)]
         fig_mock = mock.MagicMock()
         _subplots.return_value = (fig_mock, ax_mock)
         _ellipsedraw.return_value = ax_mock
@@ -478,10 +479,18 @@ class TestRRiPlotMethods:
 
         # For some reason the regular assert_called_once_with is
         # not working when the rri series is sliced.
-        actual_call = ax_mock.plot.call_args_list[0][0]
-        np.testing.assert_almost_equal(actual_call[0], self.rri[:-1])
-        np.testing.assert_almost_equal(actual_call[1], self.rri[1:])
-        assert actual_call[2] == '.k'
+        plt_actual_call = ax_mock.plot.call_args_list
+        np.testing.assert_almost_equal(plt_actual_call[0][0][0], self.rri[:-1])
+        np.testing.assert_almost_equal(plt_actual_call[0][0][1], self.rri[1:])
+        assert plt_actual_call[0][0][2] == '.k'
+
+        np.testing.assert_almost_equal(plt_actual_call[1][0][0], [799.25, 815.75])
+        np.testing.assert_almost_equal(plt_actual_call[1][0][1], [746.75, 818.25])
+        assert plt_actual_call[1][0][2] == '--'
+
+        np.testing.assert_almost_equal(plt_actual_call[2][0][0], [799.25, 815.75])
+        np.testing.assert_almost_equal(plt_actual_call[2][0][1], [817.4166666666667, 800.9166666666667])
+        assert plt_actual_call[2][0][2] == 'k--'
 
         # Labels
         ax_mock.set.assert_called_once_with(
@@ -489,15 +498,6 @@ class TestRRiPlotMethods:
             ylabel='$RRi_{n+1}$ (ms)',
             title='Poincaré Plot'
         )
-        plot_calls = [
-            mock.call([799.25, 815.75], [746.75, 818.25], 'k--'),
-            mock.call(
-                [799.25, 815.75],
-                [817.4166666666667, 800.9166666666667],
-                'k--'
-            )
-        ]
-        ax_mock.plot.assert_has_calls(plot_calls)
         _ellipsedraw.assert_called_once_with(
             ax_mock,
             30.000000000000004,
@@ -507,6 +507,10 @@ class TestRRiPlotMethods:
             0.7853981633974483,
             color='r',
             linewidth=3
+        )
+
+        ax_mock.legend.assert_called_once_with(
+            ('sd2_l', 'sd1_l'), ('SD1: 29.65ms', 'SD2: 30.00ms')
         )
 
         assert returned_fig == fig_mock
