@@ -419,3 +419,10 @@ print(results)
 {'sd1': 51.538501037146382,
  'sd2': 127.11460955437322}
 ```
+
+It is also possible to depict the Poincaré Plot, from which SD1 and SD2 are derived:
+
+```python
+rri.poincare_plot()
+```
+<img src="docs/figures/poincare.png" alt="Poincare Image"  width=600px;>
