@@ -426,3 +426,36 @@ It is also possible to depict the Poincaré Plot, from which SD1 and SD2 are der
 rri.poincare_plot()
 ```
 <img src="docs/figures/poincare.png" alt="Poincare Image"  width=600px;>
+
+Contribution start guide
+------------------------
+
+The preferred way to start contributing for the project is creating a virtualenv (you can do by using virtualenv,
+virtualenvwrapper, pyenv or whatever tool you'd like).
+
+Create the virtualenv:
+
+```bash
+mkvirtualenv hrv
+```
+
+Install all dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Install development dependencies:
+
+```bash
+pip install -r dev-requirements.txt
+```
+
+## Running the tests
+
+In order to run the tests, activate the virtualenv and execute pytest:
+
+```bash
+workon <virtualenv>
+pytest -v
+```
