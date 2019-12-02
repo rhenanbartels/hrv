@@ -45,10 +45,16 @@ def threshsold_filter(rri, threshold=250, local_median_size=5):
 
     n_rri = len(rri)
     rri_to_remove = []
-    # Apply filter in the begining later
+    # Apply filter in the beginning later
     for j in range(local_median_size, n_rri):
         slice_ = slice(j-local_median_size, j)
         if rri[j] > (np.median(rri[slice_]) + threshold):
+            rri_to_remove.append(j)
+
+    first_idx = list(range(local_median_size + 1))
+    for j in range(local_median_size):
+        slice_ = [f for f in first_idx if not f == j]
+        if abs(rri[j] - np.median(rri[slice_])) > threshold:
             rri_to_remove.append(j)
 
     rri_temp = [r for idx, r in enumerate(rri) if idx not in rri_to_remove]
