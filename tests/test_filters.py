@@ -6,7 +6,7 @@ from hrv.filters import (
     moving_average,
     moving_median,
     quotient,
-    threshsold_filter)
+    threshold_filter)
 from hrv.rri import RRi
 
 
@@ -105,7 +105,7 @@ class Filter(TestCase):
                 time=[0, 1, 2, 3, 4, 5, 6]
         )
 
-        rri_filt = threshsold_filter(fake_rri, threshold=250)
+        rri_filt = threshold_filter(fake_rri, threshold=250)
         expected_rri = [810, 830, 860, 865, 804, 748.40625, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
@@ -123,7 +123,7 @@ class Filter(TestCase):
                 time=[0, 1, 2, 3, 4, 5, 6]
         )
 
-        rri_filt = threshsold_filter(fake_rri, threshold=250)
+        rri_filt = threshold_filter(fake_rri, threshold=250)
         expected_rri = [810, 814.34375, 860, 865, 804, 810, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
@@ -141,7 +141,7 @@ class Filter(TestCase):
                 time=[0, 1, 2, 3, 4, 5, 6]
         )
 
-        rri_filt = threshsold_filter(fake_rri, threshold='strong')
+        rri_filt = threshold_filter(fake_rri, threshold='strong')
         expected_rri = [810, 814.34375, 860, 865, 804, 810, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 

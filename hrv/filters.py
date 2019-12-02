@@ -36,7 +36,8 @@ def moving_median(rri, order=3):
     return _moving_function(rri, order, np.median)
 
 
-def threshsold_filter(rri, threshold=250, local_median_size=5):
+def threshold_filter(rri, threshold=250, local_median_size=5):
+    # TODO: DRY
     if isinstance(rri, RRi):
         rri_time = rri.time
         rri = rri.values
