@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import CubicSpline
 
 from hrv.rri import RRi
 from hrv.utils import _create_time_info
@@ -33,6 +34,29 @@ def moving_average(rri, order=3):
 
 def moving_median(rri, order=3):
     return _moving_function(rri, order, np.median)
+
+
+def threshsold_filter(rri, threshold=250, local_median_size=5):
+    if isinstance(rri, RRi):
+        rri_time = rri.time
+        rri = rri.values
+    else:
+        rri_time = _create_time_info(rri)
+
+    n_rri = len(rri)
+    rri_to_remove = []
+    # Apply filter in the begining later
+    for j in range(local_median_size, n_rri):
+        slice_ = slice(j-local_median_size, j)
+        if rri[j] > (np.median(rri[slice_]) + threshold):
+            rri_to_remove.append(j)
+
+    rri_temp = [r for idx, r in enumerate(rri) if idx not in rri_to_remove]
+    time_temp = [
+        t for idx, t in enumerate(rri_time) if idx not in rri_to_remove
+    ]
+    cubic_spline = CubicSpline(time_temp, rri_temp)
+    return RRi(cubic_spline(rri_time), rri_time)
 
 
 def _moving_function(rri, order, func):
