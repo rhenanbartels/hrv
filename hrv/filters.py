@@ -43,6 +43,16 @@ def threshsold_filter(rri, threshold=250, local_median_size=5):
     else:
         rri_time = _create_time_info(rri)
 
+    # Filter strength inspired in Kubios guide
+    strength = {
+        'very low': 450,
+        'low': 350,
+        'medium': 250,
+        'strong': 150,
+        'very strong': 50,
+    }
+    threshold = strength[threshold] if threshold in strength else threshold
+
     n_rri = len(rri)
     rri_to_remove = []
     # Apply filter in the beginning later
