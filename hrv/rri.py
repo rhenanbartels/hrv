@@ -236,6 +236,17 @@ class RRi:
         return self.rri <= val
 
 
+class RRiDetrended(RRi):
+    def __init__(self, rri, time):
+        self.__rri = rri
+        self.__time = time
+        self.__detrended = True
+
+    @property
+    def detrended(self):
+        return self.__detrended
+
+
 class RRiDescription(MutableMapping):
     def __init__(self, table, *args, **kwargs):
         self.store = defaultdict(dict)
