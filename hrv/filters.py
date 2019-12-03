@@ -44,7 +44,7 @@ def threshold_filter(rri, threshold='medium', local_median_size=5):
     else:
         rri_time = _create_time_info(rri)
 
-    # Filter strength inspired in Kubios threshold based artefact correction
+    # Filter strength inspired in Kubios threshold based artifact correction
     strength = {
         'very low': 450,
         'low': 350,

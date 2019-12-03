@@ -365,6 +365,32 @@ filt_rri.plot(ax=ax)
 
 <img src="docs/figures/quotient.png" alt="Quotient Filter Image"  width=600px;>
 
+### Threshold Filter
+
+This filter is inspired by the threshold-based artifact correction algorithm offered by [Kubios](https://www.kubios.com/)<sup>&reg;</sup> .
+To elect outliers in the tachogram series, each RRi is compared to the median value of local RRi (default N=5).
+All the RRi which the difference is greater than the local median value plus a threshold is replaced by
+[cubic spline](https://en.wikiversity.org/wiki/Cubic_Spline_Interpolation) interpolated RRi.
+
+The threshold filter has five pre-defined strength values:
+
+    - Very Low: 450ms
+    - Low: 350ms
+    - Medium: 250ms
+    - Strong: 150ms
+    - Very Strong: 50ms
+It also accepts custom threshold values (in milliseconds).
+The following snippet shows the ectopic RRi removal:
+
+```python
+from hrv.filters import threshold_filter
+filt_rri = threshold_filter(rri, threshold='medium', local_median_size=5)
+
+fig, ax = rri.plot()
+filt_rri.plot(ax=ax)
+```
+
+<img src="docs/figures/threshold_filter.png" alt="Threshold Filter Image"  width=600px;>
 
 ## Time Domain Analysis
 ```python
