@@ -36,7 +36,7 @@ def moving_median(rri, order=3):
     return _moving_function(rri, order, np.median)
 
 
-def threshold_filter(rri, threshold=250, local_median_size=5):
+def threshold_filter(rri, threshold='medium', local_median_size=5):
     # TODO: DRY
     if isinstance(rri, RRi):
         rri_time = rri.time
@@ -44,7 +44,7 @@ def threshold_filter(rri, threshold=250, local_median_size=5):
     else:
         rri_time = _create_time_info(rri)
 
-    # Filter strength inspired in Kubios guide
+    # Filter strength inspired in Kubios threshold based artefact correction
     strength = {
         'very low': 450,
         'low': 350,
