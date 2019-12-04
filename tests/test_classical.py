@@ -154,8 +154,21 @@ class FrequencyDomainTestCase(unittest.TestCase):
         _pburg_psd.return_value = (np.array([1, 2]), np.array([3, 4]))
         frequency_domain(fake_rri, fs=4, method='ar', interp_method='cubic',
                          order=16)
+        expected_called_rri = [
+            -0.19565217,
+            0.15217391,
+            0.17391304,
+            -0.13043478
+        ]
 
-        _pburg_psd.assert_called_once_with(rri=fake_rri, fs=4, order=16)
+        pburg_args_list = _pburg_psd.call_args_list[0][1]
+        assert isinstance(pburg_args_list['rri'], RRiDetrended)
+        np.testing.assert_almost_equal(
+            expected_called_rri,
+            pburg_args_list['rri'].values
+        )
+        assert 4 == pburg_args_list['fs']
+        assert 16 == pburg_args_list['order']
 
     def test_calc_pburg_psd_returns_numpy_arrays(self):
         fake_rri = list(range(20))
@@ -173,6 +186,34 @@ class FrequencyDomainTestCase(unittest.TestCase):
         fxx, pxx = _calc_pburg_psd(marple_data, fs=1.0)
 
         np.testing.assert_almost_equal(np.mean(pxx), 0.400, decimal=2)
+
+    @mock.patch('hrv.classical.polynomial_detrend')
+    @mock.patch('hrv.classical._auc')
+    @mock.patch('hrv.classical._calc_pburg_psd', return_value=['fxx', 'pxx'])
+    @mock.patch('hrv.classical._interpolate_rri')
+    def test_frequency_domain_with_pburg_and_detrend(
+            self, _interpolate_rri, _pburg, _auc, _poly_detrend):
+        "If pburg method is selected use detrend options from hrv module"
+        _interpolate_rri.return_value = [1, 2, 3, 4]
+        _poly_detrend.return_value = [-1, -2, -3, -4]
+        fake_rri = RRi([1, 2, 3, 4], time=[5, 6, 7, 8])
+        fake_time = fake_rri.time
+        response = frequency_domain(fake_rri, time=fake_time, fs=4,
+                                    method='ar',order=16,
+                                    detrend='linear')
+
+        _interpolate_rri.assert_called_once_with(
+            fake_rri,
+            fake_time,
+            4,
+            'cubic'
+        )
+        _poly_detrend.assert_called_once_with([1, 2, 3, 4], degree=1)
+        _pburg.assert_called_once_with(
+            rri=[-1, -2, -3, -4],
+            fs=4,
+            order=16,
+        )
 
     @mock.patch('hrv.classical._interpolate_rri')
     def test_using_rri_class(self, _interp):

@@ -4,6 +4,7 @@ import numpy as np
 from scipy.signal import welch
 from spectrum import pburg
 
+from hrv.detrend import polynomial_detrend
 from hrv.rri import RRi
 from hrv.utils import (validate_rri, _interpolate_rri)
 
@@ -49,6 +50,8 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
     if method == 'welch':
         fxx, pxx = welch(x=rri, fs=fs, detrend=detrend, **kwargs)
     elif method == 'ar':
+        if detrend:
+            rri = polynomial_detrend(rri, degree=1)
         fxx, pxx = _calc_pburg_psd(rri=rri,  fs=fs, **kwargs)
 
     return _auc(fxx, pxx, vlf_band, lf_band, hf_band)
