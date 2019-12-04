@@ -6,7 +6,7 @@ from scipy.sparse import spdiags, dia_matrix
 from hrv.rri import RRiDetrended, RRi, _create_time_array
 
 
-def polynomial_detrend(rri, degree):
+def polynomial_detrend(rri, degree=1):
     if isinstance(rri, RRi):
         time = rri.time
         rri = rri.values
