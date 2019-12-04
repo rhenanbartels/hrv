@@ -49,10 +49,9 @@ class RRiDetrend(TestCase):
         detrended_rri = smoothness_priors(fake_rri, l=500, fs=4.0)
 
         expected_rri = [
-             1.0998221e+01, 9.8113963e+00, 8.6277680e+00, 7.4537082e+00,
-             6.2987969e+00, 5.1758828e+00, 4.1011555e+00, 3.0942070e+00,
-             2.1780640e+00, 1.3791701e+00, 7.2731375e-01, 2.5552899e-01,
-             7.7328588e+02, 7.9830030e+02
+            799.0018, 794.1204, 801.8663, 817.2193, 835.156 , 850.6497,
+            858.6705, 854.2143, 836.2049, 811.4113, 787.5311, 772.2589,
+            0.    ,   0.
         ]
         np.testing.assert_almost_equal(detrended_rri, expected_rri, 4)
         assert isinstance(detrended_rri, RRiDetrended)
