@@ -7,18 +7,19 @@ from hrv.rri import RRi, RRiDetrended
 
 
 class RRiDetrend(TestCase):
-    fake_rri = RRi([810, 830, 860, 790, 804])
+    def test_polynomial_detrend(self):
+        fake_rri = RRi([810, 830, 860, 790, 804])
 
-    detrended_rri = polynomial_detrend(fake_rri, degree=3)
+        detrended_rri = polynomial_detrend(fake_rri, degree=3)
 
-    expected_rri = [
-        4.12877839,
-        -16.31947386,
-        25.77155567,
-        -18.14773522,
-        4.56687502
-    ]
-    np.testing.assert_almost_equal(detrended_rri, expected_rri)
-    assert isinstance(detrended_rri, RRiDetrended)
-    np.testing.assert_almost_equal(detrended_rri.time, fake_rri.time)
-    np.testing.assert_almost_equal(detrended_rri.mean(), 0)
+        expected_rri = [
+            4.12877839,
+            -16.31947386,
+            25.77155567,
+            -18.14773522,
+            4.56687502
+        ]
+        np.testing.assert_almost_equal(detrended_rri, expected_rri)
+        assert isinstance(detrended_rri, RRiDetrended)
+        np.testing.assert_almost_equal(detrended_rri.time, fake_rri.time)
+        np.testing.assert_almost_equal(detrended_rri.mean(), 0)
