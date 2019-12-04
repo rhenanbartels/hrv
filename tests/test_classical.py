@@ -9,7 +9,7 @@ from spectrum import marple_data
 from hrv.classical import (time_domain, frequency_domain, _auc, _poincare,
                            _nn50, _pnn50, _calc_pburg_psd)
 from hrv.io import read_from_text
-from hrv.rri import RRi
+from hrv.rri import RRi, RRiDetrended
 from tests.test_utils import FAKE_RRI
 
 
@@ -80,6 +80,26 @@ class FrequencyDomainTestCase(unittest.TestCase):
                                        decimal=2)
         self.assertEqual(response.keys(),
                          expected.keys())
+
+    @mock.patch('hrv.classical._auc')
+    @mock.patch('hrv.classical.welch', return_value=['fxx', 'pxx'])
+    @mock.patch('hrv.classical._interpolate_rri')
+    def test_frequency_domain_with_welch_and_detrended_rri(
+            self, _interpolate_rri, _welch, _auc):
+        _interpolate_rri.return_value = [1, 2, 3, 4]
+        fake_rri = RRiDetrended([-1, -2, -3, -4], time=[5, 6, 7, 8])
+        response = frequency_domain(fake_rri, time=fake_rri.time, fs=4,
+                                    method='welch', nperseg=256, noverlap=128,
+                                    window='hanning')
+
+        _welch.assert_called_once_with(
+            x=[1, 2, 3, 4],
+            fs=4,
+            detrend=False,
+            noverlap=128,
+            nperseg=256,
+            window='hanning'
+        )
 
     def test_area_under_the_curve(self):
         fxx = np.arange(0, 1, 1 / 1000.0)

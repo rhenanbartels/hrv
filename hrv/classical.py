@@ -34,17 +34,19 @@ def _pnn50(rri):
 
 # TODO: create nperseg, noverlap and detrend arguments
 def frequency_domain(rri, time=None, fs=4.0, method='welch',
-                     interp_method='cubic', vlf_band=(0, 0.04),
-                     lf_band=(0.04, 0.15), hf_band=(0.15, 0.4), **kwargs):
+                     interp_method='cubic', detrend='constant',
+                     vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
+                     hf_band=(0.15, 0.4), **kwargs):
 
-    if isinstance(rri, RRi) and time is None:
-        time = rri.time
+    if isinstance(rri, RRi):
+        time = rri.time if time is None else time
+        detrend = detrend if not rri.detrended else False
 
     if interp_method is not None:
         rri = _interpolate_rri(rri, time, fs, interp_method)
 
     if method == 'welch':
-        fxx, pxx = welch(x=rri, fs=fs, **kwargs)
+        fxx, pxx = welch(x=rri, fs=fs, detrend=detrend, **kwargs)
     elif method == 'ar':
         fxx, pxx = _calc_pburg_psd(rri=rri,  fs=fs, **kwargs)
 
