@@ -30,6 +30,13 @@ class TestRRiClassArguments:
                 [800, 900, 1200]
         )
 
+    def test_rri_instance(self):
+        rri = RRi(FAKE_RRI)
+
+        assert isinstance(rri, RRi)
+        assert rri.detrended == False
+        assert rri.interpolated == False
+
     def test_rri_values(self):
         rri = RRi(FAKE_RRI).values
 
@@ -527,3 +534,4 @@ class TestRRiDetrended:
         det_rri_obj = RRiDetrended(detrended_rri, time=rri_time)
 
         assert det_rri_obj.detrended == True
+        assert det_rri_obj.interpolated == False
