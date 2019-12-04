@@ -41,6 +41,7 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
     if isinstance(rri, RRi):
         time = rri.time if time is None else time
         detrend = detrend if not rri.detrended else False
+        interp_method = interp_method if not rri.interpolated else None
 
     if interp_method is not None:
         rri = _interpolate_rri(rri, time, fs, interp_method)

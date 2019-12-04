@@ -101,6 +101,28 @@ class FrequencyDomainTestCase(unittest.TestCase):
             window='hanning'
         )
 
+    @mock.patch('hrv.classical._auc')
+    @mock.patch('hrv.classical.welch', return_value=['fxx', 'pxx'])
+    @mock.patch('hrv.classical._interpolate_rri')
+    def test_frequency_domain_with_welch_and_detrended_rri_and_interp(
+            self, _interpolate_rri, _welch, _auc):
+        fake_rri = RRiDetrended(
+            [-1, -2, -3, -4], time=[5, 6, 7, 8], interpolated=True
+        )
+        response = frequency_domain(fake_rri, time=fake_rri.time, fs=4,
+                                    method='welch', nperseg=256, noverlap=128,
+                                    window='hanning')
+
+        _interpolate_rri.assert_not_called()
+        _welch.assert_called_once_with(
+            x=fake_rri,
+            fs=4,
+            detrend=False,
+            noverlap=128,
+            nperseg=256,
+            window='hanning'
+        )
+
     def test_area_under_the_curve(self):
         fxx = np.arange(0, 1, 1 / 1000.0)
         pxx = np.ones(len(fxx))
