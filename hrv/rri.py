@@ -251,8 +251,15 @@ class RRi:
 
 
 class RRiDetrended(RRi):
-    def __init__(self, rri, time, interpolated=False):
-        super().__init__(rri, time, interpolated, detrended=True)
+    def __init__(self, rri, time, *args, **kwargs):
+        detrended = True
+        interpolated = kwargs.pop('interpolated', False)
+        super().__init__(
+            rri,
+            time,
+            interpolated=interpolated,
+            detrended=detrended
+        )
 
 class RRiDescription(MutableMapping):
     def __init__(self, table, *args, **kwargs):
