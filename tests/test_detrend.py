@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy as np
 
 from hrv.detrend import polynomial_detrend
-from hrv.rri import RRi
+from hrv.rri import RRi, RRiDetrended
 
 
 class RRiDetrend(TestCase):
@@ -19,3 +19,6 @@ class RRiDetrend(TestCase):
         4.56687502
     ]
     np.testing.assert_almost_equal(detrended_rri, expected_rri)
+    assert isinstance(detrended_rri, RRiDetrended)
+    np.testing.assert_almost_equal(detrended_rri.time, fake_rri.time)
+    np.testing.assert_almost_equal(detrended_rri.mean(), 0)
