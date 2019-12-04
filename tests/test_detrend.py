@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from hrv.detrend import polynomial_detrend, smoothness_priors
+from hrv.detrend import polynomial_detrend, smoothness_priors, sg_detrend
 from hrv.rri import RRi, RRiDetrended
 
 
@@ -58,3 +58,19 @@ class RRiDetrend(TestCase):
         assert isinstance(detrended_rri, RRiDetrended)
         assert detrended_rri.interpolated == True
         assert detrended_rri.detrended == True
+
+    def test_savitzky_golay_detrend(self):
+        fake_rri = RRi([810, 830, 860, 790, 804])
+
+        detrended_rri = sg_detrend(fake_rri, window_length=3, polyorder=2)
+
+        expected_rri = [
+            2.2737368e-13, -3.4106051e-13, -3.4106051e-13, -3.4106051e-13,
+            3.4106051e-13
+        ]
+        expected_time = np.array([0.   , 0.83 , 1.69 , 2.48 , 3.284])
+
+        np.testing.assert_almost_equal(detrended_rri, expected_rri)
+        assert isinstance(detrended_rri, RRiDetrended)
+        np.testing.assert_almost_equal(detrended_rri.time, expected_time)
+        np.testing.assert_almost_equal(detrended_rri.mean(), 0)

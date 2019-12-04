@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.interpolate import CubicSpline
+from scipy.signal import savgol_filter
 from scipy.sparse import spdiags, dia_matrix
 
 from hrv.rri import RRiDetrended, RRi, _create_time_array
@@ -43,4 +44,24 @@ def smoothness_priors(rri, l=500, fs=4.0):
         time=time_interp,
         detrended=True,
         interpolated=True
+    )
+
+def sg_detrend(rri, window_length=51, polyorder=3,  *args, **kwargs):
+    if isinstance(rri, RRi):
+        time = rri.time
+        rri = rri.values
+    else:
+        time = _create_time_array(rri)
+
+    trend = savgol_filter(
+        rri,
+        window_length=window_length,
+        polyorder=polyorder,
+        *args,
+        **kwargs
+    )
+    return RRiDetrended(
+        rri - trend,
+        time=time,
+        detrended=True
     )
