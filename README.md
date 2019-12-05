@@ -1,7 +1,7 @@
 Pythonic package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.2.4
+version number: 0.2.4 
 author: Rhenan Bartels
 
 Overview
@@ -408,15 +408,14 @@ from hrv.detrend import polynomial_detrend
 rri_detrended = polynomial_detrend(rri, degree=1)
 
 fig, ax = rri.plot()
-ax_mirror = ax.twiny()
-rri_detrended.plot(ax=ax_mirror, color='k')
+rri_detrended.plot(ax, color='k')
 ```
 
 <img src="docs/figures/polynomial_detrend.png" alt="Polynomial detrend"  width=600px;>
 
 ### Smoothness priors
 
-Developed by Tarvoinen et al, allow the removal of complex trends. See [] for more information
+Developed by Tarvainen *et al*, allow the removal of complex trends. Visit [here](https://ieeexplore.ieee.org/document/979357) for more information.
 It worth noticing that the detrended RRi with the Smoothness priors approach is also interpolated
 and resampled using frequency equals to ```fs```.
 
@@ -426,8 +425,7 @@ from hrv.detrend import smoothness_priors
 rri_detrended = smoothness_priors(rri, l=500, fs=4.0)
 
 fig, ax = rri.plot()
-ax_mirror = ax.twiny()
-rri_detrended.plot(ax=ax_mirror, color='k')
+rri_detrended.plot(ax, color='k')
 ```
 
 <img src="docs/figures/smoothness_priors.png" alt="Smoothness priors detrend"  width=600px;>
@@ -445,8 +443,7 @@ from hrv.detrend import sg_detrend
 rri_detrended = sg_detrend(rri, window_size=51, polyorder=3)
 
 fig, ax = rri.plot()
-ax_mirror = ax.twiny()
-rri_detrended.plot(ax=ax_mirror, color='k')
+rri_detrended.plot(ax, color='k')
 ```
 <img src="docs/figures/savitzky_golay_detrend.png" alt="Savitzky Golay Detrend"  width=600px;>
 
