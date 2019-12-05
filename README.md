@@ -432,6 +432,9 @@ rri_detrended.plot(ax=ax_mirror, color='k')
 
 <img src="docs/figures/smoothness_priors.png" alt="Smoothness priors detrend"  width=600px;>
 
+#### Note: this approach depends on a numpy matrix inversion and due to floating-point precision it might
+present round-off errors in the trend calculation
+
 ### Savitzky-Golay
 
 Uses the lowpass filter known as  Savitzky-Golay filter to smooth the RRi series and remove slow components from the tachogram
