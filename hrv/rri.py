@@ -8,14 +8,22 @@ import numpy as np
 from .utils import _ellipsedraw
 
 
-# TODO: create InterpolatedRRi and DetrendedRRi classes
 class RRi:
-    def __init__(self, rri, time=None):
-        self.__rri = _validate_rri(rri)
+    def __init__(self, rri, time=None, *args, **kwargs):
+        if not isinstance(self, RRiDetrended):
+            self.__rri = _validate_rri(rri)
+            self.__detrended = False
+            self.__interpolated = False
+        else:
+            self.__rri = np.array(rri)
+            self.__detrended = kwargs.pop('detrended')
+            self.__interpolated = kwargs.pop('interpolated', False)
+
         if time is None:
             self.__time = _create_time_array(self.rri)
         else:
             self.__time = _validate_time(self.__rri, time)
+
 
     def __len__(self):
         return len(self.__rri)
@@ -37,6 +45,14 @@ class RRi:
     @property
     def time(self):
         return self.__time
+
+    @property
+    def detrended(self):
+        return self.__detrended
+
+    @property
+    def interpolated(self):
+        return self.__interpolated
 
     def describe(self):
         table = _prepare_table(RRi(self.rri))
@@ -61,8 +77,6 @@ class RRi:
         duration = self.__time[-1]
         # Hard coded interp and detrended. Future versions will have proper
         # attributes
-        interp = False
-        detrended = False
         mem_usage = _mem_usage(self.__rri.nbytes)
 
         msg_template = 'N Points: {n_points}\nDuration: {duration:.2f}s\n'\
@@ -71,8 +85,8 @@ class RRi:
         sys.stdout.write(msg_template.format(
             n_points=n_points,
             duration=duration,
-            interp=interp,
-            detrended=detrended,
+            interp=self.interpolated,
+            detrended=self.detrended,
             mem_usage=mem_usage
         ))
 
@@ -235,6 +249,18 @@ class RRi:
     def __le__(self, val):
         return self.rri <= val
 
+
+class RRiDetrended(RRi):
+    #TODO: add trend as attribute of the instance
+    def __init__(self, rri, time, *args, **kwargs):
+        detrended = True
+        interpolated = kwargs.pop('interpolated', False)
+        super().__init__(
+            rri,
+            time,
+            interpolated=interpolated,
+            detrended=detrended
+        )
 
 class RRiDescription(MutableMapping):
     def __init__(self, table, *args, **kwargs):

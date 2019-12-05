@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from hrv.rri import (RRi,
+                     RRiDetrended,
                      _validate_rri,
                      _create_time_array,
                      _validate_time,
@@ -28,6 +29,13 @@ class TestRRiClassArguments:
                 _validate_rri(rri_in_seconds),
                 [800, 900, 1200]
         )
+
+    def test_rri_instance(self):
+        rri = RRi(FAKE_RRI)
+
+        assert isinstance(rri, RRi)
+        assert not rri.detrended
+        assert not rri.interpolated
 
     def test_rri_values(self):
         rri = RRi(FAKE_RRI).values
@@ -521,3 +529,15 @@ class TestRRiPlotMethods:
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
+
+
+class TestRRiDetrended:
+    def test_create_detrended_rri_class(self):
+        detrended_rri = [-87.98470401,  -88.22253018,  -49.46831978,
+                         -109.69798458, -181.90892056]
+        rri_time = [0, 1, 2, 3, 4]
+
+        det_rri_obj = RRiDetrended(detrended_rri, time=rri_time)
+
+        assert det_rri_obj.detrended
+        assert not det_rri_obj.interpolated
