@@ -326,6 +326,8 @@ rri_range.reset_time(inplace=True)
 ```
 <img src="docs/figures/rri_range_reset.png" alt="Moving Average Image"  width=600px;>
 
+# Pre-Processing
+
 ## Filters
 
 ### Moving Average
@@ -391,6 +393,53 @@ filt_rri.plot(ax=ax)
 ```
 
 <img src="docs/figures/threshold_filter.png" alt="Threshold Filter Image"  width=600px;>
+
+## Detrending
+The ```hrv``` module also offers functions to remove the non-stationary trends from the RRi series.
+It allows the removal of slow linear or more complex trends using the following approaches:
+
+### Polynomials models
+
+Given a degree a polynomial filter is applied to the RRi series and subtracted from the tachogram
+
+```python
+from hrv.detrend import polynomial_detrend
+
+rri_detrended = polynomial_detrend(rri, degree=1)
+fig, ax = rri.plot()
+ax_mirror = ax.twiny()
+rri_detrended.plot(ax=ax_mirror, color='k')
+```
+
+### Smoothness priors
+
+Developed by Tarvoinen et al, allow the removal of complex trends. See [] for more information
+It worth noticing that the detrended RRi with the Smoothness priors approach is also interpolated
+and resampled using frequency equals to ```fs```.
+
+```python
+from hrv.detrend import smoothness_priors
+
+rri_detrended = smoothness_priors(rri, l=500, fs=4.0)
+fig, ax = rri.plot()
+ax_mirror = ax.twiny()
+rri_detrended.plot(ax=ax_mirror, color='k')
+```
+
+### Savitzky-Golay
+
+Uses the lowpass filter known as  Savitzky-Golay filter to smooth the RRi series and remove slow components from the tachogram
+
+```python
+from hrv.detrend import sg_detrend
+
+rri_detrended = sg_detrend(rri, window_size=51, polyorder=3)
+fig, ax = rri.plot()
+ax_mirror = ax.twiny()
+rri_detrended.plot(ax=ax_mirror, color='k')
+```
+
+# Analysis
 
 ## Time Domain Analysis
 ```python
