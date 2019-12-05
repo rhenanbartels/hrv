@@ -14,13 +14,14 @@ def time_domain(rri):
     diff_rri = np.diff(rri)
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
     sdnn = np.std(rri, ddof=1)  # make it calculates N-1
+    sdsd = np.std(diff_rri, ddof=1)
     nn50 = _nn50(rri)
     pnn50 = _pnn50(rri)
     mrri = np.mean(rri)
     mhr = np.mean(60 / (rri / 1000.0))
 
-    return dict(zip(['rmssd', 'sdnn', 'nn50', 'pnn50', 'mrri', 'mhr'],
-                    [rmssd, sdnn, nn50, pnn50, mrri, mhr]))
+    return dict(zip(['rmssd', 'sdnn', 'sdsd', 'nn50', 'pnn50', 'mrri', 'mhr'],
+                    [rmssd, sdnn, sdsd, nn50, pnn50, mrri, mhr]))
 
 
 def _nn50(rri):

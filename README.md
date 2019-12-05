@@ -1,7 +1,8 @@
 Pythonic package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.2.3  
+version number: 0.2.4 
+
 author: Rhenan Bartels
 
 
@@ -383,7 +384,8 @@ print(results)
  'nn50': 337,
  'pnn50': 33.971774193548384,
  'rmssd': 72.849900286450023,
- 'sdnn': 96.990569261440797}
+ 'sdnn': 96.990569261440797,
+ 'sdsd': 46.233829821038042}
 ```
 
 ## Frequency Domain Analysis
@@ -420,4 +422,44 @@ print(results)
 
 {'sd1': 51.538501037146382,
  'sd2': 127.11460955437322}
+```
+
+It is also possible to depict the Poincaré Plot, from which SD1 and SD2 are derived:
+
+```python
+rri.poincare_plot()
+```
+<img src="docs/figures/poincare.png" alt="Poincare Image"  width=600px;>
+
+Contribution start guide
+------------------------
+
+The preferred way to start contributing for the project is creating a virtualenv (you can do by using virtualenv,
+virtualenvwrapper, pyenv or whatever tool you'd like).
+
+Create the virtualenv:
+
+```bash
+mkvirtualenv hrv
+```
+
+Install all dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Install development dependencies:
+
+```bash
+pip install -r dev-requirements.txt
+```
+
+## Running the tests
+
+In order to run the tests, activate the virtualenv and execute pytest:
+
+```bash
+workon <virtualenv>
+pytest -v
 ```
