@@ -2,6 +2,7 @@ Pythonic package for Heart Rate Variability Analysis
 ===============================
 
 version number: 0.2.4 
+
 author: Rhenan Bartels
 
 Overview
@@ -398,7 +399,7 @@ filt_rri.plot(ax=ax)
 The ```hrv``` module also offers functions to remove the non-stationary trends from the RRi series.
 It allows the removal of slow linear or more complex trends using the following approaches:
 
-### Polynomials models
+### Polynomial models
 
 Given a degree a polynomial filter is applied to the RRi series and subtracted from the tachogram
 
@@ -430,7 +431,8 @@ rri_detrended.plot(ax, color='k')
 
 <img src="docs/figures/smoothness_priors.png" alt="Smoothness priors detrend"  width=600px;>
 
-#### Note: this approach depends on a numpy matrix inversion and due to floating-point precision it might
+#### Note:
+this approach depends on a numpy matrix inversion and due to floating-point precision it might
 present round-off errors in the trend calculation
 
 ### Savitzky-Golay
