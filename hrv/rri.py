@@ -251,6 +251,7 @@ class RRi:
 
 
 class RRiDetrended(RRi):
+    #TODO: add trend as attribute of the instance
     def __init__(self, rri, time, *args, **kwargs):
         detrended = True
         interpolated = kwargs.pop('interpolated', False)

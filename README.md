@@ -406,10 +406,13 @@ Given a degree a polynomial filter is applied to the RRi series and subtracted f
 from hrv.detrend import polynomial_detrend
 
 rri_detrended = polynomial_detrend(rri, degree=1)
+
 fig, ax = rri.plot()
 ax_mirror = ax.twiny()
 rri_detrended.plot(ax=ax_mirror, color='k')
 ```
+
+<img src="docs/figures/polynomial_detrend.png" alt="Polynomial detrend"  width=600px;>
 
 ### Smoothness priors
 
@@ -421,10 +424,13 @@ and resampled using frequency equals to ```fs```.
 from hrv.detrend import smoothness_priors
 
 rri_detrended = smoothness_priors(rri, l=500, fs=4.0)
+
 fig, ax = rri.plot()
 ax_mirror = ax.twiny()
 rri_detrended.plot(ax=ax_mirror, color='k')
 ```
+
+<img src="docs/figures/smoothness_priors.png" alt="Smoothness priors detrend"  width=600px;>
 
 ### Savitzky-Golay
 
@@ -434,10 +440,12 @@ Uses the lowpass filter known as  Savitzky-Golay filter to smooth the RRi series
 from hrv.detrend import sg_detrend
 
 rri_detrended = sg_detrend(rri, window_size=51, polyorder=3)
+
 fig, ax = rri.plot()
 ax_mirror = ax.twiny()
 rri_detrended.plot(ax=ax_mirror, color='k')
 ```
+<img src="docs/figures/savitzky_golay_detrend.png" alt="Savitzky Golay Detrend"  width=600px;>
 
 # Analysis
 
