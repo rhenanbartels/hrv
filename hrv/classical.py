@@ -9,8 +9,54 @@ from hrv.rri import RRi
 from hrv.utils import (validate_rri, _interpolate_rri)
 
 
+__all__ = ['time_domain', 'frequency_domain', 'non_linear']
+
+
 @validate_rri
 def time_domain(rri):
+    """
+    time_domain(rri)
+
+    Calculate time-domain indices from an RRi series
+
+    Parameters
+    ----------
+    rri : array_like
+        sequence containing the RRi series
+
+    Returns
+    -------
+    results : dict
+        Dictionary containing the following time domain indices:
+            - rmssd: root mean squared of the successive differences
+            - sdnn: standard deviation of the RRi series
+            - sdsd: standard deviation of the successive differences
+            - nn50: number RRi successive differences greater than 50ms
+            - pnn50: percentage of RRi successive differences greater than 50ms
+            - mri: average value of the RRi series
+            - mhr: average value of the heart rate calculated from the
+                   RRi sries
+
+    References
+    ----------
+    - Heart rate variability. (1996). Standards of measurement, physiological
+      interpretation, and clinical use. Task Force of the European Society of
+      Cardiology and the North American Society of Pacing and
+      Electrophysiology. Eur Heart J, 17, 354-381.
+
+    Examples
+    --------
+    >>> from hrv.classical import time_domain
+    >>> rri = [1, 2, 3, 4, 5, 6]
+    >>> time_domain(rri)
+    {'rmssd': 1.0,
+     'sdnn': 1.8708286933869707,
+     'sdsd': 0.0,
+     'nn50': 0,
+     'pnn50': 0.0,
+     'mrri': 3.5,
+     'mhr': 24500.0}
+    """
     # TODO: let user choose interval for pnn50 and nn50.
     diff_rri = np.diff(rri)
     rmssd = np.sqrt(np.mean(diff_rri ** 2))
