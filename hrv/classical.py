@@ -84,6 +84,78 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
                      interp_method='cubic', detrend='constant',
                      vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
                      hf_band=(0.15, 0.4), **kwargs):
+    """
+    Estimate the Power Spectral Density (PSD) of an RRi series and
+    calculate the area under the curve (AUC) of the Very Low, Low, and High
+    frequency bands. The PSD can be estimated using non-parametric
+    (Welch's method) or parametric (Burg's method) approaches. The AUC
+    is calculated using the trapezoidal method (numpy.trapz).
+
+    Parameters
+    ----------
+    rri : array_like
+        Sequence containing the RRi series
+    time : array_like, optional
+        Sequence containing the time associated with the RRi series.
+        When not provided time is created from the cumulative sum of the
+        values from the RRi series
+    method : str, optional
+        The method for Power Spectral Density estimation. 'welch' (default),
+        'ar' (spectrum, see Cokelaer et al., 2017)
+    interp_method : str {'cubic', 'linear'}, optional
+        Interpolation funtion applied to the RRi series. If RRi series
+        is already interpolated this step is skipped. 'cubic' (default),
+        'linear'
+    detrend : str or function, optional
+       Detrend method applied to the RRi series. Defaults to 'constant'.
+       If the rri is an RRiDetrend object this step is skipped.
+       See scipy.signal.welch for more information
+    vlf_band : tuple (inferior_bound, superior_bound)
+        Frenquency interval of the Very Low frequency components of the
+        estimated PSD. Defaults to (0, 0.04)
+    lf_band : tuple (inferior_bound, superior_bound)
+        Frenquency interval of the Low frequency components of the estimated
+        PSD. Defaults to (0.04, 0.15)
+    hf_band : tuple (inferior_bound, superior_bound)
+        Frenquency interval of the High frequency components of the estimated
+        PSD. Defaults to (0.15, 0.4)
+
+    Returns
+    -------
+    results : dict
+        Dictionary containing the following frequency domain indices:
+            - total power: root mean squared of the successive differences
+            - vlf: standard deviation of the RRi series
+            - lf: standard deviation of the successive differences
+            - hf: number RRi successive differences greater than 50ms
+            - lf/hf: percentage of RRi successive differences greater than 50ms
+            - lfnu: average value of the RRi series
+            - hfnu: average value of the heart rate calculated from the
+                    RRi sries
+
+    References
+    ----------
+    - Heart rate variability. (1996). Standards of measurement, physiological
+      interpretation, and clinical use. Task Force of the European Society of
+      Cardiology and the North American Society of Pacing and
+      Electrophysiology. Eur Heart J, 17, 354-381.
+    - Cokelaer et al., (2017). ‘Spectrum’: Spectral Analysis in Python.
+      Journal of Open Source Software, 2(18), 348, doi:10.21105/joss.00348
+
+    Examples
+    --------
+    >>> from hrv.io import read_from_text
+    >>> from hrv.classical import frequency_domain
+    >>> rri = read_from_text('path/to/file.txt')
+    >>> frequency_domain(rri)
+    {'total_power': 3376.2107048316066,
+     'vlf': 447.31367706350915,
+     'lf': 1217.5000069660707,
+     'hf': 1711.3970208020266,
+     'lf_hf': 0.71140710902693,
+     'lfnu': 41.56854936937952,
+     'hfnu': 58.43145063062048}
+    """
 
     if isinstance(rri, RRi):
         time = rri.time if time is None else time
