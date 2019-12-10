@@ -28,13 +28,13 @@ def time_domain(rri):
     -------
     results : dict
         Dictionary containing the following time domain indices:
-            - rmssd: root mean squared of the successive differences
-            - sdnn: standard deviation of the RRi series
-            - sdsd: standard deviation of the successive differences
-            - nn50: number RRi successive differences greater than 50ms
-            - pnn50: percentage of RRi successive differences greater than 50ms
-            - mri: average value of the RRi series
-            - mhr: average value of the heart rate calculated from the
+            - RMSSD: root mean squared of the successive differences
+            - SDNN: standard deviation of the RRi series
+            - SDSD: standard deviation of the successive differences
+            - NN50: number RRi successive differences greater than 50ms
+            - PNN50: percentage of RRi successive differences greater than 50ms
+            - MRI: average value of the RRi series
+            - MHR: average value of the heart rate calculated from the
                    RRi sries
 
     References
@@ -79,7 +79,7 @@ def _pnn50(rri):
     return _nn50(rri) / len(rri) * 100
 
 
-# TODO: create nperseg, noverlap and detrend arguments
+# TODO: create nperseg, noverlap, order, nfft, and detrend arguments
 def frequency_domain(rri, time=None, fs=4.0, method='welch',
                      interp_method='cubic', detrend='constant',
                      vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
@@ -88,8 +88,9 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
     Estimate the Power Spectral Density (PSD) of an RRi series and
     calculate the area under the curve (AUC) of the Very Low, Low, and High
     frequency bands. The PSD can be estimated using non-parametric
-    (Welch's method) or parametric (Burg's method) approaches. The AUC
-    is calculated using the trapezoidal method (numpy.trapz).
+    (FFT - Welch's method) or parametric (Autoregressive - Burg's method)
+    approaches. The AUC is calculated using the trapezoidal method
+    (numpy.trapz).
 
     Parameters
     ----------
@@ -106,17 +107,32 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
         Interpolation funtion applied to the RRi series. If RRi series
         is already interpolated this step is skipped. 'cubic' (default),
         'linear'
+    nperseg : int, optional
+        The size of each segment used in the FFT-based estimation of the PSD.
+        Defaults to 256. ``nperseg <= len(rri)``. See scipy.signal.welch
+        for more information
+    noverlap : int, optional
+        The size of overlap between each adjacent rri segments. If `None`
+        ``noverlap = nperseg // 2``. See scipy.signal.welch for more
+        information
     detrend : str or function, optional
-       Detrend method applied to the RRi series. Defaults to 'constant'.
-       If the rri is an RRiDetrend object this step is skipped.
-       See scipy.signal.welch for more information
-    vlf_band : tuple (inferior_bound, superior_bound)
+        Detrend method applied to the RRi series. Defaults to 'constant'.
+        If the rri is an RRiDetrend object this step is skipped.
+        See scipy.signal.welch for more information
+    window : str or tuple or array_like, optional
+        Window function applied to each segment of the RRi series to avoid
+        spectral leakage. Only applied when welch method is chosen.
+        Defaults to Hanning. See scipy.signal.welch for more information
+    order : int, optional
+        Order of the Autoregressive model. Only applied when method is 'ar'.
+        Defaults to 16
+    vlf_band : tuple (inferior_bound, superior_bound), optional
         Frenquency interval of the Very Low frequency components of the
         estimated PSD. Defaults to (0, 0.04)
-    lf_band : tuple (inferior_bound, superior_bound)
+    lf_band : tuple (inferior_bound, superior_bound), optional
         Frenquency interval of the Low frequency components of the estimated
         PSD. Defaults to (0.04, 0.15)
-    hf_band : tuple (inferior_bound, superior_bound)
+    hf_band : tuple (inferior_bound, superior_bound), optional
         Frenquency interval of the High frequency components of the estimated
         PSD. Defaults to (0.15, 0.4)
 
@@ -124,14 +140,19 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
     -------
     results : dict
         Dictionary containing the following frequency domain indices:
-            - total power: root mean squared of the successive differences
-            - vlf: standard deviation of the RRi series
-            - lf: standard deviation of the successive differences
-            - hf: number RRi successive differences greater than 50ms
-            - lf/hf: percentage of RRi successive differences greater than 50ms
-            - lfnu: average value of the RRi series
-            - hfnu: average value of the heart rate calculated from the
+            - Total Power: total energy of the PSD
+            - VLF: energy associated with the Very Low frequency components
+            - LF: energy associated with the Low frequency components
+            - HF: energy associated with the High frequency components
+            - LF/HF: ratio between lf and hf indices
+            - LFnu: LF indice normalized by the Total Power. See math below
+            - HFnu: HF indice normalized by the Total Power. See math below
                     RRi sries
+
+    .. math::
+
+        LFnu = LF / (Total Power - VLF)
+        HFnu = HF / (Total Power - VLF)
 
     References
     ----------
