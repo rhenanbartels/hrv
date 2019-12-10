@@ -222,6 +222,46 @@ def _calc_pburg_psd(rri, fs, order=16, nfft=None):
 
 @validate_rri
 def non_linear(rri):
+    """
+    Calculate non-linear indices from RRi series. So far, only SD1 and SD2
+    features derived from the Poincaré analysis are available.
+
+    Parameters
+    ----------
+    rri : array_like
+        Sequence containing the RRi series
+
+    Returns
+    -------
+    results : dict
+        Dictionary containing the following non-linear indices:
+            - SD1: standard deviation of the points in the Poincaré's plot
+              projected in the y = x axis.
+            - SD2: standard deviation of the points in the Poincaré's plot
+              projected in the y = -x + mrri axis, where mrri is the average
+              value of the RRi series.
+
+    .. math::
+
+        SD1 = np.sqrt(0.5 * np.std(np.diff(rri, ddof=1))**2)
+        SD2 = np.sqrt(2 * np.std(rri, ddof=1) ** 2 - 0.5
+              * np.std(np.diff(rri, ddof=1))**2)
+
+    References
+    ----------
+    - Heart rate variability. (1996). Standards of measurement, physiological
+      interpretation, and clinical use. Task Force of the European Society of
+      Cardiology and the North American Society of Pacing and
+      Electrophysiology. Eur Heart J, 17, 354-381.
+
+    Examples
+    --------
+    >>> from hrv.io import read_from_text
+    >>> from hrv.classical import non_linear
+    >>> rri = read_from_text('path/to/file.txt')
+    >>> non_linear(rri)
+    {'sd1': 39.00945528912225, 'sd2': 71.86199098062633}
+    """
     sd1, sd2 = _poincare(rri)
     return dict(zip(['sd1', 'sd2'], [sd1, sd2]))
 
