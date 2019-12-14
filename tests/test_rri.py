@@ -492,12 +492,23 @@ class TestRRiPlotMethods:
         np.testing.assert_almost_equal(plt_actual_call[0][0][1], self.rri[1:])
         assert plt_actual_call[0][0][2] == '.k'
 
-        np.testing.assert_almost_equal(plt_actual_call[1][0][0], [799.25, 815.75])
-        np.testing.assert_almost_equal(plt_actual_call[1][0][1], [746.75, 818.25])
+        np.testing.assert_almost_equal(
+            plt_actual_call[1][0][0],
+            [799.25, 815.75]
+        )
+        np.testing.assert_almost_equal(
+            plt_actual_call[1][0][1], [746.75, 818.25]
+        )
         assert plt_actual_call[1][0][2] == '--'
 
-        np.testing.assert_almost_equal(plt_actual_call[2][0][0], [799.25, 815.75])
-        np.testing.assert_almost_equal(plt_actual_call[2][0][1], [817.4166666666667, 800.9166666666667])
+        np.testing.assert_almost_equal(
+            plt_actual_call[2][0][0],
+            [799.25, 815.75]
+        )
+        np.testing.assert_almost_equal(
+            plt_actual_call[2][0][1],
+            [817.4166666666667, 800.9166666666667]
+        )
         assert plt_actual_call[2][0][2] == 'k--'
 
         # Labels

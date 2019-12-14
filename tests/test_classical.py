@@ -88,9 +88,9 @@ class FrequencyDomainTestCase(unittest.TestCase):
             self, _interpolate_rri, _welch, _auc):
         _interpolate_rri.return_value = [1, 2, 3, 4]
         fake_rri = RRiDetrended([-1, -2, -3, -4], time=[5, 6, 7, 8])
-        response = frequency_domain(fake_rri, time=fake_rri.time, fs=4,
-                                    method='welch', nperseg=256, noverlap=128,
-                                    window='hanning')
+        frequency_domain(fake_rri, time=fake_rri.time, fs=4,
+                         method='welch', nperseg=256, noverlap=128,
+                         window='hanning')
 
         _welch.assert_called_once_with(
             x=[1, 2, 3, 4],
@@ -109,9 +109,9 @@ class FrequencyDomainTestCase(unittest.TestCase):
         fake_rri = RRiDetrended(
             [-1, -2, -3, -4], time=[5, 6, 7, 8], interpolated=True
         )
-        response = frequency_domain(fake_rri, time=fake_rri.time, fs=4,
-                                    method='welch', nperseg=256, noverlap=128,
-                                    window='hanning')
+        frequency_domain(fake_rri, time=fake_rri.time, fs=4,
+                         method='welch', nperseg=256, noverlap=128,
+                         window='hanning')
 
         _interpolate_rri.assert_not_called()
         _welch.assert_called_once_with(
@@ -198,9 +198,9 @@ class FrequencyDomainTestCase(unittest.TestCase):
         _poly_detrend.return_value = [-1, -2, -3, -4]
         fake_rri = RRi([1, 2, 3, 4], time=[5, 6, 7, 8])
         fake_time = fake_rri.time
-        response = frequency_domain(fake_rri, time=fake_time, fs=4,
-                                    method='ar',order=16,
-                                    detrend='linear')
+        frequency_domain(fake_rri, time=fake_time, fs=4,
+                         method='ar', order=16,
+                         detrend='linear')
 
         _interpolate_rri.assert_called_once_with(
             fake_rri,

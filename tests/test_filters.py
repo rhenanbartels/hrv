@@ -152,4 +152,3 @@ class Filter(TestCase):
                 decimal=2
         )
         np.testing.assert_almost_equal(rri_filt.time, expected_time, decimal=2)
-

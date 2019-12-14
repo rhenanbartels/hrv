@@ -45,6 +45,7 @@ def smoothness_priors(rri, l=500, fs=4.0):
         interpolated=True
     )
 
+
 def sg_detrend(rri, window_length=51, polyorder=3,  *args, **kwargs):
     if isinstance(rri, RRi):
         time = rri.time

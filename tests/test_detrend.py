@@ -36,7 +36,7 @@ class RRiDetrend(TestCase):
             -18.14773522,
             4.56687502
         ]
-        expected_time = np.array([0.   , 0.83 , 1.69 , 2.48 , 3.284])
+        expected_time = np.array([0., 0.83, 1.69, 2.48, 3.284])
 
         np.testing.assert_almost_equal(detrended_rri, expected_rri)
         assert isinstance(detrended_rri, RRiDetrended)
@@ -49,14 +49,14 @@ class RRiDetrend(TestCase):
         detrended_rri = smoothness_priors(fake_rri, l=500, fs=4.0)
 
         expected_rri = [
-            799.0018, 794.1204, 801.8663, 817.2193, 835.156 , 850.6497,
+            799.0018, 794.1204, 801.8663, 817.2193, 835.156, 850.6497,
             858.6705, 854.2143, 836.2049, 811.4113, 787.5311, 772.2589,
-            0.    ,   0.
+            0.,   0.
         ]
         np.testing.assert_almost_equal(detrended_rri, expected_rri, 4)
         assert isinstance(detrended_rri, RRiDetrended)
-        assert detrended_rri.interpolated == True
-        assert detrended_rri.detrended == True
+        assert detrended_rri.interpolated
+        assert detrended_rri.detrended
 
     def test_savitzky_golay_detrend(self):
         fake_rri = RRi([810, 830, 860, 790, 804])
@@ -67,7 +67,7 @@ class RRiDetrend(TestCase):
             2.2737368e-13, -3.4106051e-13, -3.4106051e-13, -3.4106051e-13,
             3.4106051e-13
         ]
-        expected_time = np.array([0.   , 0.83 , 1.69 , 2.48 , 3.284])
+        expected_time = np.array([0., 0.83, 1.69, 2.48, 3.284])
 
         np.testing.assert_almost_equal(detrended_rri, expected_rri)
         assert isinstance(detrended_rri, RRiDetrended)

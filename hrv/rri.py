@@ -24,7 +24,6 @@ class RRi:
         else:
             self.__time = _validate_time(self.__rri, time)
 
-
     def __len__(self):
         return len(self.__rri)
 
@@ -166,7 +165,7 @@ class RRi:
         )
         fx = lambda val: -val + 2 * cx
 
-        sd1_l =  ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
+        sd1_l = ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
         ax = _ellipsedraw(
             ax,
             width,
@@ -251,7 +250,7 @@ class RRi:
 
 
 class RRiDetrended(RRi):
-    #TODO: add trend as attribute of the instance
+    # TODO: add trend as attribute of the instance
     def __init__(self, rri, time, *args, **kwargs):
         detrended = True
         interpolated = kwargs.pop('interpolated', False)
@@ -261,6 +260,7 @@ class RRiDetrended(RRi):
             interpolated=interpolated,
             detrended=detrended
         )
+
 
 class RRiDescription(MutableMapping):
     def __init__(self, table, *args, **kwargs):
