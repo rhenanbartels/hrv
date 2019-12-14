@@ -23,6 +23,10 @@ def quotient(rri):
     results : RRi array
         instance of the RRi class containing the filtered RRi values
 
+    See Also
+    -------
+    moving_median, moving_averange, threshold_filter
+
     References
     ----------
     - Piskorski J, Guzik P. Filtering poincare plots.
