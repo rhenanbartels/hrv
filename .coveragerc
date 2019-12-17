@@ -3,3 +3,4 @@ omit =
     */site-packages/*
     */distutils/*
     tests/*
+    setup.py
