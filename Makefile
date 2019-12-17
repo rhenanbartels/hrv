@@ -9,7 +9,7 @@ clean:
 
 test:clean
 	py.test --verbose --color=yes -s $(TEST_PATH)
-
+	coverage report
 
 shell:clean
 	ipython

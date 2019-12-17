@@ -1,4 +1,6 @@
 -r requirements.txt
 
+coverage==5.0
 ipdb
 pytest
+pytest-cov==2.8.1
