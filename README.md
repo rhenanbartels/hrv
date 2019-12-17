@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/rhenanbartels/hrv.svg?branch=develop)](https://travis-ci.org/rhenanbartels/hrv)
+[![codecov](https://codecov.io/gh/rhenanbartels/hrv/branch/develop/graph/badge.svg)](https://codecov.io/gh/rhenanbartels/hrv)
+
+
 
 Pythonic package for Heart Rate Variability Analysis
 ===============================

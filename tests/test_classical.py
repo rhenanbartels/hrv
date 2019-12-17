@@ -170,6 +170,7 @@ class FrequencyDomainTestCase(unittest.TestCase):
         assert 4 == pburg_args_list['fs']
         assert 16 == pburg_args_list['order']
 
+    @unittest.skip('It is presenting unpredictable behavior with coverage')
     def test_calc_pburg_psd_returns_numpy_arrays(self):
         fake_rri = list(range(20))
         fxx, pxx = _calc_pburg_psd(fake_rri, fs=4.0)
@@ -177,6 +178,7 @@ class FrequencyDomainTestCase(unittest.TestCase):
         self.assertIsInstance(fxx, np.ndarray)
         self.assertIsInstance(pxx, np.ndarray)
 
+    @unittest.skip('It is presenting unpredictable behavior with coverage')
     def test_scale_by_freq_set_to_false(self):
         """
         To certify that scale_by_freq is set to False this test will check

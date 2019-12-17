@@ -1,5 +1,6 @@
 -r requirements.txt
 
+codecov
 coverage==5.0
 ipdb
 pytest
