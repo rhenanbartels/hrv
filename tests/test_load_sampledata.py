@@ -73,19 +73,6 @@ class TestLoadSampleData(TestCase):
             [704., 805., 808.]
         )
 
-    def test_load_sample_exercise_noisy_rri(self):
-        sample_rri = load_sample_data('exercise_noisy_rri.hrm')
-
-        self.assertIsInstance(sample_rri, RRi)
-        np.testing.assert_almost_equal(
-            sample_rri[:3],
-            [1971.,  985.,  995.]
-        )
-        np.testing.assert_almost_equal(
-            sample_rri[-3:],
-            [639., 642., 644.]
-        )
-
     def test_load_noisy_rri(self):
         sample_rri = load_noisy_rri()
 
