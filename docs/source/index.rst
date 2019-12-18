@@ -6,15 +6,18 @@
 Welcome to hrv's documentation!
 ===============================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+**hrv** is a simple Python module that brings the most widely used techniques to work
+with RRi series and Heart Rate Variability (HRV) analyses without losing the Power
+and Flexibility of a native Python object and numpy_ arrays.
+
+.. _numpy: http://numpy.org
 
 
-
-Indices and tables
+Contents
 ******************
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 3
+
+   firststeps
+   basicusage
