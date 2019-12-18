@@ -4,11 +4,25 @@ import numpy as np
 
 from hrv.io import RRi
 from hrv.sampledata._load import load_sample_data
+from hrv.sampledata import load_rest_rri
 
 
 class TestLoadSampleData(TestCase):
     def test_load_sample_rest_rri(self):
         sample_rri = load_sample_data('rest_rri.txt')
+
+        self.assertIsInstance(sample_rri, RRi)
+        np.testing.assert_almost_equal(
+            sample_rri[:3],
+            [1114., 1113., 1066.]
+        )
+        np.testing.assert_almost_equal(
+            sample_rri[-3:],
+            [956., 1018., 1021]
+        )
+
+    def test_load_rest_rri_function(self):
+        sample_rri = load_rest_rri()
 
         self.assertIsInstance(sample_rri, RRi)
         np.testing.assert_almost_equal(

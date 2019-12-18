@@ -10,3 +10,7 @@ def load_sample_data(filename):
     here = os.path.dirname(__file__)
     complete_path = os.path.join(here, filename)
     return handler[extension](complete_path)
+
+
+def load_rest_rri():
+    return load_sample_data('rest_rri.txt')
