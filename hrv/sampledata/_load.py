@@ -14,3 +14,7 @@ def load_sample_data(filename):
 
 def load_rest_rri():
     return load_sample_data('rest_rri.txt')
+
+
+def load_exercise_rri():
+    return load_sample_data('exercise_rri.hrm')
