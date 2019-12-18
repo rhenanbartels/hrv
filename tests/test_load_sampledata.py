@@ -4,7 +4,7 @@ import numpy as np
 
 from hrv.io import RRi
 from hrv.sampledata._load import load_sample_data
-from hrv.sampledata import load_rest_rri, load_exercise_rri
+from hrv.sampledata import load_rest_rri, load_exercise_rri, load_noisy_rri
 
 
 class TestLoadSampleData(TestCase):
@@ -84,4 +84,17 @@ class TestLoadSampleData(TestCase):
         np.testing.assert_almost_equal(
             sample_rri[-3:],
             [639., 642., 644.]
+        )
+
+    def test_load_noisy_rri(self):
+        sample_rri = load_noisy_rri()
+
+        self.assertIsInstance(sample_rri, RRi)
+        np.testing.assert_almost_equal(
+            sample_rri[:3],
+            [904., 913., 937.]
+        )
+        np.testing.assert_almost_equal(
+            sample_rri[-3:],
+            [704., 805., 808.]
         )

@@ -18,3 +18,7 @@ def load_rest_rri():
 
 def load_exercise_rri():
     return load_sample_data('exercise_rri.hrm')
+
+
+def load_noisy_rri():
+    return load_sample_data('noisy_rri.hrm')
