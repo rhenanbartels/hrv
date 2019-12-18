@@ -1,17 +1,20 @@
-Welcome to Heart Rate Variability Analysis Package's documentation!
-=========================================
+.. hrv documentation master file, created by
+   sphinx-quickstart on Wed Dec 18 12:07:31 2019.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Contents:
+Welcome to hrv's documentation!
+===============================
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
 
 
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
