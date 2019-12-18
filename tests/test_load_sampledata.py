@@ -19,3 +19,16 @@ class TestLoadSampleData(TestCase):
             sample_rri[-3:],
             [956., 1018., 1021]
         )
+
+    def test_load_sample_exercise_rri(self):
+        sample_rri = load_sample_data('exercise_rri.hrm')
+
+        self.assertIsInstance(sample_rri, RRi)
+        np.testing.assert_almost_equal(
+            sample_rri[:3],
+            [1589.,  783.,  752.]
+        )
+        np.testing.assert_almost_equal(
+            sample_rri[-3:],
+            [562., 555., 557.]
+        )
