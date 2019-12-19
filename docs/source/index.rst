@@ -26,3 +26,4 @@ Contents
    timeslicing
    preprocessing
    analysis
+   contribution
