@@ -53,3 +53,4 @@ html_theme = 'sphinxdoc'
 html_static_path = ['_static']
 
 html_logo = '../logo-small.png'
+html_favicon = '../favicon.png'
