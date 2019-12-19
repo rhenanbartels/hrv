@@ -20,4 +20,9 @@ Contents
    :maxdepth: 3
 
    firststeps
-   basicusage
+   readfiles
+   statistics
+   visualization
+   timeslicing
+   preprocessing
+   analysis
