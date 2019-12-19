@@ -1,4 +1,5 @@
 # coding: utf-8
+from functools import wraps
 from numbers import Number
 
 import numpy as np
@@ -24,6 +25,7 @@ from scipy import interpolate
 
 # TODO: Refactor validation decorator
 def validate_rri(func):
+    @wraps(func)
     def _validate(rri, *args, **kwargs):
         _validate_positive_numbers(rri)
         rri = _transform_rri(rri)
