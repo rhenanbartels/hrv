@@ -2,11 +2,11 @@ from collections import MutableMapping
 from unittest import mock
 
 import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
 from hrv.rri import (RRi,
+                     RRiDetrended,
                      _validate_rri,
                      _create_time_array,
                      _validate_time,
@@ -29,6 +29,13 @@ class TestRRiClassArguments:
                 _validate_rri(rri_in_seconds),
                 [800, 900, 1200]
         )
+
+    def test_rri_instance(self):
+        rri = RRi(FAKE_RRI)
+
+        assert isinstance(rri, RRi)
+        assert not rri.detrended
+        assert not rri.interpolated
 
     def test_rri_values(self):
         rri = RRi(FAKE_RRI).values
@@ -441,16 +448,107 @@ class TestRRiClassMethods:
 
 
 class TestRRiPlotMethods:
-    def test_return_figure_objects(self):
-        rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
+    def setup_class(self):
+        self.rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
-        fig, ax = rri.plot()
+    def test_return_figure_objects(self):
+        with mock.patch('hrv.rri.plt.show'):
+            fig, ax = self.rri.plot()
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
 
     def test_use_already_created_axes_object(self):
-        fig, ax = plt.subplots(1, 1)
+        ax_mock = mock.MagicMock()
+
+        with mock.patch('hrv.rri.plt.show'):
+            self.rri.plot(ax=ax_mock)
+
+        ax_mock.plot.assert_called_once_with(self.rri.time, self.rri.values)
+
+    def test_return_fig_and_ax_objects_with_hist(self):
+        with mock.patch('hrv.rri.plt.show'):
+            fig, ax = self.rri.hist()
+
+        assert isinstance(fig, matplotlib.figure.Figure)
+        assert isinstance(ax, matplotlib.figure.Axes)
+
+    @mock.patch('hrv.rri._ellipsedraw')
+    @mock.patch('hrv.rri.plt.subplots')
+    def test_poincare_plot(self, _subplots, _ellipsedraw):
+        ax_mock = mock.MagicMock()
+        ax_mock.plot.side_effect = [None, ('sd1_l',), ('sd2_l',)]
+        fig_mock = mock.MagicMock()
+        _subplots.return_value = (fig_mock, ax_mock)
+        _ellipsedraw.return_value = ax_mock
+
+        with mock.patch('hrv.rri.plt.show'):
+            returned_fig, returned_ax = self.rri.poincare_plot()
+
+        # For some reason the regular assert_called_once_with is
+        # not working when the rri series is sliced.
+        plt_actual_call = ax_mock.plot.call_args_list
+        np.testing.assert_almost_equal(plt_actual_call[0][0][0], self.rri[:-1])
+        np.testing.assert_almost_equal(plt_actual_call[0][0][1], self.rri[1:])
+        assert plt_actual_call[0][0][2] == '.k'
+
+        np.testing.assert_almost_equal(
+            plt_actual_call[1][0][0],
+            [799.25, 815.75]
+        )
+        np.testing.assert_almost_equal(
+            plt_actual_call[1][0][1], [746.75, 818.25]
+        )
+        assert plt_actual_call[1][0][2] == '--'
+
+        np.testing.assert_almost_equal(
+            plt_actual_call[2][0][0],
+            [799.25, 815.75]
+        )
+        np.testing.assert_almost_equal(
+            plt_actual_call[2][0][1],
+            [817.4166666666667, 800.9166666666667]
+        )
+        assert plt_actual_call[2][0][2] == 'k--'
+
+        # Labels
+        ax_mock.set.assert_called_once_with(
+            xlabel='$RRi_n$ (ms)',
+            ylabel='$RRi_{n+1}$ (ms)',
+            title='Poincaré Plot'
+        )
+        _ellipsedraw.assert_called_once_with(
+            ax_mock,
+            30.000000000000004,
+            29.650744791095324,
+            808.3333333333334,
+            808.3333333333333,
+            0.7853981633974483,
+            color='r',
+            linewidth=3
+        )
+
+        ax_mock.legend.assert_called_once_with(
+            ('sd2_l', 'sd1_l'), ('SD1: 29.65ms', 'SD2: 30.00ms')
+        )
+
+    def test_return_fig_and_axes_hist_method(self):
         rri = RRi(FAKE_RRI, time=[4, 5, 6, 7])
 
-        rri.plot(ax=ax)
+        with mock.patch('hrv.rri.plt.show'):
+            fig, ax = rri.hist()
+
+        assert isinstance(fig, matplotlib.figure.Figure)
+        assert isinstance(ax, matplotlib.figure.Axes)
+
+
+class TestRRiDetrended:
+    def test_create_detrended_rri_class(self):
+        detrended_rri = [-87.98470401,  -88.22253018,  -49.46831978,
+                         -109.69798458, -181.90892056]
+        rri_time = [0, 1, 2, 3, 4]
+
+        det_rri_obj = RRiDetrended(detrended_rri, time=rri_time)
+
+        assert det_rri_obj.detrended
+        assert not det_rri_obj.interpolated

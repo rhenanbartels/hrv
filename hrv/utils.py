@@ -1,4 +1,5 @@
 # coding: utf-8
+from functools import wraps
 from numbers import Number
 
 import numpy as np
@@ -24,6 +25,7 @@ from scipy import interpolate
 
 # TODO: Refactor validation decorator
 def validate_rri(func):
+    @wraps(func)
     def _validate(rri, *args, **kwargs):
         _validate_positive_numbers(rri)
         rri = _transform_rri(rri)
@@ -93,3 +95,17 @@ def _interp_linear(rri, time, fs):
 def _create_interp_time(time, fs):
     time_resolution = 1 / float(fs)
     return np.arange(0, time[-1] + time_resolution, time_resolution)
+
+
+def _ellipsedraw(ax, a, b, x0, y0, phi, *args, **kwargs):
+    theta = np.arange(-0.03, 2*np.pi, 0.01)
+    x = a * np.cos(theta)
+    y = b * np.sin(theta)
+    X = np.cos(phi) * x - np.sin(phi) * y
+    Y = np.sin(phi) * x + np.cos(phi) * y
+
+    X = X + x0
+    Y = Y + y0
+
+    ax.plot(X, Y, *args, **kwargs)
+    return ax
