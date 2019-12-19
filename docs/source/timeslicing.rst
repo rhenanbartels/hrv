@@ -15,7 +15,8 @@ In the following example, we are taking a slice that starts at `100s ` and ends 
 
     fig, ax = rri_range.plot(marker='.')
 
-<img src="docs/figures/rri_range.png" alt="Moving Average Image"  width=600px;>
+.. image:: ../figures/rri_range.png
+    :width: 500 px
 
 Time offset can be reset from the RRi series range:
 
@@ -23,4 +24,5 @@ Time offset can be reset from the RRi series range:
 
     rri_range.reset_time(inplace=True)
 
-<img src="docs/figures/rri_range_reset.png" alt="Moving Average Image"  width=600px;>
+.. image:: ../figures/rri_range_reset.png
+    :width: 500 px

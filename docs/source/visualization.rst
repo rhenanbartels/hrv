@@ -13,7 +13,8 @@ Plot RRi Series
     rri = read_from_text('path/to/file.txt')
     fig, ax = rri.plot(color='k')
 
-<img src="docs/figures/rri_fig.png" alt="RRi Image"  width=600px;>
+.. image:: ../figures/rri_fig.png
+   :width: 500 px
 
 RRi histogram and Heart Rate Histogram
 ######################################
@@ -24,7 +25,8 @@ RRi histogram and Heart Rate Histogram
 
     rri.hist(hr=True)
 
-<img src="docs/figures/rri_hist.png" alt="Moving Average Image"  width=600px;>
+.. image:: ../figures/rri_hist.png
+   :width: 500 px
 
-
-<img src="docs/figures/hr_hist.png" alt="Moving Average Image"  width=600px;>
+.. image:: ../figures/hr_hist.png
+   :width: 500 px

@@ -23,10 +23,10 @@ Example of RRi text file
     print(rri)
     RRi array([800., 810., 815., 750.])
 
-Read Polar <sup>&reg;</sup> (.hrm) files
+Read Polar® (.hrm) files
 ########################################
 
-The .hrm files contain the RRi acquired with Polar <sup>&reg;</sup>
+The .hrm files contain the RRi acquired with Polar®
 
 A complete guide for .hrm files can be found here_
 
@@ -99,7 +99,9 @@ The hrv module comes with some sample data. It contains:
     rri = load_rest_rri()
     rri.plot()
 
-<img src=”docs/figures/rri_hist.png” alt=”Moving Average Image” width=600px;>
+
+.. image:: ../figures/rest_rri.png
+    :width: 500 px
 
 **Exercise RRi**
 
@@ -110,7 +112,8 @@ The hrv module comes with some sample data. It contains:
     rri = load_exercise_rri()
     rri.plot()
 
-<img src=”docs/figures/rri_hist.png” alt=”Moving Average Image” width=600px;>
+.. image:: ../figures/exercise_rri.png
+    :width: 500 px
 
 **Noisy RRi**
 
@@ -121,4 +124,5 @@ The hrv module comes with some sample data. It contains:
     rri = load_noisy_rri()
     rri.plot()
 
-<img src=”docs/figures/rri_hist.png” alt=”Moving Average Image” width=600px;>
+.. image:: ../figures/noisy_rri.png
+    :width: 500 px

@@ -67,4 +67,5 @@ It is also possible to depict the Poincaré Plot, from which SD1 and SD2 are der
 
     rri.poincare_plot()
 
-<img src="docs/figures/poincare.png" alt="Poincare Image"  width=600px;>
+.. image:: ../figures/poincare.png
+   :width: 500 px

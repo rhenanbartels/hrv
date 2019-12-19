@@ -14,7 +14,8 @@ Filters
     fig, ax = rri.plot()
     filt_rri.plot(ax=ax)
 
-<img src="docs/figures/mov_avg.png" alt="Moving Average Image"  width=600px;>
+.. image:: ../figures/mov_avg.png
+    :width: 500 px
 
 **Moving Median**
 
@@ -26,7 +27,9 @@ Filters
     fig, ax = rri.plot()
     filt_rri.plot(ax=ax)
 
-<img src="docs/figures/mov_median.png" alt="Moving Median Image"  width=600px;>
+
+.. image:: ../figures/mov_median.png
+    :width: 500 px
 
 **Quotient**
 
@@ -42,7 +45,8 @@ Filters
     fig, ax = rri.plot()
     filt_rri.plot(ax=ax)
 
-<img src="docs/figures/quotient.png" alt="Quotient Filter Image"  width=600px;>
+.. image:: ../figures/quotient.png
+    :width: 500 px
 
 **Threshold Filter**
 
@@ -73,7 +77,8 @@ The following snippet shows the ectopic RRi removal:
     fig, ax = rri.plot()
     filt_rri.plot(ax=ax)
 
-<img src="docs/figures/threshold_filter.png" alt="Threshold Filter Image"  width=600px;>
+.. image:: ../figures/threshold_filter.png
+    :width: 500 px
 
 Detrending
 ##########
@@ -94,7 +99,9 @@ Given a degree a polynomial filter is applied to the RRi series and subtracted f
     fig, ax = rri.plot()
     rri_detrended.plot(ax, color='k')
 
-<img src="docs/figures/polynomial_detrend.png" alt="Polynomial detrend"  width=600px;>
+.. image:: ../figures/polynomial_detrend.png
+    :width: 500 px
+
 
 **Smoothness priors**
 
@@ -113,7 +120,8 @@ and resampled using frequency equals to ```fs```.
     fig, ax = rri.plot()
     rri_detrended.plot(ax, color='k')
 
-<img src="docs/figures/smoothness_priors.png" alt="Smoothness priors detrend"  width=600px;>
+.. image:: ../figures/smoothness_priors.png
+    :width: 500 px
 
 **Note:**
 this approach depends on a numpy matrix inversion and due to floating-point precision it might
@@ -132,4 +140,5 @@ Uses the lowpass filter known as  Savitzky-Golay filter to smooth the RRi series
     fig, ax = rri.plot()
     rri_detrended.plot(ax, color='k')
 
-<img src="docs/figures/savitzky_golay_detrend.png" alt="Savitzky Golay Detrend"  width=600px;>
+.. image:: ../figures/savitzky_golay_detrend.png
+    :width: 500 px
