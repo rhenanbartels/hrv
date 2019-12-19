@@ -30,9 +30,9 @@ Filters
 
 **Quotient**
 
-[Read more.] quotient_
+`Read more`_
 
-.. _quotient: https://www.ncbi.nlm.nih.gov/pubmed/17322593
+.. _Read more: https://www.ncbi.nlm.nih.gov/pubmed/17322593
 
 .. code-block:: python
 
@@ -46,13 +46,13 @@ Filters
 
 **Threshold Filter**
 
-This filter is inspired by the threshold-based artifact correction algorithm offered by [Kubios] kubios_ <sup>&reg;</sup> .
+This filter is inspired by the threshold-based artifact correction algorithm offered by kubios_ <sup>&reg;</sup> .
 To elect outliers in the tachogram series, each RRi is compared to the median value of local RRi (default N=5).
 All the RRi which the difference is greater than the local median value plus a threshold is replaced by
-[cubic spline] cubicspline_ interpolated RRi.
+cubic_ interpolated RRi.
 
 .. _kubios: https://www.kubios.com/
-.. _cubicspline: https://en.wikiversity.org/wiki/Cubic_Spline_Interpolation
+.. _cubic: https://en.wikiversity.org/wiki/Cubic_Spline_Interpolation
 
 The threshold filter has five pre-defined strength values:
 
@@ -98,11 +98,11 @@ Given a degree a polynomial filter is applied to the RRi series and subtracted f
 
 **Smoothness priors**
 
-Developed by Tarvainen *et al*, allow the removal of complex trends. Visit [here] ieee_ for more information.
+Developed by Tarvainen *et al*, allow the removal of complex trends. Visit here_ for more information.
 It worth noticing that the detrended RRi with the Smoothness priors approach is also interpolated
 and resampled using frequency equals to ```fs```.
 
-.. _ieee: https://ieeexplore.ieee.org/document/979357
+.. _here: https://ieeexplore.ieee.org/document/979357
 
 .. code-block:: python
 

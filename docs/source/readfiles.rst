@@ -28,9 +28,9 @@ Read Polar <sup>&reg;</sup> (.hrm) files
 
 The .hrm files contain the RRi acquired with Polar <sup>&reg;</sup>
 
-A complete guide for .hrm files can be found polar_
+A complete guide for .hrm files can be found here_
 
-.. _polar: https://www.polar.com/files/Polar_HRM_file%20format.pdf
+.. _here: https://www.polar.com/files/Polar_HRM_file%20format.pdf
 
 .. code-block:: python
 
