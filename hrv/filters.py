@@ -35,10 +35,10 @@ def quotient(rri):
     Examples
     --------
     >>> from hrv.filters import quotient
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
-    >>> quotient(rri)
-    RRi array([1114., 1113., 1066., 1119., 1062.,])
+    >>> from hrv.sampledata import load_noisy_rri
+    >>> noisy_rri = load_noisy_rri()
+    >>> quotient(noisy_rri)
+    RRi array([904., 913., 937., ..., 704., 805., 808.])
     """
     # TODO: Receive option to replaced outliers with stats
     # functions (i.e mean, median etc)
@@ -92,10 +92,11 @@ def moving_average(rri, order=3):
     Examples
     --------
     >>> from hrv.filters import moving_average
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
-    >>> moving_average(rri)
-    RRi array([1114.        , 1097.66666667, 1099.33333333, 1082.33333333,])
+    >>> from hrv.sampledata import load_noisy_rri
+    >>> noisy_rri = load_noisy_rri()
+    >>> moving_average(noisy_rri)
+    RRi array([904., 918., 941.66666667, ..., 732.66666667, 772.33333, 808.])
+
     """
     return _moving_function(rri, order, np.mean)
 
@@ -128,11 +129,11 @@ def moving_median(rri, order=3):
 
     Examples
     --------
-    >>> from hrv.filters import moving_median
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
-    >>> moving_median(rri)
-    RRi array([1114., 1113., 1113., 1066., ])
+    >>> from hrv.filters import moving_average
+    >>> from hrv.sampledata import load_noisy_rri
+    >>> noisy_rri = load_noisy_rri()
+    >>> moving_median(noisy_rri)
+    RRi array([904., 913., 937., ..., 704., 805., 808.])
     """
     return _moving_function(rri, order, np.median)
 
@@ -182,11 +183,11 @@ def threshold_filter(rri, threshold='medium', local_median_size=5):
 
     Examples
     --------
-    >>> from hrv.filters import threshold_filter
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
-    >>> threshold_filter(rri)
-    RRi array([1114., 1113., 1066., 1119., 1062.])
+    >>> from hrv.filters import moving_average
+    >>> from hrv.sampledata import load_noisy_rri
+    >>> noisy_rri = load_noisy_rri()
+    >>> threshold_filter(noisy_rri)
+    RRi array([904., 913., 937., ..., 704., 805., 808.])
     """
     # TODO: DRY
     if isinstance(rri, RRi):

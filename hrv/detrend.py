@@ -34,10 +34,10 @@ def polynomial_detrend(rri, degree=1):
     Examples
     --------
     >>> from hrv.detrend import polynomial_detrend
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> polynomial_detrend(rri)
-    RRi array([ 2.47769099e+01,  2.48650030e+01, -3.04917114e+02])
+    RRi array([ 5.60099763e+01,  5.50082903e+01, ..., 8.00667554e+00])
     """
     if isinstance(rri, RRi):
         time = rri.time
@@ -95,10 +95,10 @@ def smoothness_priors(rri, l=500, fs=4.0):
     Examples
     --------
     >>> from hrv.detrend import smoothness_priors
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> smoothness_priors(rri)
-    RRi array([  29.04627085,   42.17204395,   44.5743763])
+    RRi array([27.17281349,   46.12837695,   51.21922892, ..., 1042.86845282])
     """
     if isinstance(rri, RRi):
         time = rri.time
@@ -125,6 +125,7 @@ def smoothness_priors(rri, l=500, fs=4.0):
         detrended=True,
         interpolated=True
     )
+
 
 def sg_detrend(rri, window_length=51, polyorder=3,  *args, **kwargs):
     """
@@ -158,10 +159,10 @@ def sg_detrend(rri, window_length=51, polyorder=3,  *args, **kwargs):
     Examples
     --------
     >>> from hrv.detrend import sg_detrend
-    >>> from hrv.io import read_from_text
-    >>> rri = read_from_text('/path/to/file.txt')
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> sg_detrend(rri)
-    RRi array([ 4.33718660e+01,  3.45692194e+01, -1.54349577e+00])
+    RRi array([5.07722695e+01, 4.16090643e+01, ..., -1.26297542e+01])
     """
     if isinstance(rri, RRi):
         time = rri.time

@@ -47,15 +47,16 @@ def time_domain(rri):
     Examples
     --------
     >>> from hrv.classical import time_domain
-    >>> rri = [1, 2, 3, 4, 5, 6]
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> time_domain(rri)
-    {'rmssd': 1.0,
-     'sdnn': 1.8708286933869707,
-     'sdsd': 0.0,
-     'nn50': 0,
-     'pnn50': 0.0,
-     'mrri': 3.5,
-     'mhr': 24500.0}
+    {'rmssd': 55.13744203126742,
+     'sdnn': 57.81817771970009,
+     'sdsd': 55.167700730663555,
+     'nn50': 321,
+     'pnn50': 35.27472527472528,
+     'mrri': 1058.7186813186813,
+     'mhr': 56.85278105637358}
     """
     # TODO: let user choose interval for pnn50 and nn50.
     diff_rri = np.diff(rri)
@@ -165,17 +166,17 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
 
     Examples
     --------
-    >>> from hrv.io import read_from_text
     >>> from hrv.classical import frequency_domain
-    >>> rri = read_from_text('path/to/file.txt')
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> frequency_domain(rri)
-    {'total_power': 3376.2107048316066,
-     'vlf': 447.31367706350915,
-     'lf': 1217.5000069660707,
-     'hf': 1711.3970208020266,
-     'lf_hf': 0.71140710902693,
-     'lfnu': 41.56854936937952,
-     'hfnu': 58.43145063062048}
+    {'total_power': 2212.2894012201778,
+     'vlf': 546.8173917540497,
+     'lf': 770.4465329950162,
+     'hf': 895.0254764711116,
+     'lf_hf': 0.8608096118478296,
+     'lfnu': 46.25995084972849,
+     'hfnu': 53.740049150271496}
     """
 
     if isinstance(rri, RRi):
@@ -256,9 +257,9 @@ def non_linear(rri):
 
     Examples
     --------
-    >>> from hrv.io import read_from_text
     >>> from hrv.classical import non_linear
-    >>> rri = read_from_text('path/to/file.txt')
+    >>> from hrv.sampledata import load_rest_rri
+    >>> rri = load_rest_rri()
     >>> non_linear(rri)
     {'sd1': 39.00945528912225, 'sd2': 71.86199098062633}
     """
