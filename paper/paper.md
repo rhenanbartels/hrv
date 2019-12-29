@@ -45,16 +45,24 @@ Roughly, frequency domain analysis involves the calculation of the spectral ener
 | LF<sub>n.u</sub> | normalized units $\frac{LF}{Total Power - VLF}$ | |
 | HF<sub>n.u</sub> | normalized units $\frac{HF}{Total Power - VLF}$ | |
 
-Non-linear indices are also frequently used to extract information from the ANS based on the heart rate fluctuations patterns. SD1 and SD2 respectively reflect the short and long term fluctuations of heart rate, which can be calculated from the Poincaré ellipse plot [@berntson1997heart] or derived from SDSD and SDNN values as shown by equations 2 and 3 below. 
+Non-linear indices are also frequently used to extract information from the ANS based on the heart rate fluctuations patterns. SD1 reflects the short term fluctuations of the heart rate, and for this reason is highly correlated with the RMSSD, pNN50 and HF indexes. The SD2 index reflects both short and long terms of the fluctuation of the heart rate and correlates with SDNN and LF indexes. Both SD1 and SD2 are generally represented using the Poincaré ellipse plot [@berntson1997heart]. In this plot, the SD1 index represents the standard deviation spread orthogonally to the identity line (y=x) and it is the ellipse width, while the SD2 index represents the standard deviation spread along the identity line and specifies the length of the ellipse. At the end of the following section, the Poincaré plot of a given RRi series is depicted using the module presented in the current article. 
+
+The calculation of the SD1 and SD2 indexes can be derived from SDSD and SDNN values as shown by equations 2 and 3 below:
+
 $$SD1 = \sqrt{2SDNN^{2} - 2SD2^{2}}$$ - Equation 2
 
 $$SD2 = \sqrt{2SDNN^{2} - \frac{1}{2}SDSD^{2}}$$ - Equation 3
 
-The hrv is a simple and open-source Python module that brings the most widely used techniques to work with the RRi series and HRV analyses without losing the power and flexibility of a native Python object and a numpy array [@numpy]. The following sections present the basic workflow with RRi series, starting with reading a file containing a tachogram, visualizing the given RRi series, dealing with noise filtering and, finally, calculating time/frequency domain and non-linear HRV indices.
+There are several software packages written in many different programming languages that offer functions to work with RRi signals. Some of them have a command-line-based interface [@rodriguez2008rhrv], and others offer a user's interface with and all types of widgets to improve the interaction with the RRi series and with the analyses  [@tarvainen2014kubios,@bartels2017sinuscor]. 
+Specifically for Python, there is also a myriad of open-source packages available and ready to be used to work with HRV analisys, such as [hrvanalysis](https://github.com/Aura-healthcare/hrvanalysis), pyhrv [@Gomes2019], and [heartpy](https://github.com/paulvangentcom/heartrate_analysis_python). Although these modules do a great work offering many of the most widely used techniques to deal with and to extract relevant information from HRV signals, their functions interface (API) relies on RRi signals stored as Python iterable or numpy arrays and is based mostly on the procedural programming paradigm. 
+
+The main reason why the `hrv` module is being developed is to improve and simplify the API to deal with RRi signals and to also offer the most used techniques for HRV analyses with idiomatic Python code, closer to the native objects of this language. The `hrv` is a simple and open-source Python module that comes with the most common techniques for filtering, detrending and extracting information about the ANS from the RRi signals without losing the power and flexibility of a native Python object and a numpy arrays [@numpy]. It brings the necessary methods to work with a tachogram encapsulated in a Python class. In other words, once an RRi class is instantiated there are several methods available for visualization, descriptive statistics, slicing the signal in shorter segments, and displaying the metadata of the series.
+
+To exemplify how the `hrv` API can ease the work with RRi signals, after importing a tachogram using the `hrv.io` module, an RRi class is returned with the RRi values and related time information encapsulated in an object and calling the `describe()` and `plot()` methods is enough to have a first glance at how the data looks like. The following sections present the basic workflow with an RRi series, starting with reading a file containing a tachogram, visualizing the given RRi series, dealing with noise filtering and detreding and, finally, calculating the time/frequency domain and non-linear HRV indices.
 
 # Basic Usage
 
-This section presents a non-exhaustive walkthrough of the features offered by the ```hrv``` module. To have access to the source code and more usage examples, please refer to the [software repository](https://github.com/rhenanbartels/hrv).
+This section presents a non-exhaustive walkthrough of the features offered by the ```hrv``` module. To have access to the source code and more usage examples, please refer to the [software repository](https://github.com/rhenanbartels/hrv) and the complete [documentation](https://hrv.readthedocs.io/en/latest/index.html).
 
 Once the RRi series is created in Python using the ```hrv.io``` submodule, which supports text, CSV and hrm (Polar<sup>TM</sup>) files, or from any Python iterable (i.e lists, tuples, etc), an RRi instance with the necessary methods to implement the Python iterable pattern is created. With the RRi object it is possible to iterate (i.e ```[r for r in rri_series]```), search for a value at a given index (i.e ```rri_series[0]```), and slice the tachogram (i.e ```rri_series[5:10]```). As the RRi class also implements some of the behaviors of the numpy array [@numpy], it is possible to perform math operations with the tachogram, i.e: ```rri_series / 1000```.
 
@@ -99,7 +107,8 @@ print(desc['std'])
 {'rri': 51.44171459039833, 'hr': 4.5662272355549725}
 ```
 
-## Filtering the RRi series
+## Pre-processing
+### Filtering the RRi series
 
 In some cases and for many different reasons, the tachogram may present with movement artifacts or undesired RRi values, which may jeopardize the analysis results. One way to deal with this scenario is to apply filters to the RRi series. For this reason, the hrv package offers three lowpass filters for noise removal: moving average, which given an order value $N$, replaces every RRi value by the average of its $N$ neighbors values;  the moving median, which works similarly to the moving average filter, but apply the median function; and the quotient filter [@piskorski2005filtering], that removes the RRi values which the ratio with its adjacent RRi are greater than 1.2 or smaller than 0.8.
 
@@ -115,7 +124,12 @@ filt_rri_quotient.plot(ax=ax)
 
 ![The left panel shows the original RRi (blue) and after filtering with a moving median filter with order equal to 3 (orange).  The left panel depicts the original RRi (blue) and after filtering with a quotient filter (orange). This picture was created using the ``plot``` method from the ```RRi``` instance.](rri_filtered.png)
 
-### Time Domain Analysis
+### Detrending the RRi series
+
+Although the very-low-frequency components of the PSD function might have useful information about the ANS system, they are generally removed from the RRi signals before the frequency-domain analysis is performed. This pre-processing step before the frequency-domain analysis is important to remove intrinsic slow trends that are present in the HR fluctuation. This non-stationary behaviour may contaminate the overall dynamic of the RRi series and influence the results, especially the VLF and LF indexes [@tarvainen2002advanced]. For this reason, several methods have been developed to extract the frequency components responsible for the non-stationary behavior of the RRi series. Among the methods available in the literature, the `hrv` module offers the polynomial detrend, which consists of the subtraction of an Nth (N < length of the RRi array) degree polynomial from the RRi signal. It also offers the Smoothness Priors method [@tarvainen2002advanced], which is widely used in HRV analyses and acts as a lowpass filter to remove complex trends from the RRi series. Finally, the `hrv` module also offers a detrending method that uses the Savitsky-Golay lowpass filter to remove low-frequency trends from the RRi series
+
+## Analyses
+### Time Domain 
 
 In order to calculate the time-domain indices, the function ```time_domain``` can be imported from the submodule ```hrv.classical``` and applied to any Python iterable containing the RRi series including the RRi instance from the module presented in this article.
 
@@ -134,7 +148,7 @@ print(results)
  'sdsd': 46.233829821038042}
 ```
 
-## Frequency Domain Analysis
+### Frequency Domain
 
 Similarly to the ```time_domain``` function, to calculate the frequency-domain indices, the ```frequecy_domain```, which is also placed in the ```hrv.classical``` submodule, can be used. The ```frequency_domain``` function present in the ```hrv``` module takes care of the pre-processing steps:  the detrending of the RRi series (which the default is a linear function, but can be any custom Python function), interpolation using cubic splines (also accepts linear interpolation) and resampling at a given frequency, the default is 4 Hz.
 
@@ -165,7 +179,7 @@ print(results)
 
 ![Power Spectral Density of a RRi series estimated with the Welch's method.](psd.png)
 
-## Non-linear Analysis
+### Non-linear
 Finally, among the non linear metrics, ```hrv``` module offers SD1 and SD2, which can be calculated with the ```non_linear``` function from the ```hrv.classical``` submodule.
 
 ```python
@@ -177,6 +191,14 @@ print(results)
 {'sd1': 51.538501037146382,
  'sd2': 127.11460955437322}
 ```
+
+The respective Poincaré plot of a given RRi series can be depicted with the `poincare_plot()` method, as follows:
+
+```python
+rri.poincare_plot()
+```
+
+[POINCARE PLOT HERE]
 
 # Dependencies
 
