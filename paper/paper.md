@@ -58,7 +58,7 @@ Specifically for Python, there is also open-source packages available and ready 
 
 The `hrv` is a simple and open-source Python module that comes with the most common techniques for filtering, detrending and extracting information about the ANS from the RRi signals without losing the power and flexibility of a native Python object and a numpy arrays [@numpy]. It brings the necessary methods to work with a tachogram encapsulated in a Python class. In other words, once an RRi class is instantiated there are several methods available for visualization, descriptive statistics, slicing the signal in shorter segments, and displaying the metadata of the series.
 
-With many software available to work with HRV analysis, the main reason why the `hrv` module is being developed is to improve and simplify the interaction with an RRi series with idiomatic Python code, closer to the native objects of this language. The object-oriented approach offered by the present module allows a strong relation between the RRi series and its methods, especially regarding time information. With a class representing and encapsulating the RRi object, each RRi value is bound to its respective time information, and therefore, after actions like slicing and filtering, the RRi series still keeps track of its information. Additionally, the instance's properties help to keep the state of the RRi series, informing if it is already detrended and/or resampled.
+With many software available to work with HRV analysis, the main reason why the `hrv` module is being developed is to improve and simplify the interaction with an RRi series with idiomatic Python code, closer to the native objects of this language. The object-oriented approach offered by the present module allows a strong relation between the RRi series and its methods, especially regarding time information. With a class representing and encapsulating the RRi object, each RRi value is bound to its respective time information, and therefore, after actions like slicing and filtering, the RRi series still keeps track of its information. Additionally, the instance's properties help to keep the state of the RRi series, informing, for instance, if it is already detrended and/or resampled.
 
 The following sections present the basic workflow with an RRi series and gives a better overview of the functionalities available in the `hrv` module, starting with reading a file containing a tachogram, visualizing the given RRi series, dealing with noise filtering and detrending and, finally, calculating the time/frequency domain and non-linear HRV indices.
 
@@ -66,10 +66,10 @@ The following sections present the basic workflow with an RRi series and gives a
 
 This section presents a non-exhaustive walkthrough of the features offered by the ```hrv``` module. To have access to the source code and more usage examples, please refer to the [software repository](https://github.com/rhenanbartels/hrv) and the complete [documentation](https://hrv.readthedocs.io/en/latest/index.html).
 
-Once the RRi series is created in Python using the ```hrv.io``` submodule, which supports text, CSV and hrm (Polar<sup>TM</sup>) files, or from any Python iterable (i.e lists, tuples, etc), an RRi instance with the necessary methods to implement the Python iterable pattern is created. With the RRi object it is possible to iterate (i.e ```[r for r in rri_series]```), search for a value at a given index (i.e ```rri_series[0]```), and slice the tachogram (i.e ```rri_series[5:10]```). As the RRi class also implements some of the behaviors of the numpy array [@numpy], it is possible to perform math operations with the tachogram, i.e: ```rri_series / 1000```.
+Once the RRi series is created in Python using the `hrv.io` submodule, which supports text, CSV and hrm (Polar<sup>TM</sup>) files, or from any Python iterable (i.e lists, tuples, etc), an RRi instance with the necessary methods to implement the Python iterable pattern is created. With the RRi object it is possible to iterate (i.e `[r for r in rri_series]`), search for a value at a given index (i.e `rri_series[0]`), and slice the tachogram (i.e `rri_series[5:10]`). As the RRi class also implements some of the behaviors of the numpy array [@numpy], it is possible to perform math operations with the tachogram, i.e: `rri_series / 1000`.
 
-The RRi class also has methods for basic statistical metrics calculation, such as average, standard deviation, min and max, and others. In order to access a complete Python dictionary containing all available statistical metrics of an RRi instance, it is possible to call the ``describe`` method. Features for visualization are also present in the RRi class. In order to visualize the time series represented by the RRi series, the ``plot`` method can be called. The visualization of the histograms showing the distributions of RRi or heart rate time series is also possible with the method ``hist``.
-`
+The RRi class also has methods for basic statistical metrics calculation, such as average, standard deviation, min and max, and others. In order to access a complete Python dictionary containing all available statistical metrics of an RRi instance, it is possible to call the `describe()` method. Features for visualization are also present in the RRi class. In order to visualize the time series represented by the RRi series, the ``plot()`` method can be called. The visualization of the histograms showing the distributions of RRi or heart rate time series is also possible with the method `hist()`.
+
 
 ## Read a file containing RRi values and visualising it 
 
@@ -84,9 +84,9 @@ fig, ax = rri.plot(color='k')
 
 ```
 
-![RR intervals of a young subject at rest condition produced with the ```plot``` method from the RRi class.](rri_series.png)
+![RR intervals of a young subject at rest condition produced with the `plot()` method from the RRi class.](rri_series.png)
 
-To retrieve statistical properties of a RRi series the method ```describe``` can be invoked:
+To retrieve statistical properties of a RRi series the method `describe()` can be invoked:
 
 ```python
 desc = rri.describe()
@@ -111,7 +111,7 @@ print(desc['std'])
 ## Pre-processing
 ### Filtering the RRi series
 
-In some cases and for many different reasons, the tachogram may present with movement artifacts or undesired RRi values, which may jeopardize the analysis results. One way to deal with this scenario is to apply filters to the RRi series. For this reason, the hrv package offers three lowpass filters for noise removal: moving average, which given an order value $N$, replaces every RRi value by the average of its $N$ neighbors values;  the moving median, which works similarly to the moving average filter, but apply the median function; and the quotient filter [@piskorski2005filtering], that removes the RRi values which the ratio with its adjacent RRi are greater than 1.2 or smaller than 0.8.
+In some cases and for many different reasons, the tachogram may present with movement artifacts or undesired RRi values, which may jeopardize the analysis results. One way to deal with this scenario is to apply filters to the RRi series. For this reason, the `hrv` package offers four lowpass filters for noise removal: moving average, which given an order value $N$, replaces every RRi value by the average of its $N$ neighbors values;  the moving median, which works similarly to the moving average filter, but apply the median function; the quotient filter [@piskorski2005filtering], that removes the RRi values which the ratio with its adjacent RRi is greater than 1.2 or smaller than 0.8; and finally, the threshold filter, which is inspired in Kubios [@tarvainen2014kubios] threshold-based artifact correction algorithm: each RRi is compared to a local value consisting of the median of adjacent RRi. If the difference between a given RRi and the local median is greater than the threshold in milliseconds this RRi is considered an ectopic beat. Ectopic RRi values are replaced with cubic spline interpolation of the entire tachogram.
 
 ```python
 from hrv.filters import moving_median, quotient
@@ -123,13 +123,13 @@ filt_rri_median.plot(ax=ax)
 filt_rri_quotient.plot(ax=ax)
 ```
 
-![The left panel shows the original RRi (blue line) and after filtering with a moving median filter with order equal to 3 (orange line).  The left panel depicts the original RRi (blue line) and after filtering with a quotient filter (orange line). This picture was created using the ``plot``` method from the ```RRi``` instance.](rri_filtered.png)
+![The left panel shows the original RRi (blue line) and after filtering with a moving median filter with order equal to 3 (orange line). The left panel depicts the original RRi (blue line) and after filtering with a quotient filter (orange line). This picture was created using the `plot()` method from the `RRi` instance.](rri_filtered.png)
 
 ### Detrending the RRi series
 
 Although the very-low-frequency components of the PSD function might have useful information, they are generally removed from the RRi signals before the frequency-domain analysis is performed. This pre-processing step before the frequency-domain analysis is important to remove intrinsic slow trends that are present in the HR fluctuation. This non-stationary behavior may contaminate the overall dynamic of the RRi series and influence the results, especially the VLF and LF measures [@tarvainen2002advanced]. For this reason, several methods have been developed to extract the frequency components responsible for the non-stationary behavior of the RRi series. 
 
-Among the methods available in the literature for detrending the RRi series, the `hrv` module offers the polynomial detrend, which consists of the subtraction of an Nth degree polynomial from the RRi signal, where N is smaller than the length of the tachogram. It also offers the Smoothness Priors method [@tarvainen2002advanced], which is widely used in HRV analyses and acts as a lowpass filter to remove complex trends from the RRi series. Finally, the `hrv` module also offers a detrending method that uses the Savitsky-Golay lowpass filter to remove low-frequency trends from the RRi series.
+Among the methods available in the literature for detrending the RRi series, the `hrv` module offers the polynomial detrend, which consists of the subtraction of a $Nth$ degree polynomial from the RRi signal, where $N$ is smaller than the length of the tachogram. It also offers the Smoothness Priors method [@tarvainen2002advanced], which is widely used in HRV analyses and acts as a lowpass filter to remove complex trends from the RRi series. Finally, the `hrv` module also offers a detrending method that uses the Savitsky-Golay lowpass filter to remove low-frequency trends from the RRi series. The following code fragment applies the polynomial detrend with a degree equal to 1 and the Savitsky-Golay filter to remove the slow frequency components from an RRi recorded during rest.
 
 ```python
 from hrv.detrend import polynomial_detrend, sg_detrend
@@ -144,13 +144,13 @@ detrended_rri_poly.plot()
 detrended_rri_sg.plot()
 ```
 
-![The left panel shows the original RRi (blue line) and after detrending with polynomial function with degree 1 (black line).  The left panel depicts the original RRi (blue line) and after detreding with a Savitsky-Golay lowpass filter (black line).](rri_detrended.png)
+![The left panel shows the original RRi (blue line) and after detrending with polynomial function with degree equal to 1 (black line). The left panel depicts the original RRi (blue line) and after detreding with a Savitsky-Golay lowpass filter (black line).](rri_detrended.png)
 
 
 ## Analyses
 ### Time Domain 
 
-In order to calculate the time-domain indices, the function ```time_domain``` can be imported from the submodule ```hrv.classical``` and applied to any Python iterable containing the RRi series including the RRi instance from the module presented in this article.
+In order to calculate the time-domain indices, the function `time_domain` can be imported from the submodule `hrv.classical` and applied to any Python iterable containing the RRi series including the RRi instance from the module presented in this article.
 
 ```python
 from hrv.classical import time_domain
@@ -169,11 +169,11 @@ print(results)
 
 ### Frequency Domain
 
-Similarly to the ```time_domain``` function, to calculate the frequency-domain indices, the ```frequecy_domain```, which is also placed in the ```hrv.classical``` submodule, can be used. The ```frequency_domain``` function present in the ```hrv``` module takes care of the pre-processing steps:  the detrending of the RRi series (which the default is a linear function, but can be any custom Python function), interpolation using cubic splines (also accepts linear interpolation) and resampling at a given frequency, the default is 4 Hz.
+Similarly to the `time_domain` function, to calculate the frequency-domain indices, the `frequecy_domain`, which is also placed in the `hrv.classical` submodule, can be used. The `frequency_domain` function present in the `hrv` module takes care of the pre-processing steps:  the detrending of the RRi series (which the default is a linear function, but can be any custom Python function), interpolation using cubic splines (also accepts linear interpolation) and resampling at a given frequency, the default is 4Hz.
 
 When Welch’s method is selected, a window function (default: hanning), the number of RRi values per segment and the length of superposition between adjacent segments can be chosen. When the AR method is selected, the order of the model (default 16) can be set.
 
-The area under the curve of each frequency range in the estimated PSD is calculated using the trapezoidal method. As a default, the hrv module uses the frequencies cutoffs shown in Table 1 to limit the integration range of each frequency domain indices, however, it is possible to set the frequency range of VLF, LF, and HF  in the ```frequency_domain``` function call.
+The area under the curve of each frequency range in the estimated PSD is calculated using the trapezoidal method. As a default, the hrv module uses the frequencies cutoffs shown in Table 1 to limit the integration range of each frequency domain indices, however, it is possible to set the frequency range of VLF, LF, and HF  in the `frequency_domain` function call.
 
 ```python
 from hrv.classical import frequency_domain
@@ -199,7 +199,7 @@ print(results)
 ![Power Spectral Density of a RRi series estimated with the Welch's method.](psd.png)
 
 ### Non-linear
-Finally, among the non linear metrics, ```hrv``` module offers SD1 and SD2, which can be calculated with the ```non_linear``` function from the ```hrv.classical``` submodule.
+Finally, among the non linear metrics, `hrv` module offers SD1 and SD2, which can be calculated with the `non_linear` function from the `hrv.classical` submodule.
 
 ```python
 from hrv.classical import non_linear
@@ -221,10 +221,10 @@ rri.poincare_plot()
 
 # Dependencies
 
-The ```hrv``` package depends on the following modules: numpy [@numpy], matplotlib [@hunter2007matplotlib], scipy [@scipy] and spectrum [@cokelaer2017spectrum].
+The `hrv` package depends on the following modules: numpy [@numpy], matplotlib [@hunter2007matplotlib], scipy [@scipy] and spectrum [@cokelaer2017spectrum].
 
 # Acknowledgements
 
-The authors are grateful to CAPES (Coordenadoria de Aperfeiçoamento de Pessoal de Nível Superior), FAPERJ (Fundação de Amparo à Pesquisa do Estado do Rio de Janeiro), FAPESP (2016/23319-0 - Fundação de Amparo à Pesquisa do Estado do São Paulo) and CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico) for financial support. We are also grateful to Wilson Mello a.k.a Bakudas for creating the nice logo of the ```hrv``` module.
+The authors are grateful to CAPES (Coordenadoria de Aperfeiçoamento de Pessoal de Nível Superior), FAPERJ (Fundação de Amparo à Pesquisa do Estado do Rio de Janeiro), FAPESP (2016/23319-0 - Fundação de Amparo à Pesquisa do Estado do São Paulo) and CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico) for financial support. We are also grateful to Wilson Mello a.k.a Bakudas for creating the nice logo of the `hrv` module.
 
 # References
