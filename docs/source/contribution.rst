@@ -50,8 +50,44 @@ in `PEP 8`_ and `PEP 257`_, which are also followed by the `numpy`_ project.
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _numpy: https://numpydoc.readthedocs.io/en/latest/format.html
 
-Examples
+Example
 ********
+.. code-block:: python
+
+    def moving_average(rri, order=3):
+        """
+        Low-pass filter. Replace each RRi value by the average of its ⌊N/2⌋
+        neighbors. The first and the last ⌊N/2⌋ RRi values are not filtered
+
+        Parameters
+        ----------
+        rri : array_like
+        sequence containing the RRi series
+        order : int, optional
+        Strength of the filter. Number of adjacent RRi values used to calculate
+        the average value to replace the current RRi. Defaults to 3.
+
+        .. math::
+        considering movinge average of order equal to 3:
+        RRi[j] = sum(RRi[j-2] + RRi[j-1] + RRi[j+1] + RRi[j+2]) / 3
+
+        Returns
+        -------
+        results : RRi array
+        instance of the RRi class containing the filtered RRi values
+
+        See Also
+        -------
+        moving_median, threshold_filter, quotient
+
+        Examples
+        --------
+        >>> from hrv.filters import moving_average
+        >>> from hrv.sampledata import load_noisy_rri
+        >>> noisy_rri = load_noisy_rri()
+        >>> moving_average(noisy_rri)
+        RRi array([904., 918., 941.66666667, ..., 732.66666667, 772.33333, 808.])
+        """
 
 We also encourage the  use of code linters, such `isort`_ , `black`_ and `autoflake`_.
 
