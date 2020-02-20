@@ -10,7 +10,7 @@
 Pythonic package for Heart Rate Variability Analysis
 ===============================
 
-version number: 0.2.5 
+version number: 0.2.6 
 
 author: Rhenan Bartels
 
