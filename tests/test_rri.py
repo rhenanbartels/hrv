@@ -547,6 +547,6 @@ class TestSplitRRi:
         rri = RRi([800, 810, 790, 795], time=[1, 5, 10, 20])
 
         splitted_rri = rri.time_split(seg_size=10, overlap=0)
-        expected = [RRi([800, 810], time=[1, 5]), RRi([790, 795], time=[10, 15])]
+        expected = [RRi([800, 810], time=[1, 5]), RRi([790, 795], time=[10, 20])]
 
-        assert splitted_rri == expected
+        assert np.array_equal(splitted_rri, expected)
