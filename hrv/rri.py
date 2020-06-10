@@ -15,14 +15,12 @@ Classes
 """
 
 import sys
-
 from collections import MutableMapping, defaultdict
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from .utils import _ellipsedraw
-
 
 __all__ = ['RRi', 'RRiDetrended']
 
@@ -314,6 +312,41 @@ class RRi:
     def rms(self):
         """Return the root mean squared of the RRi series"""
         return np.sqrt(np.mean(self.rri ** 2))
+
+    def time_split(self, seg_size, overlap=0, exclude_last=False):
+        """
+        Splits the RRi series in smaller segments with approximately
+        the same time duration.
+
+        Parameters
+        ----------
+        seg_size : Number
+            The segment size in seconds
+        overlap : Number, optional
+            The size of overlap between adjacents segments, defaults to 0
+        exclude_last : boolean, optional
+            If set to True the last segment is removed if smaller than
+            `seg_size`, defaults to False
+        """
+        rri_duration = self.time[-1]
+        if overlap > seg_size:
+            raise Exception("`overlap` can not be bigger than `seg_size`")
+        elif seg_size > rri_duration:
+            raise Exception("`seg_size` is longer than RRi duration.")
+
+        begin = 0
+        end = seg_size
+        step = seg_size - overlap
+        n_splits = int((rri_duration - seg_size) / step) + 1
+        segments = []
+        for i in range(n_splits):
+            OP = np.less if i+1 != n_splits else np.less_equal
+            mask = np.logical_and(self.time >= begin, OP(self.time, end))
+            segments.append(RRi(self.rri[mask], time=self.time[mask]))
+            begin += step
+            end += step
+
+        return segments
 
     def __repr__(self):
         return 'RRi %s' % np.array_repr(self.rri)

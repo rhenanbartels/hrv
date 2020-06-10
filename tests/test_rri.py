@@ -552,3 +552,16 @@ class TestRRiDetrended:
 
         assert det_rri_obj.detrended
         assert not det_rri_obj.interpolated
+
+
+class TestSplitRRi:
+    def test_split_rri_using_time_informarion(self):
+        rri = RRi([800, 810, 790,  795], time=[1, 5, 10, 20])
+
+        splitted_rri = rri.time_split(size=10, overlap=0)
+        expected = [
+            RRi([800, 810], time=[1, 5]),
+            RRi([790, 795], time=[10, 15])
+        ]
+
+        assert splitted_rri == expected
