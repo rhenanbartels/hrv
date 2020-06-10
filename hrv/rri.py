@@ -51,6 +51,7 @@ class RRi:
 
         Time is represented in seconds
     """
+
     def __init__(self, rri, time=None, *args, **kwargs):
         if not isinstance(self, RRiDetrended):
             self.__rri = _validate_rri(rri)
@@ -58,8 +59,8 @@ class RRi:
             self.__interpolated = False
         else:
             self.__rri = np.array(rri)
-            self.__detrended = kwargs.pop('detrended')
-            self.__interpolated = kwargs.pop('interpolated', False)
+            self.__detrended = kwargs.pop("detrended")
+            self.__interpolated = kwargs.pop("interpolated", False)
 
         if time is None:
             self.__time = _create_time_array(self.rri)
@@ -108,8 +109,8 @@ class RRi:
         table = _prepare_table(RRi(self.rri))
         rri_descr = RRiDescription(table)
         for row in table[1:]:
-            rri_descr[row[0]]['rri'] = row[1]
-            rri_descr[row[0]]['hr'] = row[2]
+            rri_descr[row[0]]["rri"] = row[1]
+            rri_descr[row[0]]["hr"] = row[2]
 
         return rri_descr
 
@@ -118,12 +119,13 @@ class RRi:
         Print information about RRi`s memory usage, length,
         number of intervals, and if it is interpolated and/or detrended
         """
+
         def _mem_usage(nbytes):
             mem_val = nbytes / 1024
             if mem_val < 1000:
-                mem_str = '{:.2f}Kb'.format(mem_val)
+                mem_str = "{:.2f}Kb".format(mem_val)
             else:
-                mem_str = '{:.2f}Mb'.format(mem_val / 1024)
+                mem_str = "{:.2f}Mb".format(mem_val / 1024)
 
             return mem_str
 
@@ -133,16 +135,20 @@ class RRi:
         # attributes
         mem_usage = _mem_usage(self.__rri.nbytes)
 
-        msg_template = 'N Points: {n_points}\nDuration: {duration:.2f}s\n'\
-                       'Interpolated: {interp}\nDetrended: {detrended}\n'\
-                       'Memory Usage: {mem_usage}'
-        sys.stdout.write(msg_template.format(
-            n_points=n_points,
-            duration=duration,
-            interp=self.interpolated,
-            detrended=self.detrended,
-            mem_usage=mem_usage
-        ))
+        msg_template = (
+            "N Points: {n_points}\nDuration: {duration:.2f}s\n"
+            "Interpolated: {interp}\nDetrended: {detrended}\n"
+            "Memory Usage: {mem_usage}"
+        )
+        sys.stdout.write(
+            msg_template.format(
+                n_points=n_points,
+                duration=duration,
+                interp=self.interpolated,
+                detrended=self.detrended,
+                mem_usage=mem_usage,
+            )
+        )
 
     def to_hr(self):
         """
@@ -178,7 +184,7 @@ class RRi:
         if inplace:
             self.__time -= self.time[0]
         else:
-            return RRi(self.rri, time=self.time-self.time[0])
+            return RRi(self.rri, time=self.time - self.time[0])
 
     def plot(self, ax=None, *args, **kwargs):
         """
@@ -193,7 +199,7 @@ class RRi:
             fig, ax = plt.subplots(1, 1)
 
         ax.plot(self.time, self.rri, *args, **kwargs)
-        ax.set(xlabel='Time (s)', ylabel='RRi (ms)')
+        ax.set(xlabel="Time (s)", ylabel="RRi (ms)")
         plt.show(block=False)
 
         return fig, ax
@@ -210,10 +216,10 @@ class RRi:
         fig, ax = plt.subplots(1, 1)
         if hr:
             ax.hist(self.to_hr(), *args, **kwargs)
-            ax.set(xlabel='HR (bpm)', ylabel='Frequency')
+            ax.set(xlabel="HR (bpm)", ylabel="Frequency")
         else:
             ax.hist(self.rri, *args, **kwargs)
-            ax.set(xlabel='RRi (ms)', ylabel='Frequency')
+            ax.set(xlabel="RRi (ms)", ylabel="Frequency")
 
         plt.show(block=False)
 
@@ -225,13 +231,9 @@ class RRi:
         """
         fig, ax = plt.subplots(1, 1)
         rri_n, rri_n_1 = self.rri[:-1], self.rri[1:]
-        ax.plot(rri_n, rri_n_1, '.k')
+        ax.plot(rri_n, rri_n_1, ".k")
 
-        ax.set(
-            xlabel='$RRi_n$ (ms)',
-            ylabel='$RRi_{n+1}$ (ms)',
-            title='Poincaré Plot'
-        )
+        ax.set(xlabel="$RRi_n$ (ms)", ylabel="$RRi_{n+1}$ (ms)", title="Poincaré Plot")
 
         plt.show(block=False)
 
@@ -244,37 +246,28 @@ class RRi:
         ylim = [min(rri_n_1) - dy, max(rri_n_1) + dy]
 
         from hrv.classical import non_linear
+
         nl = non_linear(self.rri)
-        a = rri_n / np.cos(np.pi/4.0)
+        a = rri_n / np.cos(np.pi / 4.0)
         ca = np.mean(a)
 
-        cx, cy, _ = ca * np.cos(np.pi/4.0), ca * np.sin(np.pi/4.0), 0
+        cx, cy, _ = ca * np.cos(np.pi / 4.0), ca * np.sin(np.pi / 4.0), 0
 
-        width = nl['sd2']  # to seconds
-        height = nl['sd1']  # to seconds
+        width = nl["sd2"]  # to seconds
+        height = nl["sd1"]  # to seconds
 
         # plot fx(x) = x
         sd2_l = ax.plot(
-            [xlim[0], xlim[1]],
-            [ylim[0], ylim[1]],
-            '--', color=[0.5, 0.5, 0.5]
+            [xlim[0], xlim[1]], [ylim[0], ylim[1]], "--", color=[0.5, 0.5, 0.5]
         )
         fx = lambda val: -val + 2 * cx
 
-        sd1_l = ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], 'k--')
+        sd1_l = ax.plot([xlim[0], xlim[1]], [fx(xlim[0]), fx(xlim[1])], "k--")
         ax = _ellipsedraw(
-            ax,
-            width,
-            height,
-            cx,
-            cy,
-            np.pi/4.0,
-            color='r',
-            linewidth=3
+            ax, width, height, cx, cy, np.pi / 4.0, color="r", linewidth=3
         )
         ax.legend(
-            (sd1_l[0], sd2_l[0]),
-            ('SD1: %.2fms' % height, 'SD2: %.2fms' % width),
+            (sd1_l[0], sd2_l[0]), ("SD1: %.2fms" % height, "SD2: %.2fms" % width),
         )
 
         return fig, ax
@@ -340,7 +333,7 @@ class RRi:
         n_splits = int((rri_duration - seg_size) / step) + 1
         segments = []
         for i in range(n_splits):
-            OP = np.less if i+1 != n_splits else np.less_equal
+            OP = np.less if i + 1 != n_splits else np.less_equal
             mask = np.logical_and(self.time >= begin, OP(self.time, end))
             segments.append(RRi(self.rri[mask], time=self.time[mask]))
             begin += step
@@ -349,7 +342,7 @@ class RRi:
         return segments
 
     def __repr__(self):
-        return 'RRi %s' % np.array_repr(self.rri)
+        return "RRi %s" % np.array_repr(self.rri)
 
     def __mul__(self, val):
         return RRi(self.rri * val, self.time)
@@ -392,13 +385,8 @@ class RRiDetrended(RRi):
     # TODO: add trend as attribute of the instance
     def __init__(self, rri, time, *args, **kwargs):
         detrended = True
-        interpolated = kwargs.pop('interpolated', False)
-        super().__init__(
-            rri,
-            time,
-            interpolated=interpolated,
-            detrended=detrended
-        )
+        interpolated = kwargs.pop("interpolated", False)
+        super().__init__(rri, time, interpolated=interpolated, detrended=detrended)
 
 
 class RRiDescription(MutableMapping):
@@ -427,16 +415,16 @@ class RRiDescription(MutableMapping):
 
     def __repr__(self):
         descr = ""
-        dash = '-' * 40 + "\n"
+        dash = "-" * 40 + "\n"
         for i in range(len(self.table)):
             if i == 0:
                 descr += dash
-                descr += '{:<10s}{:>12s}{:>12s}\n'.format(
+                descr += "{:<10s}{:>12s}{:>12s}\n".format(
                     self.table[i][0], self.table[i][1], self.table[i][2]
                 )
                 descr += dash
             else:
-                descr += '{:<10s}{:>12.2f}{:>12.2f}\n'.format(
+                descr += "{:<10s}{:>12.2f}{:>12.2f}\n".format(
                     self.table[i][0], self.table[i][1], self.table[i][2]
                 )
 
@@ -447,8 +435,8 @@ def _prepare_table(rri):
     def _amplitude(values):
         return values.max() - values.min()
 
-    header = ['', 'rri', 'hr']
-    fields = ['min', 'max', 'mean', 'var', 'std']
+    header = ["", "rri", "hr"]
+    fields = ["min", "max", "mean", "var", "std"]
     hr = rri.to_hr()
 
     table = []
@@ -457,8 +445,8 @@ def _prepare_table(rri):
         hr_var = hr.__getattribute__(field)()
         table.append([field, rri_var, hr_var])
 
-    table.append(['median', rri.median(), np.median(hr)])
-    table.append(['amplitude', rri.amplitude(), _amplitude(hr)])
+    table.append(["median", rri.median(), np.median(hr)])
+    table.append(["amplitude", rri.amplitude(), _amplitude(hr)])
 
     return [header] + table
 
@@ -468,7 +456,7 @@ def _validate_rri(rri):
     rri = np.array(rri, dtype=np.float64)
 
     if any(rri <= 0):
-        raise ValueError('rri series can only have positive values')
+        raise ValueError("rri series can only have positive values")
 
     # Use RRi series median value to check if it is in seconds or miliseconds
     if np.median(rri) < 10:
@@ -480,18 +468,16 @@ def _validate_rri(rri):
 def _validate_time(rri, time):
     time = np.array(time, dtype=np.float64)
     if len(rri) != len(time):
-        raise ValueError('rri and time series must have the same length')
+        raise ValueError("rri and time series must have the same length")
 
     if any(time[1:] == 0):
-        raise ValueError(
-                'time series cannot have 0 values after first position'
-        )
+        raise ValueError("time series cannot have 0 values after first position")
 
     if not all(np.diff(time) > 0):
-        raise ValueError('time series must be monotonically increasing')
+        raise ValueError("time series must be monotonically increasing")
 
     if any(time < 0):
-        raise ValueError('time series cannot have negative values')
+        raise ValueError("time series cannot have negative values")
 
     return time
 

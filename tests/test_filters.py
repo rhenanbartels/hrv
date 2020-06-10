@@ -2,11 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from hrv.filters import (
-    moving_average,
-    moving_median,
-    quotient,
-    threshold_filter)
+from hrv.filters import moving_average, moving_median, quotient, threshold_filter
 from hrv.rri import RRi
 
 
@@ -69,22 +65,11 @@ class Filter(TestCase):
         expected = RRi(rri=[805, 790], time=[1.385, 2.175])
 
         assert isinstance(rri_filt, RRi)
-        np.testing.assert_almost_equal(
-                rri_filt.values,
-                expected.values,
-                decimal=2
-        )
-        np.testing.assert_almost_equal(
-                rri_filt.time,
-                expected.time,
-                decimal=2
-        )
+        np.testing.assert_almost_equal(rri_filt.values, expected.values, decimal=2)
+        np.testing.assert_almost_equal(rri_filt.time, expected.time, decimal=2)
 
     def test_movinng_filters_receiving_and_return_rri_class(self):
-        fake_rri = RRi(
-                [810, 830, 860, 790, 804, 801, 800],
-                time=[0, 1, 2, 3, 4, 5, 6]
-        )
+        fake_rri = RRi([810, 830, 860, 790, 804, 801, 800], time=[0, 1, 2, 3, 4, 5, 6])
 
         rri_filt = moving_median(fake_rri)
 
@@ -92,63 +77,38 @@ class Filter(TestCase):
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
         assert isinstance(rri_filt, RRi)
-        np.testing.assert_almost_equal(
-                rri_filt.values,
-                expected_rri,
-                decimal=2
-        )
+        np.testing.assert_almost_equal(rri_filt.values, expected_rri, decimal=2)
         np.testing.assert_almost_equal(rri_filt.time, expected_time, decimal=2)
 
     def test_threshold_filter(self):
-        fake_rri = RRi(
-                [810, 830, 860, 865, 804, 1100, 800],
-                time=[0, 1, 2, 3, 4, 5, 6]
-        )
+        fake_rri = RRi([810, 830, 860, 865, 804, 1100, 800], time=[0, 1, 2, 3, 4, 5, 6])
 
         rri_filt = threshold_filter(fake_rri, threshold=250)
         expected_rri = [810, 830, 860, 865, 804, 748.40625, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
         assert isinstance(rri_filt, RRi)
-        np.testing.assert_almost_equal(
-                rri_filt.values,
-                expected_rri,
-                decimal=2
-        )
+        np.testing.assert_almost_equal(rri_filt.values, expected_rri, decimal=2)
         np.testing.assert_almost_equal(rri_filt.time, expected_time, decimal=2)
 
     def test_threshold_filter_noise_in_the_beginning(self):
-        fake_rri = RRi(
-                [810, 500, 860, 865, 804, 810, 800],
-                time=[0, 1, 2, 3, 4, 5, 6]
-        )
+        fake_rri = RRi([810, 500, 860, 865, 804, 810, 800], time=[0, 1, 2, 3, 4, 5, 6])
 
         rri_filt = threshold_filter(fake_rri, threshold=250)
         expected_rri = [810, 814.34375, 860, 865, 804, 810, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
         assert isinstance(rri_filt, RRi)
-        np.testing.assert_almost_equal(
-                rri_filt.values,
-                expected_rri,
-                decimal=2
-        )
+        np.testing.assert_almost_equal(rri_filt.values, expected_rri, decimal=2)
         np.testing.assert_almost_equal(rri_filt.time, expected_time, decimal=2)
 
     def test_threshold_filter_string_threshold(self):
-        fake_rri = RRi(
-                [810, 650, 860, 865, 804, 810, 800],
-                time=[0, 1, 2, 3, 4, 5, 6]
-        )
+        fake_rri = RRi([810, 650, 860, 865, 804, 810, 800], time=[0, 1, 2, 3, 4, 5, 6])
 
-        rri_filt = threshold_filter(fake_rri, threshold='strong')
+        rri_filt = threshold_filter(fake_rri, threshold="strong")
         expected_rri = [810, 814.34375, 860, 865, 804, 810, 800]
         expected_time = [0, 1, 2, 3, 4, 5, 6]
 
         assert isinstance(rri_filt, RRi)
-        np.testing.assert_almost_equal(
-                rri_filt.values,
-                expected_rri,
-                decimal=2
-        )
+        np.testing.assert_almost_equal(rri_filt.values, expected_rri, decimal=2)
         np.testing.assert_almost_equal(rri_filt.time, expected_time, decimal=2)
