@@ -306,7 +306,7 @@ class RRi:
         """Return the root mean squared of the RRi series"""
         return np.sqrt(np.mean(self.rri ** 2))
 
-    def time_split(self, seg_size, overlap=0, exclude_last=False):
+    def time_split(self, seg_size, overlap=0, keep_last=False):
         """
         Splits the RRi series in smaller segments with approximately
         the same time duration.
@@ -317,8 +317,8 @@ class RRi:
             The segment size in seconds
         overlap : Number, optional
             The size of overlap between adjacents segments, defaults to 0
-        exclude_last : boolean, optional
-            If set to True the last segment is removed if smaller than
+        keep_last : boolean, optional
+            If set to True the last segment is returned even if smaller than
             `seg_size`, defaults to False
         """
         rri_duration = self.time[-1]
@@ -338,6 +338,11 @@ class RRi:
             segments.append(RRi(self.rri[mask], time=self.time[mask]))
             begin += step
             end += step
+
+        last = segments[-1]
+        if keep_last and last.time[-1] < rri_duration:
+            mask = self.time > begin
+            segments.append(RRi(self.rri[mask], time=self.time[mask]))
 
         return segments
 

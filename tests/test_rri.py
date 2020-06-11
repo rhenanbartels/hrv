@@ -4,7 +4,6 @@ from unittest import mock
 import matplotlib
 import numpy as np
 import pytest
-
 from hrv.rri import (
     RRi,
     RRiDetrended,
@@ -542,11 +541,29 @@ class TestRRiDetrended:
         assert not det_rri_obj.interpolated
 
 
-class TestSplitRRi:
+class TestSegmentsMixin:
+    def assert_splitted_equal(self, left, right):
+        for l, r in zip(left, right):
+            assert np.array_equal(l, r)
+
+
+class TestSplitRRi(TestSegmentsMixin):
     def test_split_rri_using_time_informarion(self):
         rri = RRi([800, 810, 790, 795], time=[1, 5, 10, 20])
 
         splitted_rri = rri.time_split(seg_size=10, overlap=0)
         expected = [RRi([800, 810], time=[1, 5]), RRi([790, 795], time=[10, 20])]
 
-        assert np.array_equal(splitted_rri, expected)
+        self.assert_splitted_equal(splitted_rri, expected)
+
+    def test_split_rri_keep_last_shorter_segment(self):
+        rri = RRi([800, 810, 790, 795, 801], time=[1, 4.9, 5.1, 9.9, 12])
+
+        splitted_rri = rri.time_split(seg_size=5, overlap=0, keep_last=True)
+        expected = [
+            RRi([800, 810], time=[1, 4.9]),
+            RRi([790, 795], time=[5.1, 9.9]),
+            RRi([801], time=[12]),
+        ]
+
+        self.assert_splitted_equal(splitted_rri, expected)
