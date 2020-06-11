@@ -6,7 +6,7 @@ from hrv.classical import time_domain
 from hrv.rri import RRi
 
 
-__all__ = ["time_varing"]
+__all__ = ["time_varying"]
 
 
 class TimeVarying:
@@ -25,7 +25,7 @@ class TimeVarying:
         ax.plot(self.transponsed[index])
 
 
-def time_varing(rri, seg_size, overlap, keep_last=False):
+def time_varying(rri, seg_size, overlap, keep_last=False):
     if not isinstance(rri, RRi):
         rri = RRi(rri)
 
