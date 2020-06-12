@@ -9,7 +9,7 @@ from hrv.nonstationary import TimeVarying, time_varying
 
 
 class TestTimeVarying:
-    def setUp(self):
+    def setup_method(self, method):
         self.results = [
             {
                 'rmssd': 30,
