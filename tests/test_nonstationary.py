@@ -1,4 +1,7 @@
+from unittest import mock
+
 import pytest
+import matplotlib
 
 from hrv.rri import RRi
 from hrv.sampledata import load_rest_rri
@@ -6,26 +9,8 @@ from hrv.nonstationary import TimeVarying, time_varying
 
 
 class TestTimeVarying:
-    def test_happy_path_results(self):
-        rri = load_rest_rri()
-
-        tv_results = time_varying(rri, seg_size=30, overlap=0)
-        expected_keys = [
-            'rmssd',
-            'sdnn',
-            'sdsd',
-            'nn50',
-            'pnn50',
-            'mrri',
-            'mhr'
-        ]
-
-        assert isinstance(tv_results, TimeVarying)
-        assert list(tv_results.transponsed.keys()) == expected_keys 
-        assert len(tv_results.results) == 32  # number of segments
-
-    def test_index_property(self):
-        results = [
+    def setUp(self):
+        self.results = [
             {
                 'rmssd': 30,
                 'sdnn': 52,
@@ -45,11 +30,31 @@ class TestTimeVarying:
                 'mhr': 60,
             },
         ]
-        rri_segments = [
+        self.rri_segments = [
             RRi([810, 800, 815], time=[1, 2, 3]),
             RRi([810, 800, 815], time=[4, 5, 6]),
         ]
-        tv = TimeVarying(results, rri_segments)
+
+    def test_happy_path_results(self):
+        rri = load_rest_rri()
+
+        tv_results = time_varying(rri, seg_size=30, overlap=0)
+        expected_keys = [
+            'rmssd',
+            'sdnn',
+            'sdsd',
+            'nn50',
+            'pnn50',
+            'mrri',
+            'mhr'
+        ]
+
+        assert isinstance(tv_results, TimeVarying)
+        assert list(tv_results.transponsed.keys()) == expected_keys 
+        assert len(tv_results.results) == 32  # number of segments
+
+    def test_index_property(self):
+        tv = TimeVarying(self.results, self.rri_segments)
 
         assert tv.rmssd == [30, 31]
         assert tv.sdnn == [52, 53]
@@ -60,3 +65,11 @@ class TestTimeVarying:
         assert tv.mhr == [59, 60]
         with pytest.raises(ValueError):
             tv.dontexist
+
+    def test_plot_time_varying_index(self):
+        tv = TimeVarying(self.results, self.rri_segments)
+        with mock.patch("hrv.nonstationary.plt.show"):
+            fig, ax = tv.plot(index="rmssd")
+
+        assert isinstance(fig, matplotlib.figure.Figure)
+        assert isinstance(ax, matplotlib.figure.Axes)

@@ -28,7 +28,9 @@ class TimeVarying:
 
     def plot(self, index="rmssd"):
         fig, ax = plt.subplots(1, 1)
-        ax.plot(self.transponsed[index])
+        ax.plot(self.__getattr__(index))
+
+        return fig, ax
 
 
 def time_varying(rri, seg_size, overlap, keep_last=False):
