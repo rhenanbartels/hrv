@@ -10,10 +10,12 @@ __all__ = ["time_varying"]
 
 
 class TimeVarying:
-    def __init__(self, results, rri_segments):
+    def __init__(self, results, rri_segments, seg_size, overlap):
         self.results = results
         self.transponsed = self._transform_results(results)
         self.rri_segments = rri_segments
+        self.seg_size=seg_size
+        self.overlap=overlap
 
     def _transform_results(self, results):
         return {
@@ -48,6 +50,9 @@ class TimeVarying:
         plt.show(block=False)
 
         return fig, ax
+    
+    def __str__(self):
+        return f"Time Varying {self.seg_size}:{self.overlap} - #{len(self.results)}"
 
 
 def time_varying(rri, seg_size, overlap, keep_last=False):
@@ -63,4 +68,4 @@ def time_varying(rri, seg_size, overlap, keep_last=False):
     for segment in segments:
         results.append(time_domain(segment))
 
-    return TimeVarying(results, segments)
+    return TimeVarying(results, segments, seg_size=seg_size, overlap=overlap)
