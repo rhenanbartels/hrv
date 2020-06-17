@@ -20,15 +20,32 @@ class TimeVarying:
             key: [item[key] for item in results] for key in results[0].keys()
         }
 
+    def ylabel_mapper(self, index):
+        mapper = {
+            "rmssd": "RMSSD (ms)",
+            "sdnn": "SDNN (ms²)",
+            "sdsd": "SDSD (ms²)",
+            "nn50": "nn50 (count)",
+            "pnn50": "pnn50 (%)",
+            "mrri": "mean RRi (ms)",
+            "mhr": "mean HR (bpm)",
+        }
+        return mapper.get(index)
+
     def __getattr__(self, index):
         try:
             return self.transponsed[index]
         except KeyError:
             raise ValueError(f"index `{index}` does not exist.")
 
-    def plot(self, index="rmssd"):
-        fig, ax = plt.subplots(1, 1)
-        ax.plot(self.__getattr__(index))
+    def plot(self, ax=None, index="rmssd", *args, **kwargs):
+        fig = None
+        if ax is None:
+            fig, ax = plt.subplots(1, 1)
+
+        ax.plot(self.__getattr__(index), *args, **kwargs)
+        ax.set(xlabel="Time Interval (s)", ylabel=self.ylabel_mapper(index))
+        plt.show(block=False)
 
         return fig, ax
 
