@@ -54,6 +54,13 @@ class TimeVarying:
 
         return fig, ax
 
+    def plot_together(self, ax=None, index="rmssd", *args, **kwargs):
+        fig, ax = self.rri.plot(alpha=0.7, color="grey")
+        ax1 = ax.twinx()
+        self.plot(ax=ax1, index=index, *args, **kwargs)
+
+        return fig, ax
+
     def __str__(self):
         return f"Time Varying {self.seg_size}:{self.overlap} - #{len(self.results)}"
 
