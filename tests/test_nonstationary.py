@@ -12,22 +12,22 @@ class TestTimeVarying:
     def setup_method(self, method):
         self.results = [
             {
-                'rmssd': 30,
-                'sdnn': 52,
-                'sdsd': 30,
-                'nn50': 2,
-                'pnn50': 6,
-                'mrri': 1003,
-                'mhr': 59,
+                "rmssd": 30,
+                "sdnn": 52,
+                "sdsd": 30,
+                "nn50": 2,
+                "pnn50": 6,
+                "mrri": 1003,
+                "mhr": 59,
             },
             {
-                'rmssd': 31,
-                'sdnn': 53,
-                'sdsd': 31,
-                'nn50': 3,
-                'pnn50': 7,
-                'mrri': 1004,
-                'mhr': 60,
+                "rmssd": 31,
+                "sdnn": 53,
+                "sdsd": 31,
+                "nn50": 3,
+                "pnn50": 7,
+                "mrri": 1004,
+                "mhr": 60,
             },
         ]
         self.rri_segments = [
@@ -39,22 +39,14 @@ class TestTimeVarying:
         rri = load_rest_rri()
 
         tv_results = time_varying(rri, seg_size=30, overlap=0)
-        expected_keys = [
-            'rmssd',
-            'sdnn',
-            'sdsd',
-            'nn50',
-            'pnn50',
-            'mrri',
-            'mhr'
-        ]
+        expected_keys = ["rmssd", "sdnn", "sdsd", "nn50", "pnn50", "mrri", "mhr"]
 
         assert isinstance(tv_results, TimeVarying)
-        assert list(tv_results.transponsed.keys()) == expected_keys 
+        assert list(tv_results.transponsed.keys()) == expected_keys
         assert len(tv_results.results) == 32  # number of segments
 
     def test_index_property(self):
-        tv = TimeVarying(self.results, self.rri_segments)
+        tv = TimeVarying(None, self.results, self.rri_segments, seg_size=10, overlap=5)
 
         assert tv.rmssd == [30, 31]
         assert tv.sdnn == [52, 53]
@@ -67,9 +59,16 @@ class TestTimeVarying:
             tv.dontexist
 
     def test_plot_time_varying_index(self):
-        tv = TimeVarying(self.results, self.rri_segments)
+        tv = TimeVarying(None, self.results, self.rri_segments, seg_size=10, overlap=5)
         with mock.patch("hrv.nonstationary.plt.show"):
             fig, ax = tv.plot(index="rmssd")
 
         assert isinstance(fig, matplotlib.figure.Figure)
         assert isinstance(ax, matplotlib.figure.Axes)
+
+    def test_build_xaxis(self):
+        tv = TimeVarying(None, self.results, self.rri_segments, seg_size=10, overlap=5)
+        xaxis = tv.build_xaxis()
+        expected = [2.0, 5.0]
+
+        assert xaxis == expected
