@@ -22,7 +22,7 @@ copyright = '2019, Rhenan Bartels'
 author = 'Rhenan Bartels'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.6'
+release = '0.2.7'
 
 
 # -- General configuration ---------------------------------------------------
