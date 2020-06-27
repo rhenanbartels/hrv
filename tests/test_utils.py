@@ -4,9 +4,7 @@ import unittest
 import numpy as np
 
 from hrv.io import read_from_text
-from hrv.utils import (_interp_cubic_spline,
-                       _interp_linear,
-                       _create_interp_time)
+from hrv.utils import _interp_cubic_spline, _interp_linear, _create_interp_time
 
 FAKE_RRI = [800, 810, 815, 750]
 # TODO: recreate tests from files with errors
@@ -14,7 +12,7 @@ FAKE_RRI = [800, 810, 815, 750]
 
 class InterpolationTestCase(unittest.TestCase):
     def setUp(self):
-        self.real_rri = read_from_text('tests/test_files/real_rri.txt')
+        self.real_rri = read_from_text("tests/test_files/real_rri.txt")
 
     def test_create_interp_time(self):
         time = [0, 1]
@@ -31,9 +29,19 @@ class InterpolationTestCase(unittest.TestCase):
 
         rrix = _interp_cubic_spline(rri, time, fs)
         expected = [
-            800., 809.4140625, 813.4375, 813.2421875, 810.,
-            804.8828125, 799.0625, 793.7109375, 790., 789.1015625,
-            792.1875, 800.4296875, 815.
+            800.0,
+            809.4140625,
+            813.4375,
+            813.2421875,
+            810.0,
+            804.8828125,
+            799.0625,
+            793.7109375,
+            790.0,
+            789.1015625,
+            792.1875,
+            800.4296875,
+            815.0,
         ]
 
         np.testing.assert_array_almost_equal(rrix, expected)
@@ -45,8 +53,19 @@ class InterpolationTestCase(unittest.TestCase):
 
         rrix = _interp_linear(rri, time, fs)
         expected = [
-            800., 802.5, 805., 807.5, 810., 805., 800., 795.,  790., 796.25,
-            802.5, 808.75, 815.
+            800.0,
+            802.5,
+            805.0,
+            807.5,
+            810.0,
+            805.0,
+            800.0,
+            795.0,
+            790.0,
+            796.25,
+            802.5,
+            808.75,
+            815.0,
         ]
 
         np.testing.assert_array_almost_equal(rrix, expected)

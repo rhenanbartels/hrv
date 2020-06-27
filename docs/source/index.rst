@@ -26,4 +26,5 @@ Contents
    timeslicing
    preprocessing
    analysis
+   nonstationary
    contribution

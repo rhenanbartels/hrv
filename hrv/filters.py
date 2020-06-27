@@ -55,8 +55,10 @@ def quotient(rri):
     L = len(rri) - 1
 
     indices = np.where(
-            (rri[:L-1]/rri[1:L] < 0.8) | (rri[:L-1]/rri[1:L] > 1.2) |
-            (rri[1:L]/rri[:L-1] < 0.8) | (rri[1:L]/rri[:L-1] > 1.2)
+        (rri[: L - 1] / rri[1:L] < 0.8)
+        | (rri[: L - 1] / rri[1:L] > 1.2)
+        | (rri[1:L] / rri[: L - 1] < 0.8)
+        | (rri[1:L] / rri[: L - 1] > 1.2)
     )
 
     rri_filt, time_filt = np.delete(rri, indices), np.delete(rri_time, indices)
@@ -138,7 +140,7 @@ def moving_median(rri, order=3):
     return _moving_function(rri, order, np.median)
 
 
-def threshold_filter(rri, threshold='medium', local_median_size=5):
+def threshold_filter(rri, threshold="medium", local_median_size=5):
     """
     Low-pass filter. Inspired by the threshold-based artifact correction
     algorithm offered by Kubios®. To elect outliers in the tachogram series,
@@ -198,11 +200,11 @@ def threshold_filter(rri, threshold='medium', local_median_size=5):
 
     # Filter strength inspired in Kubios threshold based artifact correction
     strength = {
-        'very low': 450,
-        'low': 350,
-        'medium': 250,
-        'strong': 150,
-        'very strong': 50,
+        "very low": 450,
+        "low": 350,
+        "medium": 250,
+        "strong": 150,
+        "very strong": 50,
     }
     threshold = strength[threshold] if threshold in strength else threshold
 
@@ -210,7 +212,7 @@ def threshold_filter(rri, threshold='medium', local_median_size=5):
     rri_to_remove = []
     # Apply filter in the beginning later
     for j in range(local_median_size, n_rri):
-        slice_ = slice(j-local_median_size, j)
+        slice_ = slice(j - local_median_size, j)
         if rri[j] > (np.median(rri[slice_]) + threshold):
             rri_to_remove.append(j)
 
@@ -221,9 +223,7 @@ def threshold_filter(rri, threshold='medium', local_median_size=5):
             rri_to_remove.append(j)
 
     rri_temp = [r for idx, r in enumerate(rri) if idx not in rri_to_remove]
-    time_temp = [
-        t for idx, t in enumerate(rri_time) if idx not in rri_to_remove
-    ]
+    time_temp = [t for idx, t in enumerate(rri_time) if idx not in rri_to_remove]
     cubic_spline = CubicSpline(time_temp, rri_temp)
     return RRi(cubic_spline(rri_time), rri_time)
 
@@ -240,6 +240,6 @@ def _moving_function(rri, order, func):
     # TODO: Implemente copy method for RRi class
     filt_rri = np.array(rri.copy(), dtype=np.float64)
     for i in range(offset, len(rri) - offset, 1):
-        filt_rri[i] = func(rri[i-offset:i+offset+1])
+        filt_rri[i] = func(rri[i - offset : i + offset + 1])
 
     return RRi(filt_rri, rri_time)

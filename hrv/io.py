@@ -44,12 +44,12 @@ def read_from_text(pathname):
     >>> rri = read_from_text('/path/to/file.txt')
     RRi array([1114., 1113., 1066., 1119., 1062.])
     """
-    with open(pathname, 'r') as fileobj:
+    with open(pathname, "r") as fileobj:
         file_content = fileobj.read()
         if not file_content:
-            raise EmptyFileError('empty file!')
+            raise EmptyFileError("empty file!")
 
-        values = list(map(float, re.findall(r'[1-9]\d+', file_content)))
+        values = list(map(float, re.findall(r"[1-9]\d+", file_content)))
 
     return RRi(values)
 
@@ -85,30 +85,31 @@ def read_from_hrm(pathname):
     >>> rri = read_from_hrm('/path/to/file.hrm')
     RRi array([1114., 1113., 1066., 1119., 1062.])
     """
-    with open(pathname, 'r') as fileobj:
+    with open(pathname, "r") as fileobj:
         file_content = fileobj.read()
-        rri_info_index = file_content.find('[HRData]')
+        rri_info_index = file_content.find("[HRData]")
         rri = None
         if rri_info_index < 0:
-            raise EmptyFileError('empty file!')
+            raise EmptyFileError("empty file!")
         else:
             rri = np.array(
-                    list(
-                        map(
-                            float,
-                            re.findall(r'\d+', file_content[rri_info_index:-1])
-                        )
-                    ),
-                    dtype=np.float64
+                list(map(float, re.findall(r"\d+", file_content[rri_info_index:-1]))),
+                dtype=np.float64,
             )
             if len(rri) == 0:
-                raise EmptyFileError('empty file!')
+                raise EmptyFileError("empty file!")
 
     return RRi(rri)
 
 
-def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
-                  row_offset=0, time_parser=int, sep=None):
+def read_from_csv(
+    pathname,
+    rri_col_index=0,
+    time_col_index=None,
+    row_offset=0,
+    time_parser=int,
+    sep=None,
+):
     """
     Read RRi series from CSV file format (*.csv)
 
@@ -148,12 +149,12 @@ def read_from_csv(pathname, rri_col_index=0, time_col_index=None,
     >>> rri = read_from_csv('/path/to/file.hrm', time_col_index=1)
     RRi array([1114., 1113., 1066., 1119., 1062.])
     """
-    with open(pathname, newline='') as csvfile:
+    with open(pathname, newline="") as csvfile:
         if sep is None:
             try:
                 sep = csv.Sniffer().sniff(csvfile.read(1024)).delimiter
             except csv.Error:
-                sep = ','
+                sep = ","
 
             csvfile.seek(0)
 
