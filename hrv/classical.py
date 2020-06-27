@@ -68,8 +68,12 @@ def time_domain(rri):
     mrri = np.mean(rri)
     mhr = np.mean(60 / (rri / 1000.0))
 
-    return dict(zip(['rmssd', 'sdnn', 'sdsd', 'nn50', 'pnn50', 'mrri', 'mhr'],
-                    [rmssd, sdnn, sdsd, nn50, pnn50, mrri, mhr]))
+    return dict(
+        zip(
+            ["rmssd", "sdnn", "sdsd", "nn50", "pnn50", "mrri", "mhr"],
+            [rmssd, sdnn, sdsd, nn50, pnn50, mrri, mhr],
+        )
+    )
 
 
 def _nn50(rri):
@@ -81,10 +85,18 @@ def _pnn50(rri):
 
 
 # TODO: create nperseg, noverlap, order, nfft, and detrend arguments
-def frequency_domain(rri, time=None, fs=4.0, method='welch',
-                     interp_method='cubic', detrend='constant',
-                     vlf_band=(0, 0.04), lf_band=(0.04, 0.15),
-                     hf_band=(0.15, 0.4), **kwargs):
+def frequency_domain(
+    rri,
+    time=None,
+    fs=4.0,
+    method="welch",
+    interp_method="cubic",
+    detrend="constant",
+    vlf_band=(0, 0.04),
+    lf_band=(0.04, 0.15),
+    hf_band=(0.15, 0.4),
+    **kwargs
+):
     """
     Estimate the Power Spectral Density (PSD) of an RRi series and
     calculate the area under the curve (AUC) of the Very Low, Low, and High
@@ -187,12 +199,12 @@ def frequency_domain(rri, time=None, fs=4.0, method='welch',
     if interp_method is not None:
         rri = _interpolate_rri(rri, time, fs, interp_method)
 
-    if method == 'welch':
+    if method == "welch":
         fxx, pxx = welch(x=rri, fs=fs, detrend=detrend, **kwargs)
-    elif method == 'ar':
+    elif method == "ar":
         if detrend:
             rri = polynomial_detrend(rri, degree=1)
-        fxx, pxx = _calc_pburg_psd(rri=rri,  fs=fs, **kwargs)
+        fxx, pxx = _calc_pburg_psd(rri=rri, fs=fs, **kwargs)
 
     return _auc(fxx, pxx, vlf_band, lf_band, hf_band)
 
@@ -210,8 +222,12 @@ def _auc(fxx, pxx, vlf_band, lf_band, hf_band):
     lfnu = (lf / (total_power - vlf)) * 100
     hfnu = (hf / (total_power - vlf)) * 100
 
-    return dict(zip(['total_power', 'vlf', 'lf', 'hf', 'lf_hf', 'lfnu',
-                    'hfnu'], [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu]))
+    return dict(
+        zip(
+            ["total_power", "vlf", "lf", "hf", "lf_hf", "lfnu", "hfnu"],
+            [total_power, vlf, lf, hf, lf_hf, lfnu, hfnu],
+        )
+    )
 
 
 def _calc_pburg_psd(rri, fs, order=16, nfft=None):
@@ -264,12 +280,11 @@ def non_linear(rri):
     {'sd1': 39.00945528912225, 'sd2': 71.86199098062633}
     """
     sd1, sd2 = _poincare(rri)
-    return dict(zip(['sd1', 'sd2'], [sd1, sd2]))
+    return dict(zip(["sd1", "sd2"], [sd1, sd2]))
 
 
 def _poincare(rri):
     diff_rri = np.diff(rri)
     sd1 = np.sqrt(np.std(diff_rri, ddof=1) ** 2 * 0.5)
-    sd2 = np.sqrt(2 * np.std(rri, ddof=1) ** 2 - 0.5 * np.std(diff_rri,
-                                                              ddof=1) ** 2)
+    sd2 = np.sqrt(2 * np.std(rri, ddof=1) ** 2 - 0.5 * np.std(diff_rri, ddof=1) ** 2)
     return sd1, sd2
