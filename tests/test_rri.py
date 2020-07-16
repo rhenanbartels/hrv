@@ -354,6 +354,18 @@ class TestRRiClassMethods:
 
         _stdout.write.assert_called_once_with(msg)
 
+    @mock.patch("hrv.rri.sys.stdout")
+    def test_rri_info_time_range(self, _stdout):
+        rri = RRi(FAKE_RRI, time=[2, 3, 4, 5])
+
+        rri.info()
+        msg = (
+            "N Points: 4\nDuration: 3.00s\nInterpolated: False\n"
+            "Detrended: False\nMemory Usage: 0.03Kb"
+        )
+
+        _stdout.write.assert_called_once_with(msg)
+
     def test_rri_to_heart_rate(self):
         rri = RRi(FAKE_RRI)
         heart_rate = rri.to_hr()
