@@ -64,7 +64,7 @@ The following sections present the basic workflow with an RRi series and gives a
 
 # Basic Usage
 
-This section presents a non-exhaustive walkthrough of the features offered by the ```hrv``` module. To have access to the source code and more usage examples, please refer to the [software repository](https://github.com/rhenanbartels/hrv) and the complete [documentation](https://hrv.readthedocs.io/en/latest/index.html).
+This section presents a non-exhaustive walkthrough of the features offered by the ```hrv``` module. To have access to the source code and more usage examples, please refer to the [software repository](https://github.com/rhenanbartels/hrv), the complete [documentation](https://hrv.readthedocs.io/en/latest/index.html) or the [notebooks](https://github.com/rhenanbartels/hrv/tree/master/notebooks) with some use cases of the ```hrv``` module.
 
 Once the RRi series is created in Python using the `hrv.io` submodule, which supports text, CSV and hrm (Polar<sup>TM</sup>) files, or from any Python iterable (i.e lists, tuples, etc), an RRi instance with the necessary methods to implement the Python iterable pattern is created. With the RRi object it is possible to iterate (i.e `[r for r in rri_series]`), search for a value at a given index (i.e `rri_series[0]`), and slice the tachogram (i.e `rri_series[5:10]`). As the RRi class also implements some of the behaviors of the numpy array [@numpy], it is possible to perform math operations with the tachogram, i.e: `rri_series / 1000`.
 
