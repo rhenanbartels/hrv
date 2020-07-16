@@ -130,7 +130,7 @@ class RRi:
             return mem_str
 
         n_points = self.__rri.size
-        duration = self.__time[-1]
+        duration = self.__time[-1] - self.__time[0]
         # Hard coded interp and detrended. Future versions will have proper
         # attributes
         mem_usage = _mem_usage(self.__rri.nbytes)
