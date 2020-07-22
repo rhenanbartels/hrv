@@ -6,9 +6,12 @@
 Welcome to hrv's documentation!
 ===============================
 
-**hrv** is a simple Python module that brings the most widely used techniques to work
-with RRi series and Heart Rate Variability (HRV) analyses without losing the Power
-and Flexibility of a native Python object and numpy_ arrays.
+**hrv** is a simple Python module that brings the most widely used
+techniques to extract information about cardiac autonomic functions through RRi series and Heart Rate Variability (HRV) analyses without losing the **Power** and **Flexibility**
+of a native Python object.
+
+In other words, the **hrv** module eases the manipulation, inspection, pre-processing, visualization, and analyses of HRV-related information. Additionally, it is written with idiomatic code and tries to implement the API of a built-in object, which might make it intuitive for Python users.
+
 
 .. _numpy: http://numpy.org
 
