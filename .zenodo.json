@@ -1,0 +1,31 @@
+{
+    "description": "A Pythonic package for heart rate variability analysis", 
+    "license": "other-open", 
+    "title": "rhenanbartels/hrv 0.2.8", 
+    "version": "0.2.8", 
+    "upload_type": "software", 
+    "publication_date": "2020-07-25", 
+    "creators": [
+        {
+            "affiliation": "Pulmonary Engineering Laboratory, Biomedical Engineering Program, Federal University of Rio de Janeiro, Rio de Janeiro, Brazil", 
+            "name": "Rhenan Bartels"
+        }, 
+        {
+            "affiliation": "Faculty of Medicine, University of São Paulo, Brazil", 
+            "name": "Tiago Peçanha"
+        }
+    ], 
+    "access_right": "open", 
+    "related_identifiers": [
+        {
+            "scheme": "url", 
+            "identifier": "https://github.com/rhenanbartels/hrv/tree/0.2.8", 
+            "relation": "isSupplementTo"
+        }, 
+        {
+            "scheme": "doi", 
+            "identifier": "10.5281/zenodo.3960214", 
+            "relation": "isVersionOf"
+        }
+    ]
+}
