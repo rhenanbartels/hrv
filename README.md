@@ -5,6 +5,7 @@
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/hrv.svg)
 ![Software status](https://img.shields.io/pypi/status/rows.svg)
 [![License: LGPLv3](https://img.shields.io/pypi/l/hrv.svg)](https://github.com/rhenanbartels/hrv/blob/develop/LICENSE.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3960216.svg)](https://doi.org/10.5281/zenodo.3960216)
 
 
 Pythonic package for Heart Rate Variability Analysis
