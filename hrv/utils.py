@@ -42,8 +42,7 @@ def validate_rri(func):
 
 
 def _transform_rri(rri):
-    rri = _transform_rri_to_miliseconds(rri)
-    return np.array(rri)
+    return _transform_rri_to_miliseconds(np.array(rri))
 
 
 # TODO: Refactor validation decorator

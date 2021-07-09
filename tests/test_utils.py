@@ -4,7 +4,12 @@ import unittest
 import numpy as np
 
 from hrv.io import read_from_text
-from hrv.utils import _interp_cubic_spline, _interp_linear, _create_interp_time
+from hrv.utils import (
+    _interp_cubic_spline,
+    _interp_linear,
+    _create_interp_time,
+    _transform_rri
+)
 
 FAKE_RRI = [800, 810, 815, 750]
 # TODO: recreate tests from files with errors
@@ -69,3 +74,21 @@ class InterpolationTestCase(unittest.TestCase):
         ]
 
         np.testing.assert_array_almost_equal(rrix, expected)
+
+
+def test_transform_rri_as_list():
+    rri_sec = [0.8, 0.801, 0.79]
+
+    rri_mili_sec = _transform_rri(rri_sec)
+
+    assert len(rri_mili_sec) == 3
+    np.testing.assert_equal(rri_mili_sec, np.array([800, 801, 790]))
+
+
+def test_transform_rri_as_array():
+    rri_sec = np.array([0.8, 0.801, 0.79])
+
+    rri_mili_sec = _transform_rri(rri_sec)
+
+    assert len(rri_mili_sec) == 3
+    np.testing.assert_equal(rri_mili_sec, np.array([800, 801, 790]))
