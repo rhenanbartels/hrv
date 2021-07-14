@@ -38,6 +38,9 @@ class TestRRIFileOpening:
         with pytest.raises(EmptyFileError):
             read_from_hrm(rri_file_name)
 
+    def test_open_text_rri_with_floats(self, text_file_with_floats):
+        rri = read_from_text(text_file_with_floats.name)
+        expected = np.array([570, 1125, 570, 1133])
 
         np.testing.assert_equal(rri.values, expected)
 
