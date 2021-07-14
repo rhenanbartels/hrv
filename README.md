@@ -16,7 +16,7 @@ version number: 0.2.9
 author: Rhenan Bartels
 
 
-![logo](docs/logo-small.png)
+![logo](https://raw.githubusercontent.com/rhenanbartels/hrv/develop/docs/logo-small.png)
 
 Overview
 --------
