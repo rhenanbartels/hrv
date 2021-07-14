@@ -49,7 +49,7 @@ def read_from_text(pathname):
         if not file_content:
             raise EmptyFileError("empty file!")
 
-        values = list(map(float, re.findall(r"[1-9]\d+", file_content)))
+        values = list(map(float, re.findall(r"\d\.?[0-9]+", file_content)))
 
     return RRi(values)
 
