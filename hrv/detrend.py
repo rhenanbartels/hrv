@@ -112,7 +112,7 @@ def smoothness_priors(rri, l=500, fs=4.0):
     rri_interp = cubic_spline(time_interp)
     N = len(rri_interp)
     identity = np.eye(N)
-    B = np.dot(np.ones((N - 2, 1)), np.array([[1, -2, 1]]))
+    B = np.dot(np.ones((N, 1)), np.array([[1, -2, 1]]))
     D_2 = dia_matrix((B.T, [0, 1, 2]), shape=(N - 2, N))
     inv = np.linalg.inv(identity + l ** 2 * D_2.T @ D_2)
     z_stat = ((identity - np.linalg.inv(identity + l ** 2 * D_2.T @ D_2))) @ rri_interp
