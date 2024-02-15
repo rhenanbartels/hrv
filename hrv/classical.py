@@ -81,7 +81,7 @@ def _nn50(rri):
 
 
 def _pnn50(rri):
-    return _nn50(rri) / len(rri) * 100
+    return float(_nn50(rri)) / (len(rri) - 1) * 100
 
 
 # TODO: create nperseg, noverlap, order, nfft, and detrend arguments
